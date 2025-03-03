@@ -1,0 +1,110 @@
+Ques:https://www.geeksforgeeks.org/maximum-sum-nodes-binary-tree-no-two-adjacent/
+
+Code:
+// C++ program to find the maximum sum of 
+// non-adjacent nodes in a binary tree.
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Node {
+public:
+    int data;     
+    Node *left, *right; 
+    
+    Node(int x) {
+        data = x;
+        left = right = nullptr;
+    }
+};
+
+// Utility method to return the maximum sum 
+// rooted at the node 'curr'
+int getMaxSumUtil(Node* node) {
+    if (node == nullptr) {
+      
+        // If the node is null, the sum is 0
+        return 0;
+    }
+
+    // Calculate the maximum sum including the
+      // current node
+    int incl = node->data;
+  
+    // If the left child exists, include its contribution
+    if (node->left) {
+        incl += getMaxSumUtil(node->left->left) + 
+                  getMaxSumUtil(node->left->right);
+    }
+    
+    // If the right child exists, include its contribution
+    if (node->right) {
+          incl += getMaxSumUtil(node->right->left) + 
+                  getMaxSumUtil(node->right->right);
+    }
+
+    // Calculate the maximum sum excluding 
+      // the current node
+    int excl = 0;
+    if (node->left) {
+        excl += getMaxSumUtil(node->left);
+    }
+    if (node->right) {
+        excl += getMaxSumUtil(node->right);
+    }
+
+    // The result for the current node is the
+      // maximum of including or excluding it
+    return max(incl, excl);
+}
+
+int getMaxSum(Node* root) {
+  
+    // If the tree is empty, the maximum sum is 0
+    if (root == nullptr) {
+        return 0;
+    }
+    
+    // Call the utility function to compute the
+      // maximum sum for the entire tree
+    return getMaxSumUtil(root);
+}
+
+int main() {
+  
+    // Creating a binary tree with the following structure:
+    //          1
+    //         / \
+    //        2   3
+    //       /   / \
+    //      1   4   5
+
+    Node* root = new Node(1);           
+    root->left = new Node(2);             
+    root->right = new Node(3);           
+    root->right->left = new Node(4);     
+    root->right->right = new Node(5);     
+    root->left->left = new Node(1);       
+
+    cout << getMaxSum(root) << endl;
+    return 0;
+}
+
+
+
+Time and Space Complexity
+Time Complexity
+Each node is visited once, so the time complexity is O(n).
+Space Complexity
+Recursive call stack takes O(h), where h is the height of the tree.
+Balanced tree: O(log n)
+Skewed tree: O(n)
+Overall Space Complexity: O(h).
+
+Final Complexity Summary
+Case	Time Complexity	Space Complexity
+General Case	O(n)	O(h) (h = height of tree)
+Balanced Tree	O(n)	O(log n)
+Skewed Tree	O(n)	O(n)
+
+

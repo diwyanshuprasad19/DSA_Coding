@@ -1,0 +1,101 @@
+Ques:
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a binary tree node
+struct Node {
+    int data;
+    Node *left, *right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+// Function to find the Lowest Common Ancestor (LCA)
+Node* lca(Node* root, int a, int b) {
+    if (root == NULL || root->data == a || root->data == b) {
+        return root;
+    }
+
+    Node* left = lca(root->left, a, b);
+    Node* right = lca(root->right, a, b);
+
+    if (left == NULL) return right;
+    else if (right == NULL) return left;
+    else return root;
+}
+
+// Function to find the distance from the LCA to a given node
+int func(Node* root, int val) {
+    if (root == NULL) return 0;
+    if (root->data == val) return 1;
+
+    int leftDist = func(root->left, val);
+    int rightDist = func(root->right, val);
+
+    if (leftDist == 0 && rightDist == 0) return 0;
+    else return leftDist + rightDist + 1;
+}
+
+// Function to find the distance between two nodes
+int findDist(Node* root, int a, int b) {
+    Node* parent = lca(root, a, b);
+    int a1 = func(parent, a);
+    int b1 = func(parent, b);
+    return a1 + b1 - 2;
+}
+
+// Example usage
+int main() {
+    Node* root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+    root->right->left = new Node(6);
+    root->right->right = new Node(7);
+
+    int node1 = 4, node2 = 5;
+    cout << "Distance between " << node1 << " and " << node2 << " is: " << findDist(root, node1, node2) << endl;
+
+    return 0;
+}
+
+
+Explaiantion:
+Expected Output
+pgsql
+Copy
+Edit
+Distance between 4 and 5 is: 2
+Explanation
+The tree structure:
+markdown
+Copy
+Edit
+        1
+       / \
+      2   3
+     / \ / \
+    4  5 6  7
+The Lowest Common Ancestor (LCA) of 4 and 5 is 2.
+Distance from 2 to 4 is 1, and from 2 to 5 is 1.
+Total distance = 1 + 1 = 2.
+
+
+Time and Space Complexity Analysis
+Time Complexity
+Finding LCA takes O(n) in the worst case.
+Finding the distance from LCA to a and b takes O(n) in the worst case.
+Total time complexity: O(n) + O(n) = O(n).
+Space Complexity
+O(h) due to recursive calls, where h is the tree height.
+Balanced tree: O(log n)
+Skewed tree: O(n)
+Final Complexity Summary
+Case	Time Complexity	Space Complexity
+General Case	O(n)	O(h) (h = height of tree)
+Balanced Tree	O(n)	O(log n)
+Skewed Tree	O(n)	O(n)
+

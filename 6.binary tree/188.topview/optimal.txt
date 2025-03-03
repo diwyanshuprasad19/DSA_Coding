@@ -1,0 +1,139 @@
+Ques:https://leetcode.com/discuss/general-discussion/1778994/top-view-in-binary-tree-c-easy-code
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Structure for a binary tree node
+struct Node
+{
+    int data;
+    Node *left, *right;
+};
+
+// Function to return the top view of the binary tree
+vector<int> topView(Node *root)
+{
+    queue<pair<Node *, int>> q;
+    map<int, int> m; // Map to store vertical level and first occurring node
+    q.push({root, 0});
+    vector<int> ans;
+
+    while (!q.empty())
+    {
+        auto i = q.front();
+        q.pop();
+        Node *curr = i.first;
+        int vertical = i.second;
+
+        // If vertical level is encountered for the first time, store it
+        if (m.find(vertical) == m.end())
+            m[vertical] = curr->data;
+
+        if (curr->left != NULL)
+            q.push({curr->left, vertical - 1});
+        if (curr->right != NULL)
+            q.push({curr->right, vertical + 1});
+    }
+
+    // Extract values from the map in sorted order of vertical levels
+    for (auto i : m)
+        ans.push_back(i.second);
+
+    return ans;
+}
+
+
+
+Time and space comeplxity:
+Time Complexity Analysis:
+BFS Traversal (Queue Operations)
+
+Each node is enqueued and dequeued once → 
+𝑂
+(
+𝑁
+)
+O(N)
+Insertion into map<int, int>
+
+The map stores at most 
+𝑁
+N vertical levels.
+Each insertion/search in the map takes 
+𝑂
+(
+log
+⁡
+𝑁
+)
+O(logN).
+Since each node is inserted once, total map operations take 
+𝑂
+(
+𝑁
+log
+⁡
+𝑁
+)
+O(NlogN).
+Extracting Values from the Map
+
+Iterating through the map to extract values → 
+𝑂
+(
+𝑁
+)
+O(N).
+Total Time Complexity:
+𝑂
+(
+𝑁
+log
+⁡
+𝑁
+)
+O(NlogN)
+(Due to map insertions being 
+𝑂
+(
+log
+⁡
+𝑁
+)
+O(logN) for each of the 
+𝑁
+N nodes)
+
+Space Complexity Analysis:
+Queue Storage:
+
+In the worst case (for a skewed tree), queue stores up to 
+𝑂
+(
+𝑁
+)
+O(N) elements.
+Map Storage:
+
+The map holds at most 
+𝑂
+(
+𝑁
+)
+O(N) key-value pairs (one for each vertical level).
+Result Vector Storage (ans):
+
+Stores 
+𝑂
+(
+𝑁
+)
+O(N) elements.
+Total Space Complexity:
+𝑂
+(
+𝑁
+)
+O(N)

@@ -1,0 +1,59 @@
+Ques:https://www.geeksforgeeks.org/survival/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int minimumDays(int S, int N, int M) {
+    int s = S / 7;        // Number of Sundays when the shop is closed
+    int remain = S - s;   // Days when we can buy food
+    int total = S * M;    // Total food required to survive
+    int buy = 0;
+
+    // Calculate the minimum number of days to buy food
+    if (total % N != 0) {
+        buy = (total / N) + 1; // If not exact, buy an extra day
+    } else {
+        buy = total / N;
+    }
+
+    // Check if it's possible to buy the required food in available days
+    if (buy <= remain)
+        return buy;
+    else
+        return -1;  // Not possible to survive
+}
+
+int main() {
+    int S = 10, N = 16, M = 2;  // Example input
+    cout << "Minimum days required: " << minimumDays(S, N, M) << endl;
+    return 0;
+}
+
+
+Time and space complexity:
+Explanation:
+Calculate the number of Sundays (s)
+Since the shop is closed on Sundays, we calculate s = S / 7.
+Find the number of days the shop is open (remain)
+remain = S - s (total days minus Sundays).
+Calculate total food requirement (total)
+total = S * M (total days * food required per day).
+Determine the minimum number of days needed to buy food (buy)
+If total is not exactly divisible by N, we need an extra day.
+Check if it's possible to survive
+If buy is within remain, return buy, otherwise return -1.
+Time and Space Complexity:
+Time Complexity: 
+𝑂
+(
+1
+)
+O(1) (constant operations)
+Space Complexity: 
+𝑂
+(
+1
+)
+O(1) (only a few integer variables)

@@ -1,0 +1,68 @@
+Ques: https://leetcode.com/problems/invert-binary-tree/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a binary tree node
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+class Solution {
+public:
+    // Function to mirror (invert) a binary tree
+    void mirror(TreeNode* node) {
+        if (node == NULL) return;
+        
+        // Recursively invert left and right subtrees
+        mirror(node->left);
+        mirror(node->right);
+
+        // Swap left and right children
+        TreeNode* temp = node->right;
+        node->right = node->left;
+        node->left = temp;
+    }
+
+    // Wrapper function to invert a binary tree
+    TreeNode* invertTree(TreeNode* root) {
+        mirror(root);
+        return root;
+    }
+};
+
+// Example usage
+int main() {
+    TreeNode* root = new TreeNode(4);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(7);
+    root->left->left = new TreeNode(1);
+    root->left->right = new TreeNode(3);
+    root->right->left = new TreeNode(6);
+    root->right->right = new TreeNode(9);
+
+    Solution sol;
+    TreeNode* invertedRoot = sol.invertTree(root);
+
+    cout << "Tree has been inverted!" << endl;
+    return 0;
+}
+
+
+Time and Space Complexity Analysis
+Time Complexity
+The function visits each node exactly once and swaps its left and right children.
+Since there are n nodes in the tree, the total time complexity is O(n).
+Space Complexity
+The function uses recursion, and the recursive call stack takes space O(h), where h is the height of the tree.
+Best case (balanced tree): O(log n)
+Worst case (skewed tree): O(n) (if the tree is completely unbalanced)
+Final Complexity Summary
+Case	Time Complexity	Space Complexity
+General Case	O(n)	O(h) (h = height of the tree)
+Balanced Tree	O(n)	O(log n)
+Skewed Tree	O(n)	O(n)

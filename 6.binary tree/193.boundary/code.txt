@@ -1,0 +1,159 @@
+Ques:
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Structure for a binary tree node
+struct Node
+{
+    int data;
+    Node *left, *right;
+};
+
+// Function to check if a node is a leaf node
+bool isLeaf(Node *root)
+{
+    return (root->left == NULL && root->right == NULL);
+}
+
+// Function to add left boundary (excluding leaves)
+void left(Node *root, vector<int> &ans)
+{
+    Node *temp = root->left;
+    while (temp != NULL)
+    {
+        if (!isLeaf(temp))
+            ans.push_back(temp->data);
+        if (temp->left != NULL)
+            temp = temp->left;
+        else
+            temp = temp->right;
+    }
+}
+
+// Function to add all leaf nodes (both left and right subtrees)
+void leaf(Node *root, vector<int> &ans)
+{
+    if (isLeaf(root))
+    {
+        ans.push_back(root->data);
+        return;
+    }
+    if (root->left != NULL)
+        leaf(root->left, ans);
+    if (root->right != NULL)
+        leaf(root->right, ans);
+}
+
+// Function to add right boundary (excluding leaves, in reverse order)
+void right(Node *root, vector<int> &ans)
+{
+    Node *temp = root->right;
+    vector<int> res;
+    while (temp != NULL)
+    {
+        if (!isLeaf(temp))
+            res.push_back(temp->data);
+        if (temp->right != NULL)
+            temp = temp->right;
+        else
+            temp = temp->left;
+    }
+
+    // Adding right boundary in reverse order
+    for (int i = res.size() - 1; i >= 0; i--)
+    {
+        ans.push_back(res[i]);
+    }
+}
+
+// Function to return boundary traversal of a binary tree
+vector<int> boundary(Node *root)
+{
+    vector<int> ans;
+    if (root == NULL)
+        return ans;
+
+    if (!isLeaf(root)) // Add root if it's not a leaf
+        ans.push_back(root->data);
+
+    left(root, ans);  // Add left boundary
+    leaf(root, ans);  // Add leaf nodes
+    right(root, ans); // Add right boundary
+
+    return ans;
+}
+
+
+Time and sapce comepxlity:
+
+
+Time Complexity Analysis:
+Left Boundary Traversal:
+
+Traverses the left boundary 
+𝑂
+(
+𝐻
+)
+O(H).
+Leaf Node Traversal:
+
+Visits all leaf nodes 
+𝑂
+(
+𝑁
+)
+O(N).
+Right Boundary Traversal:
+
+Traverses the right boundary 
+𝑂
+(
+𝐻
+)
+O(H).
+Total Time Complexity:
+𝑂
+(
+𝑁
+)
+O(N)
+(Since every node is visited at most once)
+
+Space Complexity Analysis:
+Recursive Calls for Leaf Traversal:
+𝑂
+(
+𝐻
+)
+O(H) (for recursion stack in worst case).
+Vectors for Boundary Nodes:
+𝑂
+(
+𝑁
+)
+O(N) for storing traversal result.
+Total Space Complexity:
+𝑂
+(
+𝑁
+)
+O(N)
+(For result storage and recursion stack)
+
+Final Complexity Summary:
+Time Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)
+Space Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)

@@ -1,0 +1,67 @@
+Ques:https://www.youtube.com/watch?v=wuVwUK25Rfc
+
+Code:
+    bool possible(int currcolor,bool graph[101][101],vector<int> &color,int m, int n,int currnode)
+    {
+        for(int k=0;k<n;k++)
+        {
+            if(k!=currnode && graph[k][currnode]==1 && color[k]==currcolor)
+            return false;
+        }
+        return true;
+    }
+    
+      bool solve(int currnode,bool graph[101][101],vector<int> &color,int m, int n)
+        {
+            if(currnode==n)
+            return true;
+            for(int i=1;i<=m;i++)
+            {
+                if(possible(i,graph,color,m,n,currnode))
+                {
+                    color[currnode]=i;
+                    if(solve(currnode+1,graph,color,m,n))return true;
+                    color[currnode]=0;
+                }
+            }
+            return false;
+        }
+    
+    
+    bool graphColoring(bool graph[101][101], int m, int n) {
+        //m=color 0 to m
+        //n=number of nodes.
+        vector<int> color(n,0);
+        if(solve(0,graph,color,m,n)) return true;
+        return false;
+    }
+
+
+Expected Time Complexity: O(m^V): see beacuse each color is check for each vertex for possible solve 
+Expected Auxiliary Space: O(v^2)
+
+Color Array:
+
+The color array holds the current color assignment for each node, and its size is n. So, it requires O(n) space.
+Recursion Stack:
+
+In the worst case, the recursion depth can be as large as n (since we are processing one node at a time). Therefore, the recursion stack requires O(n) space.
+Adjacency Matrix:
+
+The adjacency matrix graph[101][101] is a 2D array of size n × n, where n is the number of nodes. Therefore, it takes O(n^2) space.
+Total Auxiliary Space Complexity:
+
+The auxiliary space is dominated by the adjacency matrix, which is O(n^2), and the space required for the recursion stack and the color array, which are both O(n).
+
+Final Space Complexity:
+
+𝑂
+(
+𝑛
+2
+)
+O(n 
+2
+ )
+
+ 

@@ -1,0 +1,227 @@
+Ques and code: https://medium.com/@kavyanilipalli/construct-binary-tree-from-preorder-and-postorder-traversal-leetcode-889-e0509e9279ff
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a binary tree node
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+
+    // Constructor to initialize a new node
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+class Solution {
+public:
+    int preIndex = 0, posIndex = 0;
+
+    // Function to construct the binary tree from preorder and postorder traversal
+    TreeNode* constructFromPrePost(vector<int>& preorder, vector<int>& postorder) {
+        TreeNode* root = new TreeNode(preorder[preIndex++]);
+
+        if (root->val != postorder[posIndex]) {
+            root->left = constructFromPrePost(preorder, postorder);
+        }
+        if (root->val != postorder[posIndex]) {
+            root->right = constructFromPrePost(preorder, postorder);
+        }
+
+        posIndex++; // Move postorder index forward
+        return root;
+    }
+};
+
+// Utility function to print the tree in preorder
+void preorderTraversal(TreeNode* root) {
+    if (root == NULL) return;
+    cout << root->val << " ";
+    preorderTraversal(root->left);
+    preorderTraversal(root->right);
+}
+
+// Driver code to test the function
+int main() {
+    vector<int> preorder = {1, 2, 4, 5, 3, 6, 7};
+    vector<int> postorder = {4, 5, 2, 6, 7, 3, 1};
+
+    Solution sol;
+    TreeNode* root = sol.constructFromPrePost(preorder, postorder);
+
+    cout << "Preorder traversal of constructed tree: ";
+    preorderTraversal(root);
+    cout << endl;
+
+    return 0;
+}
+
+Time and space Complexity:
+
+Time Complexity Analysis:
+Each Node is Visited Once:
+
+𝑂
+(
+𝑁
+)
+O(N) where 
+𝑁
+N is the number of nodes.
+Total Recursion Calls:
+
+𝑂
+(
+𝑁
+)
+O(N) (each node processed once).
+Total Time Complexity:
+𝑂
+(
+𝑁
+)
+O(N)
+(Since each node is processed once)
+
+Space Complexity Analysis:
+Recursive Stack Storage:
+𝑂
+(
+𝐻
+)
+O(H) where 
+𝐻
+H is the tree height.
+Worst case (skewed tree) → 
+𝑂
+(
+𝑁
+)
+O(N).
+Best case (balanced tree) → 
+𝑂
+(
+log
+⁡
+𝑁
+)
+O(logN).
+Total Space Complexity:
+
+𝑂
+(
+𝑁
+)
+O(N)
+(For recursion stack)
+
+Final Complexity Summary:
+Time Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)
+Space Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)
+
+
+
+Explaination:
+Explanation of constructFromPrePost with a Real-Time Example
+Let's consider the following Preorder and Postorder traversals of a Full Binary Tree:
+
+Given Traversals:
+Preorder (Root → Left → Right):
+
+csharp
+Copy
+Edit
+[1, 2, 4, 5, 3, 6, 7]
+Postorder (Left → Right → Root):
+
+csharp
+Copy
+Edit
+[4, 5, 2, 6, 7, 3, 1]
+Step-by-Step Construction of the Binary Tree
+Step 1: Start with the root
+
+preIndex = 0 → Pick 1 from preorder as the root.
+Create a node: root = TreeNode(1).
+postorder[posIndex] = 4, which is not equal to 1, so construct left subtree.
+Step 2: Construct Left Subtree of 1
+
+preIndex = 1 → Pick 2 from preorder as left child of 1.
+Create root->left = TreeNode(2).
+postorder[posIndex] = 4, which is not equal to 2, so construct left subtree of 2.
+Step 3: Construct Left Subtree of 2
+
+preIndex = 2 → Pick 4 from preorder as left child of 2.
+Create root->left->left = TreeNode(4).
+postorder[posIndex] = 4, which matches 4, so increment posIndex (move to next element in postorder).
+Step 4: Construct Right Subtree of 2
+
+preIndex = 3 → Pick 5 from preorder as right child of 2.
+Create root->left->right = TreeNode(5).
+postorder[posIndex] = 5, which matches 5, so increment posIndex.
+Step 5: Finish Subtree of 2
+
+postorder[posIndex] = 2, which matches 2, so increment posIndex.
+The left subtree of 1 is fully constructed:
+markdown
+Copy
+Edit
+    1
+   /
+  2
+ / \
+4   5
+Step 6: Construct Right Subtree of 1
+
+preIndex = 4 → Pick 3 from preorder as right child of 1.
+Create root->right = TreeNode(3).
+postorder[posIndex] = 6, which is not equal to 3, so construct left subtree of 3.
+Step 7: Construct Left Subtree of 3
+
+preIndex = 5 → Pick 6 from preorder as left child of 3.
+Create root->right->left = TreeNode(6).
+postorder[posIndex] = 6, which matches 6, so increment posIndex.
+Step 8: Construct Right Subtree of 3
+
+preIndex = 6 → Pick 7 from preorder as right child of 3.
+Create root->right->right = TreeNode(7).
+postorder[posIndex] = 7, which matches 7, so increment posIndex.
+Step 9: Finish Subtree of 3
+
+postorder[posIndex] = 3, which matches 3, so increment posIndex.
+The right subtree of 1 is fully constructed:
+markdown
+Copy
+Edit
+    1
+   / \
+  2   3
+ / \  / \
+4   5 6  7
+Step 10: Finish the Tree
+
+postorder[posIndex] = 1, which matches 1, so increment posIndex.
+Construction is complete!
+Final Binary Tree Constructed:
+markdown
+Copy
+Edit
+        1
+       / \
+      2   3
+     / \  / \
+    4   5 6  7
+Final Values of preIndex and posIndex:
+preIndex = 7 (processed all elements in preorder).
+posIndex = 7 (processed all elements in postorder).

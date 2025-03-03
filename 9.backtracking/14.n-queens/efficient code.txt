@@ -1,0 +1,117 @@
+    ques: https://leetcode.com/problems/n-queens/description/
+
+    sol:https://www.youtube.com/watch?v=i05Ju7AftcM
+
+    code:
+    
+    bool isSafe(int row,int col,vector<string> &fill,int n)
+    {
+        //can only check left ,upward and downward left diagnol
+        int duprow=row;
+        int dupcol=col;
+        //upward diagnol
+        while(row>=0 && col>=0)
+        {
+            if(fill[row][col]=='Q')return false;
+            row--;
+            col--;
+        }
+        //left check
+        int duprow=row;
+        int dupcol=col;
+        while(col>=0 && row>=0)
+        {
+            if(fill[row][col]=='Q')return false;
+            col--;
+        }
+        //downward left check
+        int duprow=row;
+        int dupcol=col;
+        while (row < n && col >= 0) {  // Fix condition for downward-left diagonal
+        if (fill[row][col] == 'Q') return false;
+        row++;
+        col--;
+    }
+        return true;
+    }
+    
+    
+    void solve(int col,vector<vector<string>> &ans,vector<string> &fill,int n)
+    {
+        if(col ==n)
+        {
+            ans.push_back(fill);
+            return;
+        }
+        for(int row=0;row<n;row++)
+        {
+            if(isSafe(row,col,fill,n))
+            {
+                  fill[row][col]='Q';
+                solve(col+1,ans,fill,n);
+                fill[row][col]='.';
+            }
+           
+            
+        }
+    }
+    
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> ans;
+        vector<string> fill;
+        string s(n,'.');
+        for(int i=0;i<n;i++)
+        {
+            fill.push_back(s);
+        }
+        solve(0,ans,fill,n);
+        return ans;
+    }
+
+all possilb esolutions:
+[
+    [".Q..",
+     "...Q",
+     "Q...",
+     "..Q."],
+
+    ["..Q.",
+     "Q...",
+     "...Q",
+     ".Q.."]
+]
+
+Time and space compelxity:
+Time Complexity: O(n!)
+2. Total Number of Possibilities:
+First column (col 1): You can place the queen in any of the n rows.
+Second column (col 2): You can place the queen in any of the n rows, but you must avoid the row in which the first queen is placed (since they can't share the same row). Therefore, there are n - 1 possible choices.
+Third column (col 3): You must avoid both the row of the first queen and the row of the second queen, so there are n - 2 choices.
+This pattern continues for all subsequent columns.
+So, in the worst case, you try placing queens in all possible positions in each column.
+
+The total number of recursive calls made by the backtracking algorithm is the product of available choices for each column, which is:
+
+𝑛
+×
+(
+𝑛
+−
+1
+)
+×
+(
+𝑛
+−
+2
+)
+×
+…
+×
+1
+=
+𝑛
+!
+n×(n−1)×(n−2)×…×1=n!
+
+Auxiliary Space: O(n^2)

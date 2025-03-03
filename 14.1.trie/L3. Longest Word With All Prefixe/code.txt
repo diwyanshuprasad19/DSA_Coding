@@ -1,0 +1,197 @@
+Sol:
+
+Code:
+
+struct Node {
+    Node *links[26]; 
+    bool flag = false; 
+    
+    bool containsKey(char ch) {
+        return (links[ch - 'a'] != NULL); 
+    }
+    Node* get(char ch) {
+        return links[ch-'a']; 
+    }
+    void put(char ch, Node* node) {
+        links[ch-'a'] = node; 
+    }
+    void setEnd() {
+        flag = true; 
+    }
+    bool isEnd() {
+        return flag; 
+    }
+}; 
+class Trie {
+    private: Node *root; 
+public:
+    /** Initialize your data structure here. */
+    Trie() {
+        root = new Node(); 
+    }
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        Node *node = root;
+        for(int i = 0;i<word.size();i++) {
+            if(!node->containsKey(word[i])) {
+                node->put(word[i], new Node()); 
+            }
+            node = node->get(word[i]); 
+        }
+        node->setEnd(); 
+    }
+    bool checkIfAllPrefixExists(string word) {
+        Node *node = root;
+        bool flag = true; 
+        for(int i = 0;i<word.size();i++) {
+            if(node->containsKey(word[i])) {
+                node = node->get(word[i]); 
+                flag = flag & node->isEnd(); 
+            }
+            else {
+                return false; 
+            } 
+        }
+        return flag; 
+    }
+};
+string completeString(int n, vector<string> &a){
+    Trie* obj = new Trie();
+    for(auto word : a) obj->insert(word); 
+    string longest = ""; 
+    for(auto word: a) {
+        if(obj->checkIfAllPrefixExists(word)) {
+            if(word.size() > longest.size()) {
+                longest = word; 
+            }
+            else if(word.size() == longest.size() && word < longest) {
+                longest = word; 
+            }
+        }
+    }
+    if(longest == "") return "None"; 
+    return longest; 
+}
+
+Time and space complexity:
+1. Insert Operation (insert(string word))
+Each word has a length of L, and we iterate over each character.
+At each step, we check and create a new node if needed (O(1) operation).
+Time Complexity: 
+𝑂
+(
+𝐿
+)
+O(L)
+Space Complexity: 
+𝑂
+(
+𝐿
+)
+O(L) per word, leading to total space complexity of 
+𝑂
+(
+𝑁
+×
+𝐿
+)
+O(N×L) for N words.
+2. Checking If All Prefixes Exist (checkIfAllPrefixExists(string word))
+We traverse the Trie for the given word.
+Takes at most L steps.
+Time Complexity: 
+𝑂
+(
+𝐿
+)
+O(L)
+Space Complexity: 
+𝑂
+(
+1
+)
+O(1) (no extra space used apart from function calls).
+3. Finding the Longest Word (completeString(n, vector<string> &a))
+We iterate over all N words.
+For each word, we call checkIfAllPrefixExists(), which takes 
+𝑂
+(
+𝐿
+)
+O(L).
+Time Complexity: 
+𝑂
+(
+𝑁
+×
+𝐿
+)
+O(N×L)
+Space Complexity: 
+𝑂
+(
+𝑁
+×
+𝐿
+)
+O(N×L) for Trie storage.
+Overall Complexity Summary
+Operation	Time Complexity	Space Complexity
+Insert word	
+𝑂
+(
+𝐿
+)
+O(L)	
+𝑂
+(
+𝑁
+×
+𝐿
+)
+O(N×L)
+Check If All Prefixes Exist	
+𝑂
+(
+𝐿
+)
+O(L)	
+𝑂
+(
+1
+)
+O(1)
+Find Longest Word	
+𝑂
+(
+𝑁
+×
+𝐿
+)
+O(N×L)	
+𝑂
+(
+𝑁
+×
+𝐿
+)
+O(N×L)
+Final Complexity for completeString()
+
+Time Complexity: 
+𝑂
+(
+𝑁
+×
+𝐿
+)
+O(N×L) for inserting and checking each word.
+Space Complexity: 
+𝑂
+(
+𝑁
+×
+𝐿
+)
+O(N×L) due to Trie storage

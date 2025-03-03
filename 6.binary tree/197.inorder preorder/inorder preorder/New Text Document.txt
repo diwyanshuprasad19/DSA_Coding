@@ -1,0 +1,164 @@
+Ques:
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Structure for a binary tree node
+struct Node {
+    int data;
+    Node *left, *right;
+
+    // Constructor to initialize a new node
+    Node(int x) : data(x), left(NULL), right(NULL) {}
+};
+
+class Solution {
+public:
+    int id = 0;
+    unordered_map<int, int> m;
+
+    // Helper function to recursively build the tree
+    Node* solve(int pre[], int in[], int lb, int ub) {
+        if (lb > ub) return NULL;
+
+        // Create a new node with the current preorder index value
+        Node* res = new Node(pre[id++]);
+
+        // If it's a leaf node, return it
+        if (lb == ub) return res;
+
+        // Find the index of this node in the inorder traversal
+        int mid = m[res->data];
+
+        // Construct left and right subtrees recursively
+        res->left = solve(pre, in, lb, mid - 1);
+        res->right = solve(pre, in, mid + 1, ub);
+
+        return res;
+    }
+
+    // Function to build tree from inorder and preorder arrays
+    Node* buildTree(int in[], int pre[], int n) {
+        id = 0;
+        m.clear();
+
+        // Store inorder indices in hashmap for quick lookup
+        for (int i = 0; i < n; i++) {
+            m[in[i]] = i;
+        }
+
+        return solve(pre, in, 0, n - 1);
+    }
+};
+
+// Utility function to print the tree in preorder
+void preorder(Node* root) {
+    if (root == NULL) return;
+    cout << root->data << " ";
+    preorder(root->left);
+    preorder(root->right);
+}
+
+// Driver code to test the function
+int main() {
+    int inorder[] = {9, 3, 15, 20, 7};
+    int preorder[] = {3, 9, 20, 15, 7};
+    int n = sizeof(inorder) / sizeof(inorder[0]);
+
+    Solution sol;
+    Node* root = sol.buildTree(inorder, preorder, n);
+
+    cout << "Preorder traversal of constructed tree: ";
+    preorder(root);
+    cout << endl;
+
+    return 0;
+}
+
+
+TIme and sapce complexity:
+
+Time Complexity Analysis:
+Each Node is Visited Once:
+
+𝑂
+(
+𝑁
+)
+O(N) where 
+𝑁
+N is the number of nodes.
+Finding Index in Inorder Array:
+
+Uses unordered_map, which provides O(1) lookup.
+Total Recursion Calls:
+
+𝑂
+(
+𝑁
+)
+O(N) (each node processed once).
+Total Time Complexity:
+𝑂
+(
+𝑁
+)
+O(N)
+(Since each node is processed once)
+
+Space Complexity Analysis:
+Recursive Stack Storage:
+
+𝑂
+(
+𝐻
+)
+O(H) where 
+𝐻
+H is the tree height.
+Worst case (skewed tree) → 
+𝑂
+(
+𝑁
+)
+O(N).
+Best case (balanced tree) → 
+𝑂
+(
+log
+⁡
+𝑁
+)
+O(logN).
+HashMap Storage (unordered_map<int, int>)
+
+Stores 
+𝑂
+(
+𝑁
+)
+O(N) entries (for quick index lookup).
+Total Space Complexity:
+
+𝑂
+(
+𝑁
+)
+O(N)
+(For recursion stack and hash map storage)
+
+Final Complexity Summary:
+Time Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)
+Space Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)

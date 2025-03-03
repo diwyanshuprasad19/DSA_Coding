@@ -1,0 +1,81 @@
+Ques: https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/description/ 
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a binary tree node.
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+// Function to construct BST from sorted array
+TreeNode* construct(vector<int>& nums, int s, int e) {
+    if (s > e) {
+        return nullptr;
+    }
+    int mid = s + (e - s) / 2;
+    TreeNode* root = new TreeNode(nums[mid]);
+    root->left = construct(nums, s, mid - 1);
+    root->right = construct(nums, mid + 1, e);
+    return root;
+}
+
+TreeNode* sortedArrayToBST(vector<int>& nums) {
+    return construct(nums, 0, nums.size() - 1);
+}
+
+// Definition for a binary tree node used in BinaryTree to BST conversion
+struct Node {
+    int data;
+    Node *left, *right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+// Helper function to perform inorder traversal and store values
+void inorder(Node* root, vector<int>& v) {
+    if (root == NULL) return;
+    inorder(root->left, v);
+    v.push_back(root->data);
+    inorder(root->right, v);
+}
+
+// Helper function to convert Binary Tree to BST using sorted values
+void bst(Node* root, vector<int> v, int &i) {
+    if (root == NULL) return;
+    bst(root->left, v, i);
+    root->data = v[i];
+    i++;
+    bst(root->right, v, i);
+}
+
+// Function to convert a Binary Tree to a BST
+Node *binaryTreeToBST(Node *root) {
+    vector<int> v;
+    inorder(root, v);
+    sort(v.begin(), v.end());
+    int i = 0;
+    bst(root, v, i);
+    return root;
+}
+
+
+
+Time Complexity:
+
+inorder(root, v): Takes O(n) to store elements in the array.
+sort(v.begin(), v.end()): Takes O(n log n) for sorting.
+bst(root, v, i): Takes O(n) to assign sorted values back to the tree.
+Overall Time Complexity: O(n log n) (due to sorting).
+Space Complexity:
+
+vector<int> v stores all n elements, so it takes O(n).
+The recursion stack for inorder traversal and bst assignment both take O(log n) (for a balanced tree) or O(n) (for a skewed tree).
+Overall Space Complexity: O(n) (for storing values).
+Final Summary
+Function	Time Complexity	Space Complexity
+sortedArrayToBST	O(n)	O(log n)
+binaryTreeToBST	O(n log n)	O(n)

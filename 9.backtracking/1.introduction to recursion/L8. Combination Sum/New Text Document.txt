@@ -1,0 +1,62 @@
+ Ques:https://leetcode.com/problems/combination-sum/description/
+
+ sol:
+
+    void solve(int index,int target,vector<int>& candidates,vector<vector<int>> &ans,vector<int> &store)
+    {
+        if(index==candidates.size())
+        {
+            if(target==0)
+                ans.push_back(store);
+                return;
+        }
+        if(candidates[index]<=target)
+        {
+            store.push_back(candidates[index]);
+            solve(index,target-candidates[index],candidates,ans,store);
+            store.pop_back();
+        }
+        solve(index+1,target,candidates,ans,store);
+    }
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> ans;
+        vector<int> store;
+        solve(0,target,candidates,ans,store);
+        return ans;
+    }
+
+Time and space:
+TC:
+The backtracking solution explores all potential combinations of candidates that sum to the target. If there are n candidates, and at each level, the choice can branch out, the time complexity is O(2^n) in the worst case.
+
+However, a more accurate complexity estimation depends on the total number of valid combinations found. For this problem, the time complexity can be written as:
+
+𝑂
+(
+2
+𝑛
+⋅
+𝑘
+)
+O(2 
+n
+ ⋅k)
+where:
+
+n is the number of candidates.
+k is the average size of a combination.
+
+
+Sc:
+Space Complexity
+Call Stack:
+
+The maximum depth of the recursion stack is proportional to the number of candidates (n) in the worst case.
+In the worst case, the maximum recursion depth is O(n) because we are recursively processing each candidate in the list (including or excluding).
+Auxiliary Space:
+
+The store vector holds the current combination, and at its maximum, it can hold up to k elements (where k is the size of the longest combination).
+The ans vector holds the list of all combinations. In the worst case, if we generate all possible combinations, the space required to store them is O(2^n * k) (in terms of storing all combinations).
+Total Space Complexity: The total space complexity will be the sum of:
+
+Space for the recursion call stack: O(n)

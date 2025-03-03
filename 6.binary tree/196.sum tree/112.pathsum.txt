@@ -1,0 +1,147 @@
+Ques:https://www.geeksforgeeks.org/root-to-leaf-path-sum-equal-to-a-given-number/
+
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Structure for a binary tree node
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+
+    // Constructor to initialize a new node
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+// Helper function to perform DFS and check path sum
+bool depthFirstSearch(TreeNode* node, int sum, int targetSum) {
+    if (node == NULL)
+        return false;
+
+    sum += node->val;
+
+    // If leaf node, check if sum equals targetSum
+    if (node->left == NULL && node->right == NULL)
+        return sum == targetSum;
+
+    // Recursively check left and right subtrees
+    return depthFirstSearch(node->left, sum, targetSum) || depthFirstSearch(node->right, sum, targetSum);
+}
+
+// Function to check if there is a root-to-leaf path with the given target sum
+bool hasPathSum(TreeNode* root, int targetSum) {
+    return depthFirstSearch(root, 0, targetSum);
+}
+
+// Driver function to test the implementation
+int main() {
+    // Constructing a sample binary tree:
+    //       5
+    //      / \
+    //     4   8
+    //    /   / \
+    //   11  13  4
+    //  /  \      \
+    // 7    2      1
+    TreeNode* root = new TreeNode(5);
+    root->left = new TreeNode(4);
+    root->right = new TreeNode(8);
+    root->left->left = new TreeNode(11);
+    root->left->left->left = new TreeNode(7);
+    root->left->left->right = new TreeNode(2);
+    root->right->left = new TreeNode(13);
+    root->right->right = new TreeNode(4);
+    root->right->right->right = new TreeNode(1);
+
+    int targetSum = 22;
+    cout << (hasPathSum(root, targetSum) ? "True" : "False") << endl; // Expected Output: True
+
+    return 0;
+}
+
+
+Time and space comeplxity:
+Time Complexity Analysis:
+Each Node is Visited Once:
+
+Performs a Depth-First Search (DFS).
+𝑂
+(
+𝑁
+)
+O(N) where 
+𝑁
+N is the number of nodes.
+Summation and Comparison:
+
+Each node’s value is added to sum in 
+𝑂
+(
+1
+)
+O(1).
+Total Time Complexity:
+𝑂
+(
+𝑁
+)
+O(N)
+(Since each node is processed once)
+
+Space Complexity Analysis:
+Recursive Stack Storage:
+
+𝑂
+(
+𝐻
+)
+O(H) where 
+𝐻
+H is the height of the tree.
+Worst case (skewed tree) → 
+𝑂
+(
+𝑁
+)
+O(N).
+Best case (balanced tree) → 
+𝑂
+(
+log
+⁡
+𝑁
+)
+O(logN).
+No Extra Data Structures Used:
+
+Only recursion stack is utilized.
+Total Space Complexity:
+
+𝑂
+(
+𝐻
+)
+O(H)
+(For recursion stack)
+
+Final Complexity Summary:
+Time Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)
+Space Complexity: 
+𝑂
+(
+𝐻
+)
+O(H) (where 
+𝐻
+H is tree height)
+
+
+
+Time and space Complexity:

@@ -1,0 +1,176 @@
+Ques:https://www.geeksforgeeks.org/program-for-shortest-job-first-or-sjf-cpu-scheduling-set-1-non-preemptive/
+
+Sol:https://www.youtube.com/watch?v=3-QbX1iDbXs
+
+Non-Preemptive vs Preemptive Scheduling:
+CPU scheduling can be categorized into Non-Preemptive and Preemptive types based on how processes are handled when a new process arrives.
+
+1️⃣ Non-Preemptive Scheduling
+Once a process starts execution, it cannot be interrupted until it finishes or moves to a waiting state (like I/O).
+The CPU stays with the current process even if a shorter or higher-priority process arrives.
+Suitable for batch processing systems where task completion is the priority.
+Examples:
+Shortest Job First (SJF) - Non-Preemptive
+First Come First Serve (FCFS)
+Priority Scheduling (Non-Preemptive)
+Example (Non-Preemptive SJF):
+yaml
+Copy
+Edit
+Processes: P1, P2, P3
+Arrival Times: 0, 2, 4
+Burst Times: 6, 2, 8
+
+Execution Order: P1 → P2 → P3
+Once P1 starts execution, even though P2 arrives, it has to wait until P1 finishes.
+
+2️⃣ Preemptive Scheduling
+A running process can be interrupted if a new process with a shorter burst time or higher priority arrives.
+The CPU switches between processes based on scheduling criteria.
+Used in real-time systems where quick response time is needed.
+Examples:
+Shortest Remaining Time First (SRTF) (Preemptive SJF)
+Round Robin (RR)
+Priority Scheduling (Preemptive)
+Multilevel Queue Scheduling
+Example (Preemptive SJF - Shortest Remaining Time First)
+yaml
+Copy
+Edit
+Processes: P1, P2, P3
+Arrival Times: 0, 2, 4
+Burst Times: 6, 2, 8
+
+Execution Order: P1 → P2 (Interrupts P1) → P1 → P3
+At time 2, P2 arrives with a burst time of 2, so it preempts P1, finishes first, then P1 resumes execution.
+
+
+
+
+Code:
+
+#include <iostream>
+using namespace std;
+
+int main() {
+
+	// Matrix for storing Process Id, Burst
+	// Time, Average Waiting Time & Average
+	// Turn Around Time.
+	int A[100][4];
+	int i, j, n, total = 0, index, temp;
+	float avg_wt, avg_tat;
+
+	cout << "Enter number of process: ";
+	cin >> n;
+
+	cout << "Enter Burst Time:" << endl;
+
+	// User Input Burst Time and alloting Process Id.
+	for (i = 0; i < n; i++) {
+		cout << "P" << i + 1 << ": ";
+		cin >> A[i][1];
+		A[i][0] = i + 1;
+	}
+
+	// Sorting process according to their Burst Time.
+	for (i = 0; i < n; i++) {
+		index = i;
+		for (j = i + 1; j < n; j++)
+			if (A[j][1] < A[index][1])
+				index = j;
+		temp = A[i][1];
+		A[i][1] = A[index][1];
+		A[index][1] = temp;
+
+		temp = A[i][0];
+		A[i][0] = A[index][0];
+		A[index][0] = temp;
+	}
+
+	A[0][2] = 0;
+	// Calculation of Waiting Times
+	for (i = 1; i < n; i++) {
+		A[i][2] = 0;
+		for (j = 0; j < i; j++)
+			A[i][2] += A[j][1];
+		total += A[i][2];
+	}
+
+	avg_wt = (float)total / n;
+	total = 0;
+	cout << "P	 BT	 WT	 TAT" << endl;
+
+	// Calculation of Turn Around Time and printing the
+	// data.
+	for (i = 0; i < n; i++) {
+		A[i][3] = A[i][1] + A[i][2];
+		total += A[i][3];
+		cout << "P" << A[i][0] << "	 " << A[i][1] << "	 " << A[i][2] << "	 " << A[i][3] << endl;
+	}
+
+	avg_tat = (float)total / n;
+	cout << "Average Waiting Time= " << avg_wt << endl;
+	cout << "Average Turnaround Time= " << avg_tat << endl;
+}
+
+
+Time and space complexity:
+Time Complexity Analysis:
+The major operations in the given Shortest Job First (SJF) Non-Preemptive scheduling code are:
+
+Sorting the processes based on Burst Time
+
+The sorting step uses Selection Sort, which has a worst-case time complexity of O(n²).
+Calculating Waiting Time (WT)
+
+For each process, the waiting time is calculated using a nested loop.
+The outer loop runs O(n) times, and the inner loop contributes to a total of O(n²) operations in the worst case.
+Calculating Turnaround Time (TAT)
+
+This is done in a single pass O(n).
+Thus, the overall time complexity is:
+
+𝑂
+(
+𝑛
+2
+)
++
+𝑂
+(
+𝑛
+2
+)
++
+𝑂
+(
+𝑛
+)
+=
+𝑂
+(
+𝑛
+2
+)
+O(n 
+2
+ )+O(n 
+2
+ )+O(n)=O(n 
+2
+ )
+✅ Final Time Complexity: O(n²)
+
+Space Complexity Analysis:
+The matrix A[100][4] is used to store process ID, burst time, waiting time, and turnaround time.
+This takes O(n) space.
+A few extra integer and float variables are used, which contribute O(1) extra space.
+Thus, the overall space complexity is:
+
+𝑂
+(
+𝑛
+)
+O(n)
+✅ Final Space Complexity: O(n) (since the input matrix is the dominant space factor).

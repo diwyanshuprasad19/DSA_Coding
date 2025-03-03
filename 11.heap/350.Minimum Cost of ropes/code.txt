@@ -1,0 +1,28 @@
+Ques:https://www.geeksforgeeks.org/connect-n-ropes-minimum-cost/
+
+Code:
+    long long minCost(long long arr[], long long n) {
+        
+      priority_queue<long long,vector<long long>,greater<long long>> pq;
+      for(long long i=0;i<n;i++)
+      pq.push(arr[i]);
+      long long ans=0;
+      //queue should have 2 element
+      while(pq.size()>1)
+      {
+          long long n1=pq.top();
+          pq.pop();
+          long long n2=pq.top();
+          pq.pop();
+          long long sum=n1+n2;
+          ans+=sum;
+          pq.push(sum);
+      }
+      return ans;
+    }
+
+
+Time and sapc complexity
+
+Time Complexity: O(n log n), where n is the size of the array. Each insertion or deletion in the heap takes O(log n)
+Space Complexity: O(n), for storing all elements in the heap.

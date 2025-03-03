@@ -1,0 +1,78 @@
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node *left, *right;
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+
+vector<int> rightView(Node *root) {
+    vector<int> result;
+    if (root == NULL) return result;
+
+    queue<Node *> q;
+    q.push(root);
+
+    while (!q.empty()) {
+        int size = q.size();
+
+        // Store the last element of this level (rightmost)
+        result.push_back(q.back()->data);
+
+        for (int i = 0; i < size; i++) {
+            Node *curr = q.front();
+            q.pop();
+
+            // Push left first, then right
+            if (curr->left) q.push(curr->left);
+            if (curr->right) q.push(curr->right);
+        }
+    }
+    return result;
+}
+
+// Utility function to create a sample tree
+int main() {
+    Node *root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+    root->right->right = new Node(6);
+    root->left->left->left = new Node(7);
+
+    vector<int> rightViewNodes = rightView(root);
+    for (int val : rightViewNodes) {
+        cout << val << " ";
+    }
+
+    return 0;
+}
+
+Time and Space Complexity Analysis for Right View of a Binary Tree
+Time Complexity
+We traverse each node once, which contributes O(N).
+Each node is pushed into the queue once and popped once → O(N).
+The inner loop iterates through each level’s nodes once, leading to an overall O(N) complexity.
+✅ Final Time Complexity: O(N), where N is the number of nodes in the tree.
+
+Space Complexity
+The space complexity is determined by the following factors:
+
+Queue Storage (BFS Traversal):
+
+In the worst case (a balanced binary tree), the queue holds the maximum number of nodes at the largest level.
+The last level of a balanced tree has about N/2 nodes, so in the worst case, the queue takes O(N) space.
+Result Storage (vector<int> for right view nodes):
+
+Stores at most one node per level.
+In a balanced tree, height is O(log N).
+In a skewed tree, height is O(N).
+So, in the worst case, it takes O(N) space.
+✅ Final Space Complexity: O(N) (due to queue storage and result vector).

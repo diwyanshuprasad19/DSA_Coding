@@ -1,0 +1,70 @@
+Ques:https://www.geeksforgeeks.org/check-leaves-level/?utm_source=chatgpt.com
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a binary tree node
+struct Node {
+    int data;
+    Node *left, *right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+int f = 1; // Flag to check if all leaves are at the same level
+int l = -1; // Stores the level of the first encountered leaf
+
+// Function to check if all leaf nodes are at the same level
+void solve(Node* root, int level) {
+    if (root == NULL) return;
+
+    if (root->left == NULL && root->right == NULL) { // If it's a leaf node
+        if (l == -1) l = level; // Set first leaf level
+        else if (level != l) f = 0; // If mismatch in leaf levels, set flag to 0
+    }
+
+    solve(root->left, level + 1);
+    solve(root->right, level + 1);
+}
+
+bool check(Node *root) {
+    f = 1;
+    int level = 0;
+    solve(root, level);
+    return f;
+}
+
+// Example usage
+int main() {
+    Node* root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+    root->right->right = new Node(6);
+
+    cout << (check(root) ? "All leaves are at the same level" : "Leaves are not at the same level") << endl;
+
+    return 0;
+}
+
+
+Time and space:
+Time and Space Complexity Analysis
+Time Complexity
+The function solve(root, level) traverses all nodes once in the tree.
+Each node is visited exactly once, making the time complexity O(n), where n is the number of nodes in the tree.
+Space Complexity
+Recursive call stack:
+In the worst case (skewed tree), the recursion depth will be O(n).
+In the best case (balanced tree), the recursion depth will be O(log n).
+No extra space apart from function call stack.
+Overall space complexity: O(h), where h is the height of the tree.
+Best case: O(log n) (balanced tree)
+Worst case: O(n) (skewed tree)
+Final Complexity Summary
+Case	Time Complexity	Space Complexity
+General Case	O(n)	O(h) (h = height of the tree)
+Balanced Tree	O(n)	O(log n)
+Skewed Tree	O(n)	O(n)

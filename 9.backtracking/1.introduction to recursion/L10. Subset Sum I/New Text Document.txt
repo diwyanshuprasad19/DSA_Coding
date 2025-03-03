@@ -1,0 +1,168 @@
+QUES:https://leetcode.com/problems/subsets/description/
+
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> result;
+        vector<int> path;
+        backtrack(nums, 0, path, result);
+        return result;
+    }
+    
+    void backtrack(vector<int>& nums, int start, vector<int>& path, vector<vector<int>>& result) {
+        result.push_back(path);
+        for (int i = start; i < nums.size(); i++) {
+            path.push_back(nums[i]);
+            backtrack(nums, i + 1, path, result);
+            path.pop_back();
+        }
+    }
+};
+
+also explain subset from example:
+for getting sum:
+
+void solve(int index,int sum,vector<int> arr, int N,vector<int> & store)
+{
+    if(index==N)
+    {
+        store.push_back(sum);
+        return;
+    }
+    solve(index+1,sum+arr[index],arr,N,store);
+     solve(index+1,sum,arr,N,store);
+}
+    vector<int> subsetSums(vector<int> arr, int N)
+    {
+        vector<int> store;
+        solve(0,0,arr,N,store);
+        sort(store.begin(),store.end());
+        return store;
+    }
+
+
+
+Time Complexity Analysis:
+Recursion Structure:
+
+In each recursive call, you have two choices:
+Include the current element in the subset (add it to the sum).
+Exclude the current element from the subset (keep the sum unchanged).
+This creates a binary decision tree where at each level, you branch into two possibilities (include or exclude the element).
+Total Number of Recursive Calls:
+
+The number of recursive calls is exponential. Specifically, for N elements, there are 2^N possible subsets (since each element can either be included or excluded).
+Therefore, the recursion tree has O(2^N) nodes.
+Processing Each Call:
+
+Each call either adds an element to the sum or skips it, so the work done at each level (like adding the sum to store) takes constant time, i.e., O(1).
+Sorting the Results:
+
+After the recursion ends, the sums are stored in the store vector, which will contain 2^N sums (one for each subset).
+Sorting this vector takes O(2^N log(2^N)), which simplifies to O(2^N * N) since the length of the vector is 2^N and sorting it takes 
+𝑂
+(
+𝑚
+log
+⁡
+𝑚
+)
+O(mlogm), where 
+𝑚
+m is the size of the list.
+Overall Time Complexity:
+
+The total time complexity combines the recursion time and the time spent sorting the results:
+
+𝑂
+(
+2
+𝑁
+)
+ for the recursion
++
+𝑂
+(
+2
+𝑁
+⋅
+𝑁
+)
+ for sorting
+O(2 
+N
+ ) for the recursion+O(2 
+N
+ ⋅N) for sorting
+The dominant term here is O(2^N \cdot N), so the overall time complexity is:
+
+𝑂
+(
+2
+𝑁
+⋅
+𝑁
+)
+O(2 
+N
+ ⋅N)
+Space Complexity Analysis:
+Recursion Stack:
+
+The maximum depth of the recursion is N, since we recurse once for each element in the array. Thus, the space required for the recursion stack is O(N).
+Store (Result Vector):
+
+The store vector will contain 2^N subset sums, since there are 2^N possible subsets.
+Therefore, the space required to store the subset sums is O(2^N).
+Overall Space Complexity:
+
+The total space complexity is the sum of the space for the recursion stack and the space for storing the results:
+
+𝑂
+(
+𝑁
+)
+ for the recursion stack
++
+𝑂
+(
+2
+𝑁
+)
+ for storing the subset sums
+O(N) for the recursion stack+O(2 
+N
+ ) for storing the subset sums
+The dominant term here is O(2^N), so the overall space complexity is:
+
+𝑂
+(
+2
+𝑁
+)
+O(2 
+N
+ )
+Summary:
+Time Complexity: 
+𝑂
+(
+2
+𝑁
+⋅
+𝑁
+)
+O(2 
+N
+ ⋅N), where 
+𝑁
+N is the number of elements in the array.
+Space Complexity: 
+𝑂
+(
+2
+𝑁
+)
+O(2 
+N
+ ), due to the space required to store all possible subset sums.

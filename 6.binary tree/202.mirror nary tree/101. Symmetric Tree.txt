@@ -1,0 +1,59 @@
+Ques:https://leetcode.com/problems/symmetric-tree/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a binary tree node
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+class Solution {
+public:
+    // Function to check if two subtrees are mirror images
+    bool func(TreeNode* left, TreeNode* right) {
+        if (left == NULL && right == NULL) return true;
+        if (left == NULL || right == NULL) return false;
+        if (left->val != right->val) return false;
+        return func(left->left, right->right) && func(left->right, right->left);
+    }
+
+    // Function to check if the tree is symmetric
+    bool isSymmetric(TreeNode* root) {
+        return func(root->left, root->right);
+    }
+};
+
+// Example usage
+int main() {
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(2);
+    root->left->left = new TreeNode(3);
+    root->left->right = new TreeNode(4);
+    root->right->left = new TreeNode(4);
+    root->right->right = new TreeNode(3);
+
+    Solution sol;
+    cout << (sol.isSymmetric(root) ? "Tree is Symmetric" : "Tree is Not Symmetric") << endl;
+
+    return 0;
+}
+
+
+Time and Space Complexity Analysis
+Time Complexity
+Each node in the tree is visited once, resulting in O(n) time complexity, where n is the number of nodes in the tree.
+Space Complexity
+The recursion depth in the worst case (if the tree is completely unbalanced) is O(n).
+The best case (balanced tree) results in a recursion depth of O(log n).
+Overall Space Complexity: O(h), where h is the height of the tree.
+Final Complexity Summary
+Case	Time Complexity	Space Complexity
+General Case	O(n)	O(h) (h = height of tree)
+Balanced Tree	O(n)	O(log n)
+Skewed Tree	O(n)	O(n)

@@ -1,0 +1,102 @@
+ Ques:https://www.geeksforgeeks.org/job-sequencing-problem/
+
+ Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Job {
+    int id, dead, profit;
+};
+
+class Solution {
+public:
+    static bool comp(Job a, Job b) {
+        return a.profit > b.profit; // Sort jobs by profit in descending order
+    }
+
+    vector<int> JobScheduling(Job arr[], int n) {
+        // Step 1: Sort jobs based on profit
+        sort(arr, arr + n, comp);
+
+        vector<bool> v(n, false); // Tracks if a slot is occupied
+        int day = 0, profit = 0;
+
+        // Step 2: Assign jobs to the latest available slot before the deadline
+        for (int i = 0; i < n; i++) {
+            for (int j = min(n, arr[i].dead) - 1; j >= 0; j--) {
+                if (!v[j]) { // If slot is free
+                    day++;
+                    profit += arr[i].profit;
+                    v[j] = true;
+                    break;
+                }
+            }
+        }
+        return {day, profit};
+    }
+};
+
+// Driver Code
+int main() {
+    Solution obj;
+    Job arr[] = {{1, 2, 100}, {2, 1, 19}, {3, 2, 27}, {4, 1, 25}, {5, 3, 15}};
+    int n = 5;
+
+    vector<int> result = obj.JobScheduling(arr, n);
+    cout << "Max Jobs Done: " << result[0] << ", Max Profit: " << result[1] << endl;
+    
+    return 0;
+}
+
+Time and sapce comeplxity:
+
+Time Complexity Analysis
+Sorting the Jobs by Profit → O(n log n)
+
+The jobs are sorted in descending order of profit using the sort() function.
+Allocating Jobs to Slots (Nested Loop) → O(n^2)
+
+The outer loop runs O(n) times for each job.
+The inner loop searches for an available slot from min(n, arr[i].dead) - 1 down to 0.
+In the worst case, the inner loop runs n times for each job, leading to O(n^2).
+Thus, the overall time complexity is:
+
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
++
+𝑂
+(
+𝑛
+2
+)
+=
+𝑂
+(
+𝑛
+2
+)
+O(nlogn)+O(n 
+2
+ )=O(n 
+2
+ )
+which is suboptimal for large inputs.
+
+🔹 Space Complexity Analysis
+Sorting Uses Extra Memory → O(1) (since sort() is in-place).
+Boolean Array v[n] → O(n).
+The array v[n] is used to track whether a time slot is filled.
+Other variables (day, profit, loop counters, etc.) → O(1).
+Thus, the overall space complexity is:
+
+𝑂
+(
+𝑛
+)
+O(n)

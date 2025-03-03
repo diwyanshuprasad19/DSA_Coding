@@ -1,0 +1,159 @@
+Ques:
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Structure for a binary tree node
+struct Node {
+    int data;
+    Node *left, *right;
+
+    // Constructor to initialize a new node
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+// Helper function to convert binary tree to doubly linked list
+void func(Node* root, Node*& head, Node*& prev, int& f) {
+    if (root == NULL) return;
+
+    // Recursively convert left subtree
+    func(root->left, head, prev, f);
+
+    // If first node, assign head
+    if (f == 0) {
+        head = root;
+        prev = root;
+        f = 1;
+    }
+    // Otherwise, link previous node with current node
+    else {
+        prev->right = root;  //right is next
+        root->left = prev;   //left is prev
+        prev = root;
+    }
+
+    // Recursively convert right subtree
+    func(root->right, head, prev, f);
+}
+
+// Function to convert binary tree to doubly linked list
+Node* bToDLL(Node* root) {
+    Node* head = NULL;
+    Node* prev = NULL;
+    int f = 0;
+    func(root, head, prev, f);
+    return head;
+}
+
+// Function to print the Doubly Linked List
+void printDLL(Node* head) {
+    Node* temp = head;
+    while (temp) {
+        cout << temp->data << " ";
+        temp = temp->right;
+    }
+    cout << endl;
+}
+
+// Driver code
+int main() {
+    // Constructing a sample binary tree:
+    //       4
+    //      / \
+    //     2   5
+    //    / \
+    //   1   3
+    Node* root = new Node(4);
+    root->left = new Node(2);
+    root->right = new Node(5);
+    root->left->left = new Node(1);
+    root->left->right = new Node(3);
+
+    // Convert tree to DLL and print it
+    Node* head = bToDLL(root);
+    printDLL(head); // Expected output: 1 2 3 4 5
+
+    return 0;
+}
+
+
+Time Complexity Analysis:
+Each Node is Visited Once:
+
+Performs an inorder traversal.
+𝑂
+(
+𝑁
+)
+O(N) where 
+𝑁
+N is the number of nodes.
+Linking Operations:
+
+Each node’s left and right pointers are updated once → 
+𝑂
+(
+1
+)
+O(1) per node.
+Total Time Complexity:
+𝑂
+(
+𝑁
+)
+O(N)
+(Since each node is processed once)
+
+Space Complexity Analysis:
+Recursive Stack Storage:
+
+𝑂
+(
+𝐻
+)
+O(H) where 
+𝐻
+H is the height of the tree.
+Worst case (skewed tree) → 
+𝑂
+(
+𝑁
+)
+O(N).
+Best case (balanced tree) → 
+𝑂
+(
+log
+⁡
+𝑁
+)
+O(logN).
+No Extra Data Structures Used:
+
+Only pointers are modified in-place.
+Total Space Complexity:
+
+𝑂
+(
+𝐻
+)
+O(H)
+(For recursion stack)
+
+Final Complexity Summary:
+Time Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)
+Space Complexity: 
+𝑂
+(
+𝐻
+)
+O(H) (where 
+𝐻
+H is tree height)

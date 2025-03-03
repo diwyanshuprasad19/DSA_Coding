@@ -1,0 +1,227 @@
+Ques:how to insert and delete in bst
+
+
+Code:
+
+#include <iostream>
+using namespace std;
+
+// Node structure for BST
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) {
+        data = value;
+        left = right = nullptr;
+    }
+};
+
+// Function to insert a node in BST
+Node* insert(Node* root, int key) {
+    if (root == nullptr) {
+        return new Node(key);
+    }
+    
+    if (key < root->data) {
+        root->left = insert(root->left, key);
+    } else {
+        root->right = insert(root->right, key);
+    }
+    
+    return root;
+}
+
+// Function to find the minimum value node in a BST
+Node* findMin(Node* root) {
+    while (root->left != nullptr) {
+        root = root->left;
+    }
+    return root;
+}
+
+// Function to delete a node in BST
+Node* deleteNode(Node* root, int key) {
+    if (root == nullptr) {
+        return root;
+    }
+    
+    if (key < root->data) {
+        root->left = deleteNode(root->left, key);
+    } else if (key > root->data) {
+        root->right = deleteNode(root->right, key);
+    } else {
+        // Case 1: Node with only one child or no child
+        if (root->left == nullptr) {
+            Node* temp = root->right;
+            delete root;
+            return temp;
+        } else if (root->right == nullptr) {
+            Node* temp = root->left;
+            delete root;
+            return temp;
+        }
+        
+        // Case 2: Node with two children
+        Node* temp = findMin(root->right);
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+    }
+    
+    return root;
+}
+
+// Function to perform in-order traversal
+void inorder(Node* root) {
+    if (root != nullptr) {
+        inorder(root->left);
+        cout << root->data << " ";
+        inorder(root->right);
+    }
+}
+
+// Driver code
+int main() {
+    Node* root = nullptr;
+
+    // Insert elements
+    root = insert(root, 50);
+    root = insert(root, 30);
+    root = insert(root, 70);
+    root = insert(root, 20);
+    root = insert(root, 40);
+    root = insert(root, 60);
+    root = insert(root, 80);
+
+    cout << "Inorder Traversal after Insertions: ";
+    inorder(root);
+    cout << endl;
+
+    // Delete some nodes
+    root = deleteNode(root, 20);
+    cout << "Inorder Traversal after deleting 20: ";
+    inorder(root);
+    cout << endl;
+
+    root = deleteNode(root, 30);
+    cout << "Inorder Traversal after deleting 30: ";
+    inorder(root);
+    cout << endl;
+
+    root = deleteNode(root, 50);
+    cout << "Inorder Traversal after deleting 50: ";
+    inorder(root);
+    cout << endl;
+
+    return 0;
+}
+
+
+action:
+root = insert(root, 50);
+root = insert(root, 30);
+root = insert(root, 70);
+root = insert(root, 20);
+root = insert(root, 40);
+root = insert(root, 60);
+root = insert(root, 80);
+
+root = deleteNode(root, 20);
+root = deleteNode(root, 30);
+root = deleteNode(root, 50);
+
+Output:
+Inorder Traversal after Insertions: 20 30 40 50 60 70 80 
+Inorder Traversal after deleting 20: 30 40 50 60 70 80 
+Inorder Traversal after deleting 30: 40 50 60 70 80 
+Inorder Traversal after deleting 50: 40 60 70 80 
+
+
+Time and space complexity:
+Time Complexity Analysis
+Operation	Average Case	Worst Case (Skewed Tree)
+Insertion	O(log N)	O(N)
+Deletion	O(log N)	O(N)
+Search	O(log N)	O(N)
+In balanced BSTs, each level halves the number of elements to traverse, leading to O(log N) complexity.
+In worst-case (skewed trees), BST behaves like a linked list, making operations O(N).
+Space Complexity
+O(1) for iterative operations.
+O(H) for recursive operations (due to function call stack).
+In a balanced BST, height H ≈ log N, so the space complexity is O(log N).
+In a worst-case skewed BST, space complexity can be O(N).
+
+
+
+
+
+
+How deletion works:
+How Deletion Works in a Binary Search Tree (BST)
+Deletion in a Binary Search Tree (BST) involves removing a node while maintaining the BST property:
+
+For every node, values in the left subtree are smaller, and values in the right subtree are larger.
+Three Cases of Deletion in BST
+Deletion is handled differently based on the number of children the node has:
+
+1. Node has No Children (Leaf Node)
+Simply delete the node.
+Example:
+kotlin
+Copy
+Edit
+    30
+   /  \
+  20   40
+ /  
+10  <- Delete this
+After deleting 10:
+markdown
+Copy
+Edit
+    30
+   /  \
+  20   40
+2. Node has One Child
+Replace the node with its child.
+Example:
+kotlin
+Copy
+Edit
+    30
+   /  \
+  20   40
+    \
+    25  <- Delete this
+After deleting 25:
+markdown
+Copy
+Edit
+    30
+   /  \
+  20   40
+3. Node has Two Children
+Find the inorder successor (smallest node in the right subtree).
+Replace the node's value with that of the inorder successor.
+Delete the inorder successor node (which is guaranteed to have at most one child).
+Example:
+markdown
+Copy
+Edit
+    50
+   /  \
+  30   70
+ /  \  /  \
+20  40 60  80
+Deleting 50:
+Inorder Successor is 60 (smallest in the right subtree).
+Replace 50 with 60 and delete the original 60 node.
+markdown
+Copy
+Edit
+    60
+   /  \
+  30   70
+ /  \    \
+20  40   80

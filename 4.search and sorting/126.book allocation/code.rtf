@@ -1,0 +1,87 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2759
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;\f2\froman\fcharset0 Times-Bold;
+\f3\froman\fcharset0 Times-Roman;\f4\fnil\fcharset0 STIXTwoMath-Regular;}
+{\colortbl;\red255\green255\blue255;\red202\green202\blue202;\red70\green137\blue204;\red212\green214\blue154;
+\red167\green197\blue152;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c83137\c83137\c83137;\cssrgb\c33725\c61176\c83922;\cssrgb\c86275\c86275\c66667;
+\cssrgb\c70980\c80784\c65882;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Sol:https://www.youtube.com/watch?v=WrvATwm0zq8\
+\
+https://leetcode.com/problems/maximum-candies-allocated-to-k-children/description/\
+\
+Leetocde soltion:\
+https://leetcode.com/problems/maximum-candies-allocated-to-k-children/solutions/1908888/java-c-python-binary-search-with-explanation/\
+\
+Code:\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f1\fs26 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2   \cf3 \strokec3 int\cf2 \strokec2  \cf4 \strokec4 maximumCandies\cf2 \strokec2 (vector<\cf3 \strokec3 int\cf2 \strokec2 >& A, \cf3 \strokec3 long\cf2 \strokec2  \cf3 \strokec3 long\cf2 \strokec2  k) \{\
+        \cf3 \strokec3 int\cf2 \strokec2  left = \cf5 \strokec5 0\cf2 \strokec2 , right = \cf5 \strokec5 1e7\cf2 \strokec2 ;\
+        \cf3 \strokec3 while\cf2 \strokec2  (left < right) \{\
+            \cf3 \strokec3 long\cf2 \strokec2  sum = \cf5 \strokec5 0\cf2 \strokec2 , mid = (left + right + \cf5 \strokec5 1\cf2 \strokec2 ) / \cf5 \strokec5 2\cf2 \strokec2 ;\
+            \cf3 \strokec3 for\cf2 \strokec2  (\cf3 \strokec3 int\cf2 \strokec2 & a : A) \{\
+                sum += a / mid;\
+            \}\
+            \cf3 \strokec3 if\cf2 \strokec2  (k > sum)\
+                right = mid - \cf5 \strokec5 1\cf2 \strokec2 ;\
+            \cf3 \strokec3 else\cf2 \strokec2 \
+                left = mid;\
+        \}\
+        \cf3 \strokec3 return\cf2 \strokec2  left;\
+    \}\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f2\b\fs24 \cf0 \strokec6 Time Complexity
+\f3\b0 :
+\f4 \
+O\
+(\
+n\
+\uc0\u8901 \
+log\
+\uc0\u8289 \
+(\
+1\
+0\
+\pard\pardeftab720\partightenfactor0
+
+\fs18 \cf0 7\
+\pard\pardeftab720\partightenfactor0
+
+\fs24 \cf0 )\
+)\
+\uc0\u8776 \
+O\
+(\
+n\
+)\
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 O(n \\cdot \\log(10^7)) \\approx O(n)
+\f4 \
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 O(n\uc0\u8901 log(107))\u8776 O(n)\
+\pard\pardeftab720\partightenfactor0
+
+\f2\b \cf0 Space Complexity
+\f3\b0 :
+\f4 \
+O\
+(\
+1\
+)\
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 O(1)
+\f4 \
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 O(1)\
+}

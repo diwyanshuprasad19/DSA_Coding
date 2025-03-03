@@ -1,0 +1,64 @@
+Explanation:
+Sample Input:
+plaintext
+Copy code
+A = [-8, 2, 3, -6, 10, -1, 2, 8]
+N = 8
+K = 3
+Output:
+plaintext
+Copy code
+-8 0 -6 -6 -1 -1
+Explanation:
+Window 1: [-8, 2, 3] → First negative: -8
+Window 2: [2, 3, -6] → First negative: -6
+Window 3: [3, -6, 10] → First negative: -6
+Window 4: [-6, 10, -1] → First negative: -6
+Window 5: [10, -1, 2] → First negative: -1
+Window 6: [-1, 2, 8] → First negative: -1
+
+
+vector<long long> printFirstNegativeInteger(long long int A[],
+                                             long long int N, long long int K) {
+                                                 
+                                                 
+    vector<long long> ans;
+    queue<long long> q;
+    for(int i=0;i<K-1;i++)
+    {
+        if(A[i]<0)q.push(A[i]);
+    }
+
+    //here we start from k-1 as this will be window size limit
+    for(int i=K-1;i<N;i++)
+    {
+        if(A[i]<0)q.push(A[i]);
+        //see for pop we need to see the front element of window
+        if(q.empty()==false)
+        {
+            ans.push_back(q.front());
+            if(A[i-K+1]==q.front())
+            q.pop();
+        }
+        else
+        {
+            ans.push_back(0);
+        }
+    }
+    return ans;
+                                                 
+ }
+
+Complexity Summary:
+Time Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)
+Space Complexity: 
+𝑂
+(
+𝐾
+)
+O(K)

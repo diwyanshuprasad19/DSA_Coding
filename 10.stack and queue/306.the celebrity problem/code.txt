@@ -1,0 +1,25 @@
+https://www.geeksforgeeks.org/the-celebrity-problem/
+For gig know everyone
+Verify candidate (person 2):
+
+Knows no one: matrix[2][k] = 0 for all k.
+Is known by everyone: matrix[k][2] = 1 for all k (except matrix[2][2]).
+
+Solution best
+
+    int celebrity(vector<vector<int> >& M, int n) 
+    {
+       int c=0;
+       for(int i=1;i<n;i++)
+       {
+           if(M[c][i]==1)
+           c=i;
+       }
+       for(int i=0;i<n;i++)
+       {
+           if(i!=c  && (M[c][i]==1 || M[i][c]==0))
+           return -1;
+       }
+       return c;
+    }
+

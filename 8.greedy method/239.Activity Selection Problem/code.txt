@@ -1,0 +1,111 @@
+Ques:https://www.geeksforgeeks.org/activity-selection-problem-greedy-algo-1/
+
+DP is useful when:
+
+We have overlapping subproblems (where solutions to smaller subproblems are reused in larger problems).
+There is an optimal substructure that requires exploring multiple possibilities.
+Greedy works when:
+
+We can always make a locally optimal choice that leads to a globally optimal solution.
+Sorting and iterating through data is enough.
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    static bool comp(pair<int, int> a, pair<int, int> b) {
+        if (a.second == b.second)
+            return a.first < b.first;
+        return a.second < b.second;
+    }
+
+    int maxMeetings(int start[], int end[], int n) {
+        vector<pair<int, int>> v(n);
+        for (int i = 0; i < n; i++) {
+            v[i] = {start[i], end[i]};
+        }
+
+        sort(v.begin(), v.end(), comp);
+        
+        int i = 0, j = 1, count = 1;
+        while (j < n) {
+            if (v[i].second < v[j].first) {
+                count++;
+                i = j;
+            }
+            j++;
+        }
+        return count;
+    }
+};
+
+// Driver Code
+int main() {
+    Solution obj;
+    int start[] = {1, 3, 0, 5, 8, 5};
+    int end[] = {2, 4, 6, 7, 9, 9};
+    int n = 6;
+
+    cout << "Maximum Meetings: " << obj.maxMeetings(start, end, n) << endl;
+    return 0;
+}
+
+
+Time and Space Complexity Analysis:
+
+For the given function:
+
+cpp
+Copy
+Edit
+int maxMeetings(int start[], int end[], int n)
+🔹 Time Complexity Analysis
+Sorting the Meetings:
+We store (start, end) pairs in a vector<pair<int, int>>, which takes O(n).
+The sorting operation (sort(v.begin(), v.end(), comp)) takes O(n log n).
+Iterating Through the Meetings:
+We traverse the sorted list once (while(j < n) loop), which takes O(n).
+Thus, the overall time complexity is:
+
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
++
+𝑂
+(
+𝑛
+)
+=
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+O(nlogn)+O(n)=O(nlogn)
+🔹 Space Complexity Analysis
+Auxiliary Space Used:
+A vector of pairs vector<pair<int, int>> v(n); is used to store the meetings. This requires O(n) space.
+The sorting function does not use extra space beyond the vector itself.
+No extra data structures are used apart from a few integers.
+Thus, the overall space complexity is:
+
+𝑂
+(
+𝑛
+)
+O(n)
+🔹 Final Complexity Summary
+Operation	Complexity
+Sorting Meetings	O(n log n)
+Iterating Through Meetings	O(n)
+Total Time Complexity	O(n log n)
+Total Space Complexity	O(n)

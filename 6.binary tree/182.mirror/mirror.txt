@@ -1,0 +1,47 @@
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+// Function to check if two subtrees are mirrors
+bool isMirror(Node* root1, Node* root2) {
+    if (root1 == NULL && root2 == NULL) return true;
+    if (root1 == NULL || root2 == NULL) return false;
+    if (root1->data != root2->data) return false;
+
+    return isMirror(root1->left, root2->right) && isMirror(root1->right, root2->left);
+}
+
+// Main function to check if the tree is symmetric
+bool isSymmetric(Node* root) {
+    if (!root) return true;
+    return isMirror(root->left, root->right);
+}
+
+int main() {
+    Node* root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(2);
+    root->left->left = new Node(3);
+    root->left->right = new Node(4);
+    root->right->left = new Node(4);
+    root->right->right = new Node(3);
+
+    cout << "Is the tree symmetric? " << (isSymmetric(root) ? "Yes" : "No") << endl;
+
+    return 0;
+}
+
+
+Time Complexity:
+O(N) → Each node is visited once.
+Space Complexity:
+O(H) → Where H is the height of the tree.
+Worst-case O(N) (for a skewed tree), O(logN) for a balanced tree.

@@ -1,0 +1,82 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2759
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 https://www.youtube.com/watch?v=kU4KBD4NFtw\
+\
+\
+Time complexity \
+Build heap - N\
+N-1 times for each element it will Run and long for max heaping\
+\
+\
+code:\
+#include <iostream>\
+#include <vector>\
+using namespace std;\
+\
+// Function to heapify a subtree rooted at index `i`\
+// `n` is the size of the heap\
+void heapify(vector<int>& arr, int n, int i) \{\
+    int largest = i; // Initialize largest as root\
+    int left = 2 * i + 1; // left child\
+    int right = 2 * i + 2; // right child\
+\
+    // If left child is larger than root\
+    if (left < n && arr[left] > arr[largest])\
+        largest = left;\
+\
+    // If right child is larger than the largest so far\
+    if (right < n && arr[right] > arr[largest])\
+        largest = right;\
+\
+    // If the largest is not root\
+    if (largest != i) \{\
+        swap(arr[i], arr[largest]);\
+\
+        // Recursively heapify the affected subtree\
+        heapify(arr, n, largest);\
+    \}\
+\}\
+\
+// Main function to perform heap sort\
+void heapSort(vector<int>& arr) \{\
+    int n = arr.size();\
+\
+    // Build max heap\
+    for (int i = n / 2 - 1; i >= 0; i--)\
+        heapify(arr, n, i);\
+\
+    // Extract elements from the heap one by one\
+    for (int i = n - 1; i > 0; i--) \{\
+        // Move the current root to the end\
+        swap(arr[0], arr[i]);\
+\
+        // Call heapify on the reduced heap\
+        heapify(arr, i, 0);\
+    \}\
+\}\
+\
+// Helper function to print the array\
+void printArray(const vector<int>& arr) \{\
+    for (int i : arr)\
+        cout << i << " ";\
+    cout << endl;\
+\}\
+\
+int main() \{\
+    vector<int> arr = \{12, 11, 13, 5, 6, 7\};\
+    cout << "Original array: ";\
+    printArray(arr);\
+\
+    heapSort(arr);\
+\
+    cout << "Sorted array: ";\
+    printArray(arr);\
+\
+    return 0;\
+\}\
+}

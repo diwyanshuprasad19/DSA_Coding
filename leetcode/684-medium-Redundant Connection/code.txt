@@ -1,0 +1,48 @@
+ques:https://leetcode.com/problems/redundant-connection/description/
+
+sol:https://www.youtube.com/watch?v=Cb6p18e9c8s
+
+code:
+#include <vector>
+
+class Solution {
+public:
+    std::vector<int> parent;
+
+    std::vector<int> findRedundantConnection(std::vector<std::vector<int>>& edges) {
+        int n = edges.size();
+        parent.resize(n + 1);
+
+        // Make each node the parent of itself
+        for (int i = 0; i <= n; i++) parent[i] = i;
+
+        // Loop through all edges
+        for (const auto& edge : edges) {
+            if (find(edge[0]) == find(edge[1])) return edge;
+            unionNodes(edge[0], edge[1]);
+        }
+
+        return {};
+    }
+
+private:
+    int find(int node) {
+        while (parent[node] != node) {
+            node = parent[node];
+        }
+        return node;
+    }
+
+    void unionNodes(int i, int j) {
+        int iRoot = find(i);
+        int jRoot = find(j);
+
+        if (iRoot != jRoot) {
+            parent[jRoot] = iRoot;
+        }
+    }
+};
+
+
+tc
+sc:

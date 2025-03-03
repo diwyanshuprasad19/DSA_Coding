@@ -1,0 +1,140 @@
+Breadth-First Search (BFS) and Depth-First Search (DFS) in Trees
+1. Breadth-First Search (BFS) in a Tree
+BFS traverses a tree level by level, using a queue (FIFO). It starts from the root and explores all nodes at the present depth before moving deeper.
+
+Time Complexity:
+O(N) → Each node is visited once.
+Space Complexity:
+O(N) → In the worst case (if the tree is full), we store all nodes of the deepest level, which is O(N/2) ≈ O(N).
+BFS Code (Level-Order Traversal)
+cpp
+Copy
+Edit
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+// BFS / Level-order Traversal
+void BFS(Node* root) {
+    if (!root) return;
+
+    queue<Node*> q;
+    q.push(root);
+
+    while (!q.empty()) {
+        Node* curr = q.front();
+        q.pop();
+
+        cout << curr->data << " ";
+
+        if (curr->left) q.push(curr->left);
+        if (curr->right) q.push(curr->right);
+    }
+}
+
+int main() {
+    Node* root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+    root->right->left = new Node(6);
+    root->right->right = new Node(7);
+
+    cout << "BFS Traversal: ";
+    BFS(root);
+    cout << endl;
+
+    return 0;
+}
+Example Output (BFS)
+yaml
+Copy
+Edit
+BFS Traversal: 1 2 3 4 5 6 7
+2. Depth-First Search (DFS) in a Tree
+DFS explores as far as possible along one branch before backtracking. It can be implemented in three traversal methods:
+
+Types of DFS Traversals:
+Inorder (Left → Root → Right) → 4 2 5 1 6 3 7
+Preorder (Root → Left → Right) → 1 2 4 5 3 6 7
+Postorder (Left → Right → Root) → 4 5 2 6 7 3 1
+Time Complexity:
+O(N) → Each node is visited once.
+Space Complexity:
+O(H) → Where H = log(N) for a balanced tree, but O(N) in the worst case (skewed tree).
+DFS (Inorder, Preorder, Postorder)
+cpp
+Copy
+Edit
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+// DFS Traversals
+void inorder(Node* root) {
+    if (!root) return;
+    inorder(root->left);
+    cout << root->data << " ";
+    inorder(root->right);
+}
+
+void preorder(Node* root) {
+    if (!root) return;
+    cout << root->data << " ";
+    preorder(root->left);
+    preorder(root->right);
+}
+
+void postorder(Node* root) {
+    if (!root) return;
+    postorder(root->left);
+    postorder(root->right);
+    cout << root->data << " ";
+}
+
+int main() {
+    Node* root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+    root->right->left = new Node(6);
+    root->right->right = new Node(7);
+
+    cout << "Inorder: ";
+    inorder(root);
+    cout << "\nPreorder: ";
+    preorder(root);
+    cout << "\nPostorder: ";
+    postorder(root);
+    cout << endl;
+
+    return 0;
+}
+Example Output (DFS)
+makefile
+Copy
+Edit
+Inorder: 4 2 5 1 6 3 7
+Preorder: 1 2 4 5 3 6 7
+Postorder: 4 5 2 6 7 3 1
+Comparison: BFS vs. DFS
+Feature	BFS (Level-Order)	DFS (Preorder, Inorder, Postorder)
+Data Structure	Queue (FIFO)	Stack (or Recursion)
+Traversal Order	Level-by-level	Depth-first
+Time Complexity	O(N)	O(N)
+Space Complexity	O(N) (Worst Case)	O(H) (Height of Tree)
+Use Cases	Shortest path problems, finding nodes at the same level	Path-finding, Tree traversals, Topological sorting

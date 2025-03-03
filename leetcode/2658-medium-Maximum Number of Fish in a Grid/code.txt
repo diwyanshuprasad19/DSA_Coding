@@ -1,0 +1,10 @@
+ques:https://leetcode.com/problems/maximum-number-of-fish-in-a-grid/description/
+
+sol:https://leetcode.com/problems/maximum-number-of-fish-in-a-grid/solutions/6337544/simple-bfs-detailed-explanation-by-sumee-eglx/
+
+
+code:
+
+
+tc:
+sc:

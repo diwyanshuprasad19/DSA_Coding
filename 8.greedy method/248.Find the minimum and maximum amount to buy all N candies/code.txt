@@ -1,0 +1,138 @@
+ Ques:https://www.geeksforgeeks.org/find-minimum-maximum-amount-buy-n-candies/
+
+ Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> candyStore(int candies[], int N, int K) {
+    sort(candies, candies + N);
+    int mi = 0, ma = 0;
+    int i = 0, j = N - 1;
+
+    // Calculating the minimum amount
+    while (i <= j) {
+        mi += candies[i];
+        i++;
+        j -= K;
+    }
+
+    // Resetting i and j for maximum amount calculation
+    i = 0;
+    j = N - 1;
+
+    // Reverse the array for maximum cost calculation
+    reverse(candies, candies + N);
+    while (i <= j) {
+        ma += candies[i];
+        i++;
+        j -= K;
+    }
+
+    return {mi, ma};
+}
+
+int main() {
+    int candies[] = {3, 2, 1, 4};  // Example input
+    int N = sizeof(candies) / sizeof(candies[0]);
+    int K = 2;  // Example value for K
+
+    vector<int> result = candyStore(candies, N, K);
+    cout << "Minimum cost: " << result[0] << ", Maximum cost: "
+}
+
+Time and space complexity:
+
+Time Complexity
+The function involves the following operations:
+
+Sorting the array → 
+𝑂
+(
+𝑁
+log
+⁡
+𝑁
+)
+O(NlogN)
+
+The function sort(candies, candies + N) sorts the candies array in ascending order, which takes 
+𝑂
+(
+𝑁
+log
+⁡
+𝑁
+)
+O(NlogN).
+Calculating the minimum cost → 
+𝑂
+(
+𝑁
+)
+O(N)
+
+A while loop iterates through the array with two pointers (i and j), adjusting them according to the given condition.
+Since each iteration either increments i or decrements j by K, the loop runs at most N times in the worst case.
+Reversing the array → 
+𝑂
+(
+𝑁
+)
+O(N)
+
+The function reverse(candies, candies + N) takes O(N) time.
+Calculating the maximum cost → 
+𝑂
+(
+𝑁
+)
+O(N)
+
+Similar to the minimum cost calculation, another while loop iterates over the array, running in O(N).
+Total Time Complexity:
+
+𝑂
+(
+𝑁
+log
+⁡
+𝑁
+)
++
+𝑂
+(
+𝑁
+)
++
+𝑂
+(
+𝑁
+)
++
+𝑂
+(
+𝑁
+)
+=
+𝑂
+(
+𝑁
+log
+⁡
+𝑁
+)
+O(NlogN)+O(N)+O(N)+O(N)=O(NlogN)
+Since sorting dominates the time complexity, the overall complexity is O(N log N).
+
+Space Complexity
+The function sorts the array in-place, meaning it does not use any extra space for sorting.
+Only a few integer variables (mi, ma, i, j) are used, which consume O(1) space.
+The function returns a vector {mi, ma}, which uses O(1) space as it contains only two elements.
+Total Space Complexity:
+
+𝑂
+(
+1
+)
+O(1)

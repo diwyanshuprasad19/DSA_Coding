@@ -1,0 +1,66 @@
+Ques:https://www.geeksforgeeks.org/sum-nodes-longest-path-root-leaf-node/
+
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a binary tree node
+struct Node {
+    int data;
+    Node *left, *right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+// Function to find the sum of the longest root-to-leaf path
+vector<int> solve(Node* root) {
+    if (root == NULL) return {0, 0}; // {height, sum}
+
+    vector<int> a = solve(root->left);
+    vector<int> b = solve(root->right);
+
+    if (a[0] > b[0]) 
+        return {a[0] + 1, a[1] + root->data};
+    else if (b[0] > a[0]) 
+        return {b[0] + 1, b[1] + root->data};
+    else 
+        return {a[0] + 1, max(a[1], b[1]) + root->data};
+}
+
+int sumOfLongRootToLeafPath(Node *root) {
+    vector<int> ans = solve(root);
+    return ans[1];
+}
+
+// Example usage
+int main() {
+    Node* root = new Node(4);
+    root->left = new Node(2);
+    root->right = new Node(5);
+    root->left->left = new Node(7);
+    root->left->right = new Node(1);
+    root->right->right = new Node(6);
+    root->left->right->left = new Node(9);
+    root->left->right->right = new Node(3);
+
+    cout << "Sum of the longest root-to-leaf path: " << sumOfLongRootToLeafPath(root) << endl;
+
+    return 0;
+}
+
+Time and Space Complexity Analysis
+Time Complexity
+Each node is visited once, so the time complexity is O(n), where n is the number of nodes in the tree.
+Space Complexity
+Recursive call stack: The maximum depth of recursion is equal to the height of the tree.
+Balanced tree → O(log n)
+Skewed tree → O(n)
+No extra data structures are used apart from the recursion stack.
+Overall Space Complexity: O(h), where h is the height of the tree.
+Final Complexity Summary
+Case	Time Complexity	Space Complexity
+General Case	O(n)	O(h) (h = height of tree)
+Balanced Tree	O(n)	O(log n)
+Skewed Tree	O(n)	O(n)
+This function efficiently computes the sum of the longest root-to-leaf path.

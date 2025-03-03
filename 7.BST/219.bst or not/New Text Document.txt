@@ -1,0 +1,140 @@
+Ques:
+
+Code:
+
+#include <iostream>
+using namespace std;
+
+// Definition of Node
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};
+
+// Helper function to check if the tree is BST
+void func(Node* root, Node*& prev, int& f) {
+    if (root == NULL) return;
+    
+    func(root->left, prev, f);
+    
+    if (prev != NULL && root->data <= prev->data) {
+        f = 0;
+        return;
+    }
+    
+    prev = root;
+    func(root->right, prev, f);
+}
+
+// Function to check if a given binary tree is a BST
+bool isBST(Node* root) {
+    int f = 1;
+    Node* prev = NULL;
+    func(root, prev, f);
+    return f;
+}
+
+// Function to create a BST manually for testing
+Node* insert(Node* root, int key) {
+    if (root == NULL) return new Node(key);
+    if (key < root->data) root->left = insert(root->left, key);
+    else root->right = insert(root->right, key);
+    return root;
+}
+
+// Driver code
+int main() {
+    Node* root = NULL;
+    root = insert(root, 10);
+    root = insert(root, 5);
+    root = insert(root, 20);
+    root = insert(root, 3);
+    root = insert(root, 7);
+
+    if (isBST(root)) {
+        cout << "The tree is a BST\n";
+    } else {
+        cout << "The tree is NOT a BST\n";
+    }
+
+    return 0;
+}
+
+
+Explaination:
+Explanation of the isBST Function and Its Helper Function (func)
+This function checks if a given Binary Tree is a Binary Search Tree (BST) by performing an inorder traversal and ensuring that the elements appear in strictly increasing order.
+
+1. Understanding the func Function
+cpp
+Copy
+Edit
+void func(Node* root, Node*& prev, int& f) {
+    if (root == NULL) return;  // Base case: If the tree is empty, return
+    
+    func(root->left, prev, f); // Recursively check the left subtree
+
+    if (prev != NULL && root->data <= prev->data) { // Condition to check BST property
+        f = 0; // If any node is smaller or equal to its previous node, it's not a BST
+        return;
+    }
+    
+    prev = root; // Update prev to the current node before moving to the right subtree
+    
+    func(root->right, prev, f); // Recursively check the right subtree
+}
+How It Works
+It performs an inorder traversal (Left → Root → Right).
+Keeps track of the previous node (prev) visited.
+If a node is smaller than or equal to its previous node, it violates the BST property, and f is set to 0.
+2. The isBST Function
+cpp
+Copy
+Edit
+bool isBST(Node* root) {
+    int f = 1; // Flag to check if it's a BST
+    Node* prev = NULL; // Previous node, initially NULL
+    func(root, prev, f); // Call helper function
+    return f; // Return 1 if BST, else 0
+}
+How It Works
+Initializes f = 1 (assuming the tree is a BST).
+Calls func with:
+The root node
+prev = NULL (since no previous node exists initially)
+f to track if BST conditions are met.
+If f remains 1, the tree is a BST, otherwise, it's not.
+3. Step-by-Step Execution Example
+Consider the following BST:
+
+markdown
+Copy
+Edit
+       10
+      /  \
+     5   20
+    / \  
+   3   7 
+Inorder Traversal: 3 → 5 → 7 → 10 → 20
+This is in increasing order, so it's a valid BST.
+
+Execution Flow
+Step	Node (root)	prev Value	Condition (prev->data <= root->data)	f
+1	3	NULL	N/A (first node)	1
+2	5	3	✅ (3 < 5)	1
+3	7	5	✅ (5 < 7)	1
+4	10	7	✅ (7 < 10)	1
+5	20	10	✅ (10 < 20)	1
+Since f remains 1, the function returns true (it's a BST).
+
+
+Time and space complexity:
+
+Time Complexity: O(N) (since it performs a single inorder traversal)
+Space Complexity: O(H) (where H is the height of the tree, due to recursive stack)
+

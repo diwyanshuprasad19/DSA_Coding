@@ -1,0 +1,77 @@
+Graph Algorithms and Their Use Cases
+
+
+
+1. Dijkstra’s Algorithm (Shortest Path)
+When to Use: When edges have non-negative weights and the shortest path is needed from a single source.
+Why Not Use Other Alternatives?
+Bellman-Ford is preferred if negative weights exist.
+Floyd-Warshall is better for all-pairs shortest path.
+
+Yes, Dijkstra’s Algorithm works on directed graphs as well as undirected graphs, provided that all edge weights are non-negative.
+
+in negative does not work and if negative cycle also it fails as goes to tle keep runnign infinitly
+
+2. Topological Sort
+When to Use: When solving dependency-based problems (e.g., course scheduling, build dependencies).
+Why Not Use Other Alternatives?
+Other algorithms don’t work for DAG (Directed Acyclic Graph) dependencies.
+Topological sorting only works for Directed Acyclic Graphs (DAGs) and does not apply to undirected graphs.
+
+
+3. Kruskal’s Algorithm (Minimum Spanning Tree)
+When to Use: When the graph is sparse (E ≈ V) and edges are sorted or easily sortable.
+Why Not Use Other Alternatives?
+Prim’s Algorithm is better when the graph is dense (E ≈ V²).
+
+
+4. Prim’s Algorithm (Minimum Spanning Tree)
+When to Use: When the graph is dense and adjacency matrix representation is used.
+Why Not Use Other Alternatives?
+Kruskal’s Algorithm is better if the graph is sparse or using an edge list.
+
+
+5.
+https://www.youtube.com/watch?v=ZSPjZuZWCME
+What is spanning tree
+A spanning tree can only be found in an undirected graph, not in a directed graph.
+
+
+6. Bellman-Ford Algorithm (Shortest Path)
+When to Use: When the graph has negative weights and requires a shortest path from a single source.
+Why Not Use Other Alternatives?
+Dijkstra’s Algorithm is faster if all edges have non-negative weights.
+see works for negativ cyel and then works on directed graph only if want to woirk on undirected then we need to change it to directed graph
+
+
+7. Floyd-Warshall Algorithm (All-Pairs Shortest Path)
+When to Use: When we need shortest paths between all pairs of nodes and the graph is relatively small.
+Why Not Use Other Alternatives?
+Dijkstra’s Algorithm is better for single-source shortest path.
+
+
+8. Travelling Salesman Problem (TSP)
+When to Use: When solving optimization problems involving visiting nodes in an optimal order.
+Why Not Use Other Alternatives?
+No other algorithm efficiently solves NP-hard problems like TSP.
+Approximation algorithms (MST-based heuristics) are often used instead.
+hamilton cycle:A Hamiltonian Cycle is a path in a graph that visits every node exactly once and returns to the starting node
+
+
+9. Bipartite Graph Check
+When to Use: When checking if a graph can be two-colored (used in matchmaking, job scheduling).
+Why Not Use Other Alternatives?
+Other algorithms don’t solve bipartiteness, except DFS/BFS, which is required for checking.
+A bipartite graph can be colored using two colors since it does not contain any odd-length cycles. In bipartite graph coloring:
+
+One set of nodes gets one color.
+The other set gets a different color.
+No two adjacent nodes have the same color.
+
+any graph that has odd length cycle can never be bipartite
+
+
+
+
+10.disjoint set
+good for finding nodes in same graph connected or not at any given point

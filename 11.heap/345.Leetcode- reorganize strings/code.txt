@@ -1,0 +1,273 @@
+Ques:https://leetcode.com/problems/reorganize-string/description/   
+
+Code:
+
+ string reorganizeString(string s) {
+        map<char,int> m;
+        for(int i=0;i<s.size();i++)
+        {
+            m[s[i]]++;
+        }
+        priority_queue<pair<int,char>> p;
+        for(auto i:m)
+        {
+            p.push({i.second,i.first});
+        }
+        pair<int,char> g={-1,'$'};
+        string ans="";
+        while(p.empty()==false)
+        {
+            auto temp=p.top();
+            p.pop();
+            ans+=temp.second;
+            temp.first--;
+            /*
+        see here 2 variable first and second.here second already value is -1 and $
+        .now in while take first value and add in the ans variable.then second =first and
+         first =p.top().
+            */
+            if(g.first>0)
+            {
+                p.push(g);
+            }
+            g=temp;
+        }
+        if(ans.size()==s.size())
+        {
+            return ans;
+        }
+        else
+        {
+            return "";
+        }
+        
+    }
+
+Time and space compelxity:
+Time and Space Complexity Analysis
+Time Complexity:
+Building the Frequency Map (map<char,int> m) → 
+𝑂
+(
+𝑁
+)
+O(N)
+
+We iterate over the string once to count the frequency of each character.
+Inserting into the Max Heap (priority_queue<pair<int,char>> p) → 
+𝑂
+(
+𝐾
+log
+⁡
+𝐾
+)
+O(KlogK)
+
+There are at most 
+𝐾
+=
+26
+K=26 unique characters (since only lowercase English letters are considered).
+Each insertion into the priority queue takes 
+𝑂
+(
+log
+⁡
+𝐾
+)
+O(logK), and there are at most 26 insertions.
+Since 
+𝐾
+K is small (≤ 26), this is approximately 
+𝑂
+(
+1
+)
+O(1) in practice.
+Processing the Heap (While Loop) → 
+𝑂
+(
+𝑁
+log
+⁡
+𝐾
+)
+O(NlogK)
+
+The while loop runs for N iterations (each character is added once).
+Each heap operation (pop and push) takes 
+𝑂
+(
+log
+⁡
+𝐾
+)
+O(logK).
+Since 
+𝐾
+≤
+26
+K≤26, 
+𝑂
+(
+log
+⁡
+𝐾
+)
+O(logK) is at most 
+𝑂
+(
+log
+⁡
+26
+)
+≈
+𝑂
+(
+1
+)
+O(log26)≈O(1).
+Thus, the total complexity for heap operations is O(N log K) ≈ O(N).
+Final String Construction (ans.size() == s.size()) → 
+𝑂
+(
+1
+)
+O(1)
+
+Simple size check, which takes constant time.
+Total Time Complexity:
+𝑂
+(
+𝑁
+)
++
+𝑂
+(
+𝐾
+log
+⁡
+𝐾
+)
++
+𝑂
+(
+𝑁
+log
+⁡
+𝐾
+)
++
+𝑂
+(
+1
+)
+=
+𝑂
+(
+𝑁
+log
+⁡
+𝐾
+)
+O(N)+O(KlogK)+O(NlogK)+O(1)=O(NlogK)
+Since 
+𝐾
+≤
+26
+K≤26, we approximate 
+log
+⁡
+𝐾
+logK as a constant, leading to:
+
+𝑂
+(
+𝑁
+)
+O(N)
+Thus, the worst-case time complexity is 
+𝑂
+(
+𝑁
+)
+O(N).
+
+Space Complexity:
+Frequency Map (map<char,int> m) → 
+𝑂
+(
+𝐾
+)
+O(K)
+
+Stores frequencies of at most 26 characters → O(26) ≈ O(1).
+Max Heap (priority_queue<pair<int,char>> p) → 
+𝑂
+(
+𝐾
+)
+O(K)
+
+At most 26 elements in the heap → O(26) ≈ O(1).
+Result String (string ans) → 
+𝑂
+(
+𝑁
+)
+O(N)
+
+Stores the reorganized string, which has length 
+𝑁
+N.
+Extra Variables (pair<int,char> g) → 
+𝑂
+(
+1
+)
+O(1)
+
+Constant space for auxiliary variables.
+Total Space Complexity:
+𝑂
+(
+𝐾
+)
++
+𝑂
+(
+𝐾
+)
++
+𝑂
+(
+𝑁
+)
++
+𝑂
+(
+1
+)
+=
+𝑂
+(
+𝑁
+)
+O(K)+O(K)+O(N)+O(1)=O(N)
+Since 
+𝐾
+K is a small constant, the dominant term is 
+𝑂
+(
+𝑁
+)
+O(N).
+
+Thus, the worst-case space complexity is 
+𝑂
+(
+𝑁
+)
+O(N).
+

@@ -1,0 +1,142 @@
+ques:https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Structure for a binary tree node
+struct Node
+{
+    int data;
+    Node *left, *right;
+};
+
+// Function to return the zigzag level order traversal of the binary tree
+vector<int> zigZagTraversal(Node *root)
+{
+    int f = 0; // Flag to track direction of traversal (0 = left to right, 1 = right to left)
+    queue<Node *> q;
+    q.push(root);
+    vector<int> ans;
+
+    while (!q.empty())
+    {
+        int n = q.size();
+        vector<int> c;
+
+        while (n > 0)
+        {
+            Node *curr = q.front();
+            q.pop();
+            c.push_back(curr->data);
+
+            if (curr->left != NULL)
+                q.push(curr->left);
+            if (curr->right != NULL)
+                q.push(curr->right);
+
+            n--;
+        }
+
+        if (f == 0)
+        {
+            ans.insert(ans.end(), c.begin(), c.end());
+            f = 1; // Switch direction for next level
+        }
+        else
+        {
+            reverse(c.begin(), c.end());
+            ans.insert(ans.end(), c.begin(), c.end());
+            f = 0; // Switch direction back
+        }
+    }
+
+    return ans;
+}
+
+Time and sapce comeplxity:
+
+Time Complexity Analysis:
+BFS Traversal (Queue Operations)
+
+Each node is processed once → 
+𝑂
+(
+𝑁
+)
+O(N)
+Reversing the Vector for ZigZag Order
+
+Each level (worst case: 
+𝑂
+(
+𝑁
+)
+O(N) elements in a skewed tree).
+Total Reversals: 
+𝑂
+(
+𝑁
+)
+O(N).
+Appending Elements to the Answer Vector
+
+𝑂
+(
+𝑁
+)
+O(N) (since all elements are copied once).
+Total Time Complexity:
+𝑂
+(
+𝑁
+)
+O(N)
+(as each node is processed once, and reversal operations take 
+𝑂
+(
+𝑁
+)
+O(N) in total)
+
+Space Complexity Analysis:
+Queue Storage:
+
+At most, 
+𝑂
+(
+𝑁
+)
+O(N) elements (for the last level of a full binary tree).
+Temporary Vector (c)
+
+Stores a single level’s nodes at a time → 
+𝑂
+(
+𝑊
+)
+O(W) (where 
+𝑊
+W is the max width of the tree, worst case 
+𝑂
+(
+𝑁
+)
+O(N)).
+Result Vector (ans)
+
+Stores all 
+𝑂
+(
+𝑁
+)
+O(N) elements.
+Total Space Complexity:
+𝑂
+(
+𝑁
+)
+O(N)
+(For queue, vector c, and ans)
+

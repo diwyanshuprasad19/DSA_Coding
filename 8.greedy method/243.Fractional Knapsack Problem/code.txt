@@ -1,0 +1,71 @@
+ QUES:https://www.geeksforgeeks.org/fractional-knapsack-problem/
+
+ CODE:
+
+ #include <bits/stdc++.h>
+using namespace std;
+
+struct Item {
+    int value, weight;
+};
+
+class Solution {
+public:
+    // Comparator function to sort items by value/weight ratio in descending order
+    static bool comp(pair<double, int> a, pair<double, int> b) {
+        return a.first > b.first;
+    }
+
+    double fractionalKnapsack(int W, Item arr[], int n) {
+        vector<pair<double, int>> v(n);
+        
+        // Step 1: Compute value/weight ratio for each item
+        for (int i = 0; i < n; i++) {
+            double ratio = (arr[i].value * 1.0) / (arr[i].weight * 1.0);
+            v[i] = {ratio, i}; // Store ratio and index
+        }
+
+        // Step 2: Sort items in descending order of value/weight ratio
+        sort(v.begin(), v.end(), comp);
+
+        int currentWeight = 0;
+        double totalProfit = 0.0;
+
+        // Step 3: Pick items greedily
+        for (int i = 0; i < n; i++) {
+            int index = v[i].second;
+            if (currentWeight + arr[index].weight <= W) { 
+                // Take the whole item
+                totalProfit += arr[index].value;
+                currentWeight += arr[index].weight;
+            } else {
+                // Take a fraction of the item
+                int remainingWeight = W - currentWeight;
+                totalProfit += v[i].first * remainingWeight; // ratio * remaining weight
+                break;
+            }
+        }
+        return totalProfit;
+    }
+};
+
+// Driver Code
+int main() {
+    Solution obj;
+    int W = 50; // Knapsack capacity
+    Item arr[] = {{60, 10}, {100, 20}, {120, 30}};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    cout << "Maximum Profit: " << obj.fractionalKnapsack(W, arr, n) << endl;
+    
+    return 0;
+}
+
+
+Time & Space Complexity Analysis:
+Operation	Complexity
+Computing value/weight ratio	O(n)
+Sorting items	O(n log n)
+Picking items (Looping through n items)	O(n)
+Total Time Complexity	O(n log n)
+Space Complexity: O(n) (for storing the sorted items).

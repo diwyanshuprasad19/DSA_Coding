@@ -1,0 +1,391 @@
+    void heapify(vector<int> &arr,int i,int len)
+    {
+        int parent=i;
+        if(parent>=len)
+        return;
+        int left=2*parent+1;
+         int right=2*parent+2;
+         if(left<len && arr[parent]<arr[left])
+         parent =left;
+          if(right<len && arr[parent]<arr[right])
+         parent =right;
+         if(right<len && left<len && arr[parent]<arr[left] && arr[parent]<arr[right])
+         {
+             if(arr[right]<arr[left])
+             parent=left;
+             else
+             parent=right;
+         }
+         if(parent!=i)
+         {
+             swap(arr[parent],arr[i]);
+             heapify(arr,parent,len);
+         }
+    }
+    vector<int> mergeHeaps(vector<int> &a, vector<int> &b, int n, int m) {
+        vector<int> arr;
+        for(int i=0;i<n;i++)
+        arr.push_back(a[i]);
+        for(int i=0;i<m;i++)
+        arr.push_back(b[i]);
+        int tot=n+m;
+        int nlef=tot/2-1;
+        for(int i=nlef;i>=0;i--)
+        {
+            heapify(arr,i,tot);
+        }
+        return arr;
+    }
+
+
+Time Complexity: O(N + M)
+Auxiliary Space: O(N + M)
+
+Sure! Let’s go through the entire process of merging two binary max heaps step by step, including tree diagrams for each step. We’ll use the same sample data:
+
+Heap 1: [9, 8, 7, 5]
+
+Heap 2: [10, 6, 4, 2]
+
+Step 1: Combine the Two Heaps
+Combine the two arrays into one:
+
+Copy
+Combined Array: [9, 8, 7, 5, 10, 6, 4, 2]
+Tree Representation of Combined Array:
+Copy
+        9
+       /  \
+      8    7
+     / \   / \
+    5  10 6   4
+   /
+  2
+Step 2: Heapify the Combined Array
+We start heapifying from the last non-leaf node and move upward. The last non-leaf node is at index 3 (value = 5).
+
+Step 2.1: Heapify Index 3 (Value = 5)
+Compare the value at index 3 (5) with its children:
+
+Left child: Index 7, value = 2
+
+Right child: Index 8 (out of bounds)
+
+Since 5 is greater than 2, no swap is needed.
+
+Tree Representation (No Change):
+Copy
+        9
+       /  \
+      8    7
+     / \   / \
+    5  10 6   4
+   /
+  2
+Step 2.2: Heapify Index 2 (Value = 7)
+Compare the value at index 2 (7) with its children:
+
+Left child: Index 5, value = 6
+
+Right child: Index 6, value = 4
+
+Since 7 is greater than both 6 and 4, no swap is needed.
+
+Tree Representation (No Change):
+Copy
+        9
+       /  \
+      8    7
+     / \   / \
+    5  10 6   4
+   /
+  2
+Step 2.3: Heapify Index 1 (Value = 8)
+Compare the value at index 1 (8) with its children:
+
+Left child: Index 3, value = 5
+
+Right child: Index 4, value = 10
+
+Since 10 (right child) is greater than 8, we swap them.
+
+Updated Array After Swap:
+Copy
+Index: 0   1   2  3  4  5  6  7
+Value: 9, 10, 7, 5, 8, 6, 4, 2
+Tree Representation After Swap:
+Copy
+        9
+       /  \
+      10   7
+     / \   / \
+    5   8 6   4
+   /
+  2
+Step 2.4: Heapify Index 0 (Value = 9)
+Compare the value at index 0 (9) with its children:
+
+Left child: Index 1, value = 10
+
+Right child: Index 2, value = 7
+
+Since 10 (left child) is greater than 9, we swap them.
+
+Updated Array After Swap:
+Copy
+Index: 0   1   2  3  4  5  6  7
+Value: 10, 9, 7, 5, 8, 6, 4, 2
+Tree Representation After Swap:
+Copy
+        10
+       /  \
+      9     7
+     / \   / \
+    5   8 6   4
+   /
+  2
+Final Max Heap
+The final combined and heapified array is:
+
+Copy
+Index: 0   1  2  3  4  5  6  7
+Value: 10, 9, 7, 5, 8, 6, 4, 2
+Tree Representation of Final Max Heap:
+Copy
+        10
+       /  \
+      9     7
+     / \   / \
+    5   8 6   4
+   /
+  2
+Summary of Steps
+Combined the two heaps into a single array.
+
+Heapified the combined array starting from the last non-leaf node:
+
+Heapified index 3 (no change).
+
+Heapified index 2 (no change).
+
+Heapified index 1 (swapped 8 and 10).
+
+Heapified index 0 (swapped 9 and 10).
+
+The final tree satisfies the max-heap property.
+
+Let me know if you need further clarification!
+
+now tell how time compelxity comes n+m
+The time complexity of merging two binary max heaps is O(n + m), where:
+
+𝑛
+n is the size of the first heap.
+
+𝑚
+m is the size of the second heap.
+
+Let’s break down why this is the case step by step.
+
+Steps in Merging Two Binary Max Heaps
+Combine the two heaps:
+
+Concatenate the two arrays representing the heaps into a single array.
+
+This operation takes O(1) time because it’s just appending one array to another.
+
+Heapify the combined array:
+
+Starting from the last non-leaf node, perform the max-heapify operation to ensure the combined array satisfies the max-heap property.
+
+This is where the O(n + m) complexity comes from.
+
+Why Heapify Takes O(n + m) Time
+Number of Non-Leaf Nodes:
+
+In a binary heap, the number of non-leaf nodes is approximately half the total number of nodes.
+
+For a combined heap of size 
+𝑛
++
+𝑚
+n+m, the number of non-leaf nodes is roughly 
+𝑛
++
+𝑚
+2
+2
+n+m
+​
+ .
+
+Heapify Operation:
+
+The max-heapify operation takes O(log k) time for a subtree of size 
+𝑘
+k.
+
+However, in practice, when heapifying the entire array, the total time complexity is O(n + m) because:
+
+Most of the subtrees being heapified are small.
+
+The work done at each level of the heap decreases exponentially as you move up the tree.
+
+Total Work:
+
+The total work done by max-heapify across all non-leaf nodes is proportional to the total number of nodes, 
+𝑛
++
+𝑚
+n+m.
+
+This is because the work done at each level of the heap is balanced by the number of nodes at that level.
+
+Mathematical Explanation
+Height of the Heap:
+
+The height of a binary heap with 
+𝑁
+N nodes is 
+log
+⁡
+𝑁
+logN.
+
+For the combined heap, the height is 
+log
+⁡
+(
+𝑛
++
+𝑚
+)
+log(n+m).
+
+Work at Each Level:
+
+At level 
+ℎ
+h, there are 
+2
+ℎ
+2 
+h
+  nodes, and each node requires 
+𝑂
+(
+log
+⁡
+(
+𝑛
++
+𝑚
+)
+−
+ℎ
+)
+O(log(n+m)−h) work to heapify.
+
+The total work is the sum of work at all levels:
+
+Total Work
+=
+∑
+ℎ
+=
+0
+log
+⁡
+(
+𝑛
++
+𝑚
+)
+2
+ℎ
+⋅
+𝑂
+(
+log
+⁡
+(
+𝑛
++
+𝑚
+)
+−
+ℎ
+)
+Total Work= 
+h=0
+∑
+log(n+m)
+​
+ 2 
+h
+ ⋅O(log(n+m)−h)
+This sum simplifies to O(n + m).
+
+Example with n = 4 and m = 4
+Let’s use the example from earlier:
+
+Heap 1: [9, 8, 7, 5] (size 
+𝑛
+=
+4
+n=4)
+
+Heap 2: [10, 6, 4, 2] (size 
+𝑚
+=
+4
+m=4)
+
+Combined heap size: 
+𝑛
++
+𝑚
+=
+8
+n+m=8
+
+Combine the Heaps:
+
+Takes O(1) time.
+
+Heapify the Combined Heap:
+
+Number of non-leaf nodes: 
+8
+2
+=
+4
+2
+8
+​
+ =4.
+
+Each max-heapify operation takes O(log 8) = O(3) time in the worst case.
+
+Total time: 
+4
+⋅
+𝑂
+(
+3
+)
+=
+𝑂
+(
+12
+)
+4⋅O(3)=O(12), which is still O(n + m).
+
+Conclusion
+The time complexity of merging two binary max heaps is O(n + m) because:
+
+Combining the heaps takes O(1) time.
+
+Heapifying the combined heap takes O(n + m) time due to the balanced work done at each level of the heap.
+
+This makes the overall process efficient for merging two heaps. Let me know if you need further clarification!

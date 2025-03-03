@@ -1,0 +1,73 @@
+Ques:https://www.geeksforgeeks.org/maximize-array-sum-after-k-negations-using-sorting/
+
+Code:
+
+    long long int maximizeSum(long long int a[], int n, int k)
+    {
+      sort(a,a+n);
+      for(int i=0;i<n;i++)
+      {
+          if(a[i]<0 && k>0)
+          {
+              a[i]=-a[i];
+              k--;
+          }
+      }
+      long long int sum=0,mi=10000000;
+      for(int i=0;i<n;i++)
+      {
+         sum+=a[i];
+         mi=min(a[i],mi);
+      }
+      if(k>0)
+      {
+          if(k%2!=0)
+          {
+              sum=sum-(2*mi);
+          }
+      }
+      return sum;
+    }
+
+
+Time and space complexity:
+Explanation:
+Sort the Array → Sorting helps bring negative numbers to the front.
+Negate Negative Numbers → Convert as many negatives to positives as possible.
+Compute the Sum & Find the Smallest Element
+Compute the sum of all elements.
+Track the smallest element (mi) in the array.
+Handle Remaining K Negations
+If K is odd, negate the smallest element (to minimize loss).
+Return the Maximum Sum.
+Complexity Analysis:
+Sorting: 
+𝑂
+(
+𝑁
+log
+⁡
+𝑁
+)
+O(NlogN)
+Iterating through the array: 
+𝑂
+(
+𝑁
+)
+O(N)
+Total Time Complexity: 
+𝑂
+(
+𝑁
+log
+⁡
+𝑁
+)
+O(NlogN)
+Space Complexity: 
+𝑂
+(
+1
+)
+O(1) (in-place modification)

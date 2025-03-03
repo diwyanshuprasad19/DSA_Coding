@@ -1,0 +1,82 @@
+Ques:
+
+Code:
+
+    public:
+    //Function to insert heap.
+    priority_queue<int> s;
+    priority_queue<int,vector<int>,greater<int>> g;
+    void insertHeap(int &x)
+    {
+        if(s.size()==0)
+        {
+             s.push(x);
+        return;
+        }
+     
+        if(s.size()>g.size())
+        {
+            if(x<s.top())
+            {
+                g.push(s.top());
+                s.pop();
+                s.push(x);
+            }
+            else
+            {
+                g.push(x);
+            }
+        }
+        //for equal
+        else
+        {
+            if(x<s.top())
+            {
+                s.push(x);
+            }
+            else
+            {
+                //consider 14 came between 12 and 15
+               g.push(x);
+               s.push(g.top());
+               g.pop();
+            }
+        }
+     
+    }
+    
+    //Function to balance heaps.
+    void balanceHeaps()
+    {
+        
+    }
+    
+    //Function to return Median.
+    double getMedian()
+    {
+        if(s.size()==g.size())
+        {
+           return (s.top()+g.top())/2.0; 
+        }
+        else
+        {
+            return s.top();
+        }
+    }
+
+Time and space compelxity:
+Time and Space Complexity Analysis for MedianFinder
+Time Complexity:
+addNum(int num) → O(log N)
+
+Insertion into a heap (s or g) takes O(log N).
+Rebalancing involves at most one insertion and one deletion, each O(log N).
+Thus, the worst-case complexity is O(log N).
+findMedian() → O(1)
+
+Finding the median only requires checking the top elements of the heaps.
+This is an O(1) operation.
+Overall Time Complexity:
+Operation	Time Complexity
+addNum(num)	O(log N)
+findMedian()	O(1)

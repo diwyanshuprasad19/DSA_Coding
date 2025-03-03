@@ -1,0 +1,252 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2759
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\froman\fcharset0 Times-Bold;\f2\froman\fcharset0 Times-Roman;
+\f3\fnil\fcharset0 STIXTwoMath-Regular;\f4\fmodern\fcharset0 Courier;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red109\green109\blue109;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c50196\c50196\c50196;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid1\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{circle\}}{\leveltext\leveltemplateid2\'01\uc0\u9702 ;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{decimal\}}{\leveltext\leveltemplateid101\'01\'00;}{\levelnumbers\'01;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{circle\}}{\leveltext\leveltemplateid102\'01\uc0\u9702 ;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid201\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid3}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 All subsequence all possible solution here:\
+\
+\
+Code:\
+#include <bits/stdc++.h>\
+using namespace std;\
+\
+// Function to generate all subsequences of a string\
+void generateSubsequences(string s, string output, vector<string> &subsequences, int index) \{\
+    if (index == s.size()) \{\
+        subsequences.push_back(output);\
+        return;\
+    \}\
+\
+    // Include the current character\
+    generateSubsequences(s, output + s[index], subsequences, index + 1);\
+\
+    // Exclude the current character\
+    generateSubsequences(s, output, subsequences, index + 1);\
+\}\
+\
+int main() \{\
+    string s;\
+    cin >> s;\
+\
+    vector<string> subsequences;\
+    generateSubsequences(s, "", subsequences, 0);\
+\
+    // Output results\
+    cout << "Subsequences:\\n";\
+    for (const auto &subseq : subsequences) \{\
+        cout << (subseq.empty() ? "\\"\\"" : subseq) << " ";\
+    \}\
+    cout << "\\nTotal number of subsequences: " << subsequences.size() << endl;\
+\
+    return 0;\
+\}\
+\
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f1\b\fs28 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Time Complexity Analysis\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2\b0\fs24 \cf0 The function explores every possibility for each character to either be included or excluded, which leads to:\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls1\ilvl0
+\f1\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	1	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Number of Subsequences
+\f2\b0 :\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls1\ilvl1\cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 For a string of length 
+\f3 n\uc0\u8232 \u8232 
+\f2 n
+\f3 \uc0\u8232 
+\f2 n, there are 
+\f3 2\uc0\u8232 
+\fs18 n\uc0\u8232 
+\fs24 \uc0\u8232 \u8232 
+\f2 2^n
+\f3 \uc0\u8232 
+\f2 2n possible subsequences (including the empty subsequence).\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls1\ilvl0
+\f1\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	2	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Recursion
+\f2\b0 :\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls1\ilvl1\cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 The recursion depth is 
+\f3 n\uc0\u8232 \u8232 
+\f2 n
+\f3 \uc0\u8232 
+\f2 n, and for each level, two recursive calls are made.\
+\ls1\ilvl1\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 The total number of recursive calls is 
+\f3 2\uc0\u8232 
+\fs18 n\uc0\u8232 
+\fs24 \uc0\u8232 \u8232 
+\f2 2^n
+\f3 \uc0\u8232 
+\f2 2n.\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls1\ilvl0
+\f1\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	3	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Processing Each Subsequence
+\f2\b0 :\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls1\ilvl1\cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Each subsequence is stored in the 
+\f4\fs26 vector<string>
+\f2\fs24 , which requires 
+\f3 O\uc0\u8232 (\u8232 n\u8232 )\u8232 \u8232 
+\f2 O(n)
+\f3 \uc0\u8232 
+\f2 O(n) space per subsequence (to copy the string).\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b \cf0 Overall Time Complexity
+\f2\b0 :\
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 O\
+(\
+2\
+\pard\pardeftab720\partightenfactor0
+
+\fs18 \cf0 n\
+\pard\pardeftab720\partightenfactor0
+
+\fs24 \cf0 \uc0\u8901 \
+n\
+)\
+\pard\pardeftab720\partightenfactor0
+
+\f2 \cf0 O(2^n \\cdot n)
+\f3 \
+\pard\pardeftab720\partightenfactor0
+
+\f2 \cf0 O(2n\uc0\u8901 n)\
+\pard\pardeftab720\sa240\partightenfactor0
+\cf0 The
+\f3 \
+\pard\pardeftab720\partightenfactor0
+\cf0 n\
+\pard\pardeftab720\partightenfactor0
+
+\f2 \cf0 n
+\f3 \
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f2 \cf0 n factor arises from string concatenation during recursion.\
+\pard\pardeftab720\partightenfactor0
+\cf3 \strokec3 \
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f1\b\fs28 \cf0 \strokec2 Space Complexity Analysis\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls2\ilvl0
+\fs24 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	1	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Recursive Call Stack
+\f2\b0 :\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls2\ilvl1\cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 The maximum recursion depth is 
+\f3 n\uc0\u8232 \u8232 
+\f2 n
+\f3 \uc0\u8232 
+\f2 n.\
+\ls2\ilvl1\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Space for recursion: 
+\f3 O\uc0\u8232 (\u8232 n\u8232 )\u8232 \u8232 
+\f2 O(n)
+\f3 \uc0\u8232 
+\f2 O(n).\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls2\ilvl0
+\f1\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	2	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Storage for Subsequences
+\f2\b0 :\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls2\ilvl1\cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 There are 
+\f3 2\uc0\u8232 
+\fs18 n\uc0\u8232 
+\fs24 \uc0\u8232 \u8232 
+\f2 2^n
+\f3 \uc0\u8232 
+\f2 2n subsequences, each requiring 
+\f3 O\uc0\u8232 (\u8232 n\u8232 )\u8232 \u8232 
+\f2 O(n)
+\f3 \uc0\u8232 
+\f2 O(n) space for storage.\
+\ls2\ilvl1\kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Space for storage: 
+\f3 O\uc0\u8232 (\u8232 2\u8232 
+\fs18 n\uc0\u8232 
+\fs24 \uc0\u8232 \u8901 \u8232 n\u8232 )\u8232 \u8232 
+\f2 O(2^n \\cdot n)
+\f3 \uc0\u8232 
+\f2 O(2n\uc0\u8901 n).\
+\pard\pardeftab720\sa240\partightenfactor0
+
+\f1\b \cf0 Overall Space Complexity
+\f2\b0 :\
+\pard\pardeftab720\partightenfactor0
+
+\f3 \cf0 O\
+(\
+2\
+\pard\pardeftab720\partightenfactor0
+
+\fs18 \cf0 n\
+\pard\pardeftab720\partightenfactor0
+
+\fs24 \cf0 \uc0\u8901 \
+n\
+)\
+\pard\pardeftab720\partightenfactor0
+
+\f2 \cf0 O(2^n \\cdot n)
+\f3 \
+\pard\pardeftab720\partightenfactor0
+
+\f2 \cf0 O(2n\uc0\u8901 n)\cf3 \strokec3 \
+\
+\pard\pardeftab720\sa280\partightenfactor0
+
+\f1\b\fs28 \cf0 \strokec2 Key Points\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls3\ilvl0
+\fs24 \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Time Complexity
+\f2\b0 : 
+\f3 O\uc0\u8232 (\u8232 2\u8232 
+\fs18 n\uc0\u8232 
+\fs24 \uc0\u8232 \u8901 \u8232 n\u8232 )\u8232 \u8232 
+\f2 O(2^n \\cdot n)
+\f3 \uc0\u8232 
+\f2 O(2n\uc0\u8901 n)\
+\ls3\ilvl0
+\f1\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Space Complexity
+\f2\b0 : 
+\f3 O\uc0\u8232 (\u8232 2\u8232 
+\fs18 n\uc0\u8232 
+\fs24 \uc0\u8232 \u8901 \u8232 n\u8232 )\u8232 \u8232 
+\f2 O(2^n \\cdot n)
+\f3 \uc0\u8232 
+\f2 O(2n\uc0\u8901 n)\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\partightenfactor0
+\ls3\ilvl0\cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 The code generates and stores all subsequences, which is computationally expensive for large 
+\f3 n\uc0\u8232 \u8232 
+\f2 n
+\f3 \uc0\u8232 
+\f2 n.\
+}

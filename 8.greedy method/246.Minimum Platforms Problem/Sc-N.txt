@@ -1,0 +1,120 @@
+Ques:https://www.geeksforgeeks.org/minimum-number-platforms-required-railwaybus-station/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+static bool comp(pair<int, int> a, pair<int, int> b) {
+    return a.first < b.first;
+}
+
+int findPlatform(int arr[], int dep[], int n) {
+    vector<pair<int, int>> v(n);
+    for (int i = 0; i < n; i++) {
+        v[i] = {arr[i], dep[i]};
+    }
+    sort(v.begin(), v.end(), comp);
+    
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> q;
+    
+    q.push({v[0].second, 1});
+    int maxplat = 1;
+    for (int i = 1; i < n; i++) {
+        auto a = q.top();
+        if (v[i].first > a.first) {
+            q.pop();
+            q.push({v[i].second, a.second});
+        } else {
+            q.push({v[i].second, maxplat + 1});
+            maxplat++;
+        }
+    }
+    return maxplat;
+}
+
+int main() {
+    int arr[] = {900, 940, 950, 1100, 1500, 1800};
+    int dep[] = {910, 1200, 1120, 1130, 1900, 2000};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    
+    cout << "Minimum number of platforms required: " << findPlatform(arr, dep, n) << endl;
+    
+    return 0;
+}
+
+
+Time and sapce compelxity:
+
+Sorting the Vector:
+Sorting the array of n elements takes O(n log n).
+Processing the Trains:
+We iterate through the n elements in a loop → O(n).
+Each element is inserted into the priority queue, and the operations inside the priority queue (insertion and deletion) take O(log n) in the worst case.
+Since we insert each train's departure time once and remove elements based on availability, the total complexity for the heap operations is O(n log n).
+Total Time Complexity:
+
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
++
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+=
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+O(nlogn)+O(nlogn)=O(nlogn)
+Space Complexity Analysis
+Storage for Sorting:
+
+The vector<pair<int, int>> v stores arrival and departure times, consuming O(n) space.
+Priority Queue Storage:
+
+The priority queue stores at most n elements (worst case, all trains overlap), so it requires O(n) space.
+Total Space Complexity:
+
+𝑂
+(
+𝑛
+)
++
+𝑂
+(
+𝑛
+)
+=
+𝑂
+(
+𝑛
+)
+O(n)+O(n)=O(n)
+Final Complexity Summary:
+Time Complexity: 
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+O(nlogn)
+Space Complexity: 
+𝑂
+(
+𝑛
+)
+O(n)

@@ -1,0 +1,58 @@
+Ques:https://www.geeksforgeeks.org/greedy-algorithm-to-find-minimum-number-of-coins/
+
+The goal of this code is to make the given string lexicographically smallest 
+(i.e., alphabetically smallest) by swapping two distinct characters only once.
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    string chooseandswap(string a) {
+        set<char> s;
+        
+        // Step 1: Store all unique characters in a set
+        for (int i = 0; i < a.length(); i++) 
+            s.insert(a[i]);
+
+        // Step 2: Iterate through the string and find the first smaller lexicographic character
+        for (int i = 0; i < a.length(); i++) {
+            s.erase(a[i]); // Remove current character from set
+            
+            if (s.empty()) 
+                break;
+
+            char ch = *s.begin(); // Get the smallest remaining character
+            
+            if (ch < a[i]) { // If we found a smaller character to swap
+                char k = a[i];
+
+                // Step 3: Perform the swapping operation in the entire string
+                for (int j = 0; j < a.length(); j++) {
+                    if (a[j] == ch) 
+                        a[j] = k;
+                    else if (a[j] == k) 
+                        a[j] = ch;
+                }
+                break; // Swap only once and break
+            }
+        }
+        return a;
+    }
+};
+
+Lexicographically Smallest String: aacd
+
+// Driver Code
+int main() {
+    Solution obj;
+    string s = "ccad";
+    cout << "Lexicographically Smallest String: " << obj.chooseandswap(s) << endl;
+    
+    return 0;
+}
+
+
+Time and space Complexity:

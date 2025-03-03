@@ -1,0 +1,54 @@
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+int ma;  // Global variable to store max diameter
+
+// Helper function to calculate height and update diameter
+int func(Node* root) {
+    if (root == NULL) return 0;
+
+    int leftHeight = func(root->left);
+    int rightHeight = func(root->right);
+
+    // Update the maximum diameter (longest path found so far)
+    ma = max(ma, leftHeight + rightHeight + 1);
+
+    // Return the height of the current node
+    return max(leftHeight, rightHeight) + 1;
+}
+
+// Function to find the diameter of the tree
+int diameter(Node* root) {
+    ma = INT_MIN;  // Initialize the max diameter
+    func(root);    // Compute the height while updating diameter
+    return ma;     // Return the computed diameter
+}
+
+int main() {
+    Node* root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+    root->right->left = new Node(6);
+    root->right->right = new Node(7);
+
+    cout << "Diameter of the Tree: " << diameter(root) << endl;
+
+    return 0;
+}
+
+
+Time Complexity:
+Each node is visited once, so the time complexity is O(N).
+Space Complexity:
+O(H) (where H is the height of the tree, worst-case O(N) for a skewed tree).

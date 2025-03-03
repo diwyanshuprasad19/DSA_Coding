@@ -1,0 +1,145 @@
+ Ques:https://leetcode.com/problems/palindrome-partitioning/description/
+
+ Sol:https://www.youtube.com/watch?v=WBgsABoClE0
+
+ here rememeber left rside for partition has tyo be palindrom for partition to occur
+ 
+ Code:
+
+    bool ispalin(string s,int start,int end)
+    {
+        while(start<=end)
+        {
+            if(s[start++]!=s[end--])
+                return false;
+        }
+        return true;
+    }
+    
+    
+    void solve(int index,string s,vector<string> &path,vector<vector<string>> &ans)
+    {
+        if(index==s.size())
+        {
+            ans.push_back(path);
+            return;
+        }
+        for(int i=index;i<s.size();i++)
+        {
+            if(ispalin(s,index,i))
+            {
+                path.push_back(s.substr(index,i-index+1));
+                solve(i+1,s,path,ans);
+                path.pop_back();
+            }
+        }
+    }
+    
+    vector<vector<string>> partition(string s) {
+        vector<vector<string>> ans;
+        vector<string> path;
+        solve(0,s,path,ans);
+        return ans;
+    }
+
+
+Time and space complexity:
+The code you provided is for solving the Palindrome Partitioning problem, where the task is to partition a string s into all possible substrings such that each substring is a palindrome.
+
+Time Complexity Analysis:
+Recursive Function solve():
+
+The function solve() is a recursive backtracking function that explores all possible ways to partition the string.
+At each index i, the function iterates over all possible substrings starting from index to i, and for each substring, it checks if it is a palindrome using the ispalin() function.
+Number of Recursive Calls:
+
+The recursion tree can have up to 2^n branches where n is the length of the string. This is because at each index, the function can either include or exclude a character as part of a palindrome partition.
+In the worst case, where each partition of the string is valid, the number of recursive calls is exponential in nature, i.e., O(2^n). Each recursive call involves checking multiple substrings and adding to the path.
+Palindrome Check (ispalin() function):
+
+The ispalin() function checks whether a substring s[start:end+1] is a palindrome. This check takes O(n) time in the worst case because the function compares each character of the substring.
+The number of palindrome checks made is proportional to the number of substrings, which can be up to 
+𝑛
+(
+𝑛
++
+1
+)
+2
+2
+n(n+1)
+​
+ , or roughly O(n^2) substrings.
+Total Time Complexity:
+
+For each of the O(n^2) possible substrings, we perform a palindrome check in O(n) time. Hence, the total time complexity for all palindrome checks is:
+𝑂
+(
+𝑛
+3
+)
+O(n 
+3
+ )
+The backtracking recursion tree has O(2^n) branches, but the palindrome checking will dominate, and thus the overall time complexity is O(n^3) due to the palindrome check for each substring.
+Space Complexity Analysis:
+Auxiliary Space for ispalin():
+
+The ispalin() function does not use extra space other than the pointers start and end, so its space complexity is O(1) for each palindrome check.
+Recursion Stack:
+
+The depth of the recursion tree can go up to n because in the worst case, each recursive call adds one substring, and the string is partitioned into individual characters. Hence, the maximum depth of the recursion stack is O(n).
+path and ans Storage:
+
+The path vector stores a valid partition at each step. In the worst case, there are 
+2
+𝑛
+2 
+n
+  different ways to partition the string.
+Each partition can have at most n substrings (since we cannot have more than n palindromic partitions).
+Therefore, the space required for the partitions is O(2^n * n) in the worst case.
+Total Space Complexity:
+
+The space complexity includes the space for the recursion stack and the space to store the results (ans), as well as the temporary path vector.
+The recursion stack takes O(n) space.
+The space required to store the result is O(2^n * n).
+Thus, the total space complexity is:
+
+𝑂
+(
+𝑛
++
+2
+𝑛
+⋅
+𝑛
+)
+O(n+2 
+n
+ ⋅n)
+The O(2^n * n) term dominates in the worst case.
+
+Final Time and Space Complexity:
+Time Complexity: 
+𝑂
+(
+𝑛
+3
+)
+O(n 
+3
+ ) (due to palindrome checks for all substrings).
+Space Complexity: 
+𝑂
+(
+𝑛
++
+2
+𝑛
+⋅
+𝑛
+)
+O(n+2 
+n
+ ⋅n), dominated by the storage of results in the worst case.

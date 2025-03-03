@@ -1,0 +1,248 @@
+Ques:
+
+Sol:https://www.youtube.com/watch?v=K5pcpkEMCN0&list=PLgUwDviBIf0pcIDCZnxhv0LkHf5KzG9zp&index=2
+
+Code:
+
+#include <bits/stdc++.h>
+
+using namespace std;
+struct Node {
+  Node * links[26];
+  int cntEndWith = 0;
+  int cntPrefix = 0;
+
+  bool containsKey(char ch) {
+    return (links[ch - 'a'] != NULL);
+  }
+  Node * get(char ch) {
+    return links[ch - 'a'];
+  }
+  void put(char ch, Node * node) {
+    links[ch - 'a'] = node;
+  }
+  void increaseEnd() {
+    cntEndWith++;
+  }
+  void increasePrefix() {
+    cntPrefix++;
+  }
+  void deleteEnd() {
+    cntEndWith--;
+  }
+  void reducePrefix() {
+    cntPrefix--;
+  }
+  int getEnd() {
+    return cntEndWith;
+  }
+  int getPrefix() {
+    return cntPrefix;
+  }
+};
+class Trie {
+  private:
+    Node * root;
+
+  public:
+    /** Initialize your data structure here. */
+    Trie() {
+      root = new Node();
+    }
+
+  /** Inserts a word into the trie. */
+  void insert(string word) {
+    Node * node = root;
+    for (int i = 0; i < word.length(); i++) {
+      if (!node -> containsKey(word[i])) {
+        node -> put(word[i], new Node());
+      }
+      node = node -> get(word[i]);
+      node -> increasePrefix();
+    }
+    node -> increaseEnd();
+  }
+
+ int countWordsEqualTo(string &word)
+    {
+        Node *node = root;
+        for (int i = 0; i < word.length(); i++)
+        {
+            if (node->containsKey(word[i]))
+            {
+                node = node->get(word[i]);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        return node->getEnd();
+    }
+
+
+  int countWordsStartingWith(string & word) {
+    Node * node = root;
+    for (int i = 0; i < word.length(); i++) {
+      if (node -> containsKey(word[i])) {
+        node = node -> get(word[i]);
+      } else {
+        return 0;
+      }
+    }
+    return node -> getPrefix();
+  }
+
+  void erase(string & word) {
+    Node * node = root;
+    for (int i = 0; i < word.length(); i++) {
+      if (node -> containsKey(word[i])) {
+        node = node -> get(word[i]);
+        node -> reducePrefix();
+      } else {
+        return;
+      }
+    }
+    node -> deleteEnd();
+  }
+};
+
+int main() {
+  Trie T;
+  T.insert("apple");
+  T.insert("apple");
+  T.insert("apps");
+  T.insert("apps");
+  string word1 = "apps";
+  cout<<"Count Words Equal to "<< word1<<" "<<T.countWordsEqualTo(word1)<<endl;
+  string word2 = "abc";
+  cout<<"Count Words Equal to "<< word2<<" "<<T.countWordsEqualTo(word2)<<endl;
+  string word3 = "ap";
+  cout<<"Count Words Starting With "<<word3<<" "<<T.countWordsStartingWith(word3)
+  <<endl;
+  string word4 = "appl";
+  cout<<"Count Words Starting With "<< word4<<" "<<T.countWordsStartingWith(word4)
+  <<endl;
+  T.erase(word1);
+  cout<<"Count Words equal to "<< word1<<" "<<T.countWordsEqualTo(word1)<<endl;
+  return 0;
+}
+
+
+
+
+
+Time and Space Complexity Analysis of Trie Implementation
+1. Insert Operation (insert(string word))
+Each word has a length of L, and we iterate over each character.
+At each step, we check and create a new node if needed (O(1) operation).
+Time Complexity: 
+𝑂
+(
+𝐿
+)
+O(L)
+Space Complexity: 
+𝑂
+(
+𝐿
+)
+O(L) per word, leading to total space complexity of 
+𝑂
+(
+𝑁
+×
+𝐿
+)
+O(N×L) for N words.
+2. Count Words Equal To (countWordsEqualTo(string word))
+We traverse the Trie, following the path of the word.
+Takes at most L steps.
+Time Complexity: 
+𝑂
+(
+𝐿
+)
+O(L)
+Space Complexity: 
+𝑂
+(
+1
+)
+O(1) (no extra space used apart from function calls).
+3. Count Words Starting With (countWordsStartingWith(string prefix))
+Similar to countWordsEqualTo(), we traverse the Trie up to the prefix length.
+Time Complexity: 
+𝑂
+(
+𝐿
+)
+O(L)
+Space Complexity: 
+𝑂
+(
+1
+)
+O(1)
+4. Erase (erase(string word))
+Similar to insertion, we traverse L characters and decrement counters.
+Time Complexity: 
+𝑂
+(
+𝐿
+)
+O(L)
+Space Complexity: 
+𝑂
+(
+1
+)
+O(1) (no extra data structures are used).
+Overall Complexity Summary
+Operation	Time Complexity	Space Complexity
+Insert word	
+𝑂
+(
+𝐿
+)
+O(L)	
+𝑂
+(
+𝑁
+×
+𝐿
+)
+O(N×L)
+Count Words Equal To	
+𝑂
+(
+𝐿
+)
+O(L)	
+𝑂
+(
+1
+)
+O(1)
+Count Words Starting With	
+𝑂
+(
+𝐿
+)
+O(L)	
+𝑂
+(
+1
+)
+O(1)
+Erase word	
+𝑂
+(
+𝐿
+)
+O(L)	
+𝑂
+(
+1
+)
+O(1)

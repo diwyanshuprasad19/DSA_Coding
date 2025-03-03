@@ -1,0 +1,64 @@
+Ques:https://geeksforgeeks.org/minimum-cost-cut-board-squares/
+
+Sol:https://www.youtube.com/watch?v=9DckVBRzuQU
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int minimumCostOfBreaking(vector<int> X, vector<int> Y, int M, int N) {
+    // Sorting in descending order
+    sort(X.begin(), X.end(), greater<int>());
+    sort(Y.begin(), Y.end(), greater<int>());
+
+    int hor = 1, ver = 1; // Initial pieces count
+    int i = 0, j = 0;
+    int n = X.size(), m = Y.size();
+    int ans = 0;
+
+    // While both horizontal and vertical cuts remain
+    while (i < n && j < m) {
+        // Take the maximum cut available
+        if (X[i] >= Y[j]) {
+            ans += (X[i] * hor);
+            i++;
+            ver++; // Increase vertical pieces count
+        } else {
+            ans += (Y[j] * ver);
+            j++;
+            hor++; // Increase horizontal pieces count
+        }
+    }
+
+    // If there are remaining horizontal cuts
+    while (i < n) {
+        ans += (X[i] * hor);
+        i++;
+    }
+
+    // If there are remaining vertical cuts
+    while (j < m) {
+        ans += (Y[j] * ver);
+        j++;
+    }
+
+    return ans;
+}
+
+int main() {
+    vector<int> X = {2, 1, 3, 1, 4};  // Example horizontal cut costs
+    vector<int> Y = {4, 1, 2};        // Example vertical cut costs
+    int M = X.size(), N = Y.size();
+
+    cout << "Minimum cost of breaking: " << minimumCostOfBreaking(X, Y, M, N) << endl;
+    
+    return 0;
+}
+
+
+Time and space complexity:
+Time Complexity: O(mlogm + nlogn), where n and m are the sizes of the given arrays.
+Auxiliary Space: O(1)
+
+ 

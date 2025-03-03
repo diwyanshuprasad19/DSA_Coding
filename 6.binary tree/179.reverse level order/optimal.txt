@@ -1,0 +1,67 @@
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+vector<int> reverseLevelOrder(Node* root) {
+    queue<Node*> q;
+    vector<int> v;
+    q.push(root);
+
+    while (!q.empty()) {
+        Node* nn = q.front();
+        q.pop();
+        v.push_back(nn->data);
+        
+        // Push right first, then left
+        if (nn->right != NULL)
+            q.push(nn->right);
+        if (nn->left != NULL)
+            q.push(nn->left);
+    }
+    
+    reverse(v.begin(), v.end()); // Reverse the order
+    return v;
+}
+
+int main() {
+    Node* n10 = new Node(10);
+    Node* n20 = new Node(20);
+    Node* n30 = new Node(30);
+    Node* n40 = new Node(40);
+    Node* n50 = new Node(50);
+    Node* n70 = new Node(70);
+    
+    n10->left = n20;
+    n10->right = n30;
+    n20->left = n40;
+    n20->right = n50;
+    n30->right = n70;
+
+    vector<int> result = reverseLevelOrder(n10);
+
+    cout << "Reverse Level Order Traversal: ";
+    for (int num : result)
+        cout << num << " ";
+    cout << endl;
+
+    return 0;
+}
+
+
+ Time Complexity:
+The function performs a level-order traversal (BFS) using a queue.
+Each node is visited once, making it O(N).
+The reverse() operation on the vector takes O(N).
+Hence, the total time complexity is O(N).
+Space Complexity:
+The queue can store up to N nodes in the worst case, leading to O(N) space complexity.
+The vector v stores N elements, also contributing to O(N).
+Thus, the overall space complexity is O(N).

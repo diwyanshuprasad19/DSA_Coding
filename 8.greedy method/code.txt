@@ -1,0 +1,31 @@
+https://crackfaang.medium.com/intro-to-greedy-algorithms-with-c-546d66d30502
+
+
+No, it is not always possible to solve a greedy problem using dynamic programming (DP) and vice-versa. While both approaches are used for optimization problems, they have different problem-solving paradigms.
+
+1. Greedy to DP
+Greedy algorithms make locally optimal choices at each step with the hope that these choices lead to a globally optimal solution.
+Dynamic programming considers all possible solutions and uses optimal substructure and overlapping subproblems to build the final answer.
+Example where Greedy Works but DP Does Not Make Sense:
+Activity Selection Problem (Choosing maximum non-overlapping intervals sorted by end times).
+The greedy approach picks the earliest finishing activity at each step.
+A DP approach would need to track multiple possibilities, making it inefficient.
+Huffman Encoding (Building a prefix-free binary tree).
+The greedy approach (using a priority queue) efficiently constructs the optimal tree.
+A DP approach would not work efficiently because there are no overlapping subproblems to exploit.
+2. DP to Greedy
+DP ensures optimality by solving subproblems and combining them, but greedy may fail if a local optimal choice does not lead to the global optimal solution.
+Example where DP Works but Greedy Fails:
+0/1 Knapsack Problem (Choosing items with given weights and values to maximize value under a weight constraint).
+
+Greedy (picking the highest value-to-weight ratio item first) fails in cases where picking smaller items would yield a better total value.
+DP (solving for each weight limit up to the total weight) gives the correct solution.
+Longest Increasing Subsequence (LIS)
+
+A naive greedy approach (always picking the next greater element) does not work in all cases.
+DP (tracking increasing subsequences using states) works correctly.
+Conclusion
+If a problem has optimal substructure and overlapping subproblems, DP is the best approach.
+If a problem satisfies the greedy choice property and optimal substructure, a greedy approach works.
+Some problems can be solved by both approaches, but often DP is more general and works in cases where greedy fails.
+Would you like an example implementation of any specific case?

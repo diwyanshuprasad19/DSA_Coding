@@ -1,0 +1,68 @@
+Ques:https://www.geeksforgeeks.org/problems/largest-subtree-sum-in-a-tree/1
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a binary tree node
+struct Node {
+    int data;
+    Node *left, *right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+// Helper function to find the largest subtree sum
+int findLargestSubtreeSumUtil(Node* root, int &maxSum) {
+    if (root == NULL) return 0;
+
+    // Compute subtree sums
+    int leftSum = findLargestSubtreeSumUtil(root->left, maxSum);
+    int rightSum = findLargestSubtreeSumUtil(root->right, maxSum);
+
+    // Total sum of current subtree
+    int totalSum = leftSum + rightSum + root->data;
+
+    // Update maximum subtree sum found so far
+    maxSum = max(maxSum, totalSum);
+
+    return totalSum;
+}
+
+// Function to find the largest subtree sum
+int findLargestSubtreeSum(Node* root) {
+    int maxSum = INT_MIN;
+    findLargestSubtreeSumUtil(root, maxSum);
+    return maxSum;
+}
+
+// Example usage
+int main() {
+    Node* root = new Node(1);
+    root->left = new Node(-2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+    root->right->left = new Node(-6);
+    root->right->right = new Node(2);
+
+    cout << "Largest Subtree Sum: " << findLargestSubtreeSum(root) << endl;
+
+    return 0;
+}
+
+
+
+Time and Space Complexity
+Time Complexity
+Each node is visited once, making the time complexity O(n), where n is the number of nodes.
+Space Complexity
+The recursion stack takes O(h) space, where h is the height of the tree.
+Balanced tree: O(log n)
+Skewed tree: O(n)
+Overall Space Complexity: O(h).
+Final Complexity Summary
+Case	Time Complexity	Space Complexity
+General Case	O(n)	O(h) (h = height of tree)
+Balanced Tree	O(n)	O(log n)
+Skewed Tree	O(n)	O(n)

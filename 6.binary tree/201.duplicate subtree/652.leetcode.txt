@@ -1,0 +1,80 @@
+Ques: https://leetcode.com/problems/find-duplicate-subtrees/solutions/
+
+
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a binary tree node
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+class Solution {
+public:
+    string solve(TreeNode* root, unordered_map<string, int> &mp, vector<TreeNode*> &ans) {
+        if (!root) return "";
+        string str = to_string(root->val) + "," + solve(root->left, mp, ans) + "," + solve(root->right, mp, ans);
+        mp[str]++;
+        if (mp[str] == 2)
+            ans.push_back(root);
+        return str;
+    }
+
+    vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
+        unordered_map<string, int> mp;
+        vector<TreeNode*> ans;
+        solve(root, mp, ans);
+        return ans;
+    }
+};
+
+// Example usage
+int main() {
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(3);
+    root->left->left = new TreeNode(4);
+    root->right->left = new TreeNode(2);
+    root->right->right = new TreeNode(4);
+    root->right->left->left = new TreeNode(4);
+
+    Solution sol;
+    vector<TreeNode*> duplicates = sol.findDuplicateSubtrees(root);
+
+    cout << "Duplicate Subtrees Root Values: ";
+    for (auto node : duplicates) {
+        cout << node->val << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+Duplicate Subtrees Root Values: 4 2
+
+
+
+Time and Space Complexity Analysis:
+
+Time Complexity:
+The function solve() performs a postorder traversal of the tree, visiting each node once, so the traversal itself takes O(n).
+Each subtree is serialized into a string representation. The worst case occurs when the string representation is stored and checked in unordered_map, which can take O(n) string operations.
+Overall, in the worst case, this results in O(n²) complexity due to string concatenation and storage operations.
+Space Complexity:
+The unordered_map mp stores serialized representations of each subtree, taking O(n) space.
+The vector ans stores duplicate subtree roots, which in the worst case is O(n).
+The recursive call stack takes O(h) space, where h is the height of the tree.
+Best case (Balanced Tree): O(log n)
+Worst case (Skewed Tree): O(n)
+Overall Space Complexity: O(n).
+
+Final Complexity Summary
+Case	Time Complexity	Space Complexity
+General Case	O(n²)	O(n)
+Optimized Case (Using Hashing for String Storage)	O(n)	O(n)
+

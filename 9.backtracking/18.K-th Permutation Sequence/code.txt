@@ -1,0 +1,66 @@
+Ques:
+
+Sol:https://www.youtube.com/watch?v=wT7gcXLYoao
+ 
+Code 
+
+    string getPermutation(int n, int k) {
+        int fact=1;
+        vector<int>ans;
+        for(int i=1;i<n;i++)
+        {
+            fact=fact*i;
+            ans.push_back(i);
+        }
+        ans.push_back(n);
+        //rememmber use 0 based indexing.
+        k=k-1;
+        string s="";
+        while(true)
+        {
+            s=s+to_string(ans[k/fact]);
+            ans.erase(ans.begin()+k/fact);
+            if(ans.size()==0)
+                break;
+            k=k%fact;
+            fact=fact/ans.size();
+        }
+        return s;
+    }
+
+
+Time and compelxity:
+Factorial Calculation:
+
+The first loop calculates the factorial of n-1 and stores the numbers from 1 to n in the ans vector. This loop runs O(n) times, where n is the number of elements. So, the time complexity for this part is O(n).
+Main Loop:
+
+The main loop runs as long as there are elements left in the ans vector. In each iteration:
+It computes k/fact, which gives the index of the element to be selected.
+It appends the selected element to the result string s.
+It removes the selected element from the ans vector, which takes O(n) time for the worst case (since erase takes linear time in the worst case).
+It updates k and reduces fact by dividing it by the current size of ans.
+The loop runs n times (one for each digit in the permutation). In each iteration:
+
+The erase operation takes O(n) time, as it removes one element from the vector and shifts the remaining elements.
+Thus, the total time complexity for the loop is O(n^2) due to the erase operation.
+Overall Time Complexity:
+
+The initial loop runs in O(n) time, and the main loop runs in O(n^2) time due to the erase operation.
+So, the total time complexity is O(n^2).
+Space Complexity:
+Space for ans vector:
+
+The ans vector stores the numbers from 1 to n. It requires O(n) space.
+Space for Result String s:
+
+The result string s will eventually hold n characters (the digits of the permutation), so it also requires O(n) space.
+Other Variables:
+
+The other variables such as fact, k, and the loop variables take constant space, so their contribution to space complexity is O(1).
+Overall Space Complexity:
+
+The overall space complexity is the sum of the space for ans and the result string s, which is O(n).
+Summary:
+Time Complexity: O(n^2) (due to the erase operation inside the main loop).
+Space Complexity: O(n) (for the ans vector and the result string s).

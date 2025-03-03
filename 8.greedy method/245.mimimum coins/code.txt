@@ -1,0 +1,55 @@
+Ques:https://www.geeksforgeeks.org/greedy-algorithm-to-find-minimum-number-of-coins/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    vector<int> minPartition(int N) {
+        vector<int> v;
+        int arr[10] = {1, 2, 5, 10, 20, 50, 100, 200, 500, 2000}; // Available denominations
+
+        // Step 1: Iterate through denominations in decreasing order
+        for (int i = 9; i >= 0; i--) {
+            while (N >= arr[i]) { // Use as many of this denomination as possible
+                N -= arr[i];
+                v.push_back(arr[i]); // Store the selected denomination
+            }
+        }
+        return v;
+    }
+};
+
+// Driver Code
+int main() {
+    Solution obj;
+    int N = 93; // Example input
+    vector<int> result = obj.minPartition(N);
+
+    cout << "Minimum coins/notes used: ";
+    for (int coin : result) {
+        cout << coin << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+Time and space complexity:
+Time Complexity Analysis
+Operation	Complexity
+Iterating through denominations	O(1) (Fixed at 10)
+Selecting coins	O(k), where k is the number of selected coins
+Total Time Complexity	O(k) ≈ O(log N) (since larger denominations reduce N quickly)
+✔ Efficient because it processes a limited number of denominations (≤ 10).
+✔ The number of iterations is at most O(log N), as N gets reduced by a factor of ~2 to 10 each step.
+
+🔹 Space Complexity Analysis
+Component	Space
+Array of denominations (arr[10])	O(1)
+Result vector (v) storing selected coins	O(k) (depends on output size)
+Total Space Complexity	O(k) (small, as k is usually small)
+✔ Minimal extra space is used.
+✔ No additional auxiliary data structures beyond the result vector.

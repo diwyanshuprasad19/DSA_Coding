@@ -1,0 +1,100 @@
+Ques:https://leetcode.com/problems/balanced-binary-tree/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Structure for a binary tree node
+struct Node
+{
+    int data;
+    Node *left, *right;
+};
+
+// Helper function to determine the height of the tree while checking balance
+int func(Node *root)
+{
+    if (root == NULL)
+        return 0;
+
+    int l = func(root->left);
+    int r = func(root->right);
+
+    if (l == -1 || r == -1) // If any subtree is unbalanced, return -1
+        return -1;
+
+    if (abs(l - r) > 1) // If height difference is more than 1, return -1
+        return -1;
+
+    return max(l, r) + 1; // Return the height of the current subtree
+}
+
+// Function to check if a binary tree is balanced
+bool isBalanced(Node *root)
+{
+    return func(root) != -1;
+}
+
+
+Time and space Complexity:
+
+Time Complexity Analysis:
+Each Node is Visited Once:
+The function performs a postorder traversal.
+Every node’s height is computed in 
+𝑂
+(
+1
+)
+O(1) time.
+Total Time Complexity: 
+𝑂
+(
+𝑁
+)
+O(N) (since each node is processed once).
+Space Complexity Analysis:
+Recursive Stack Usage:
+
+In the worst case (for a skewed tree), recursion goes O(N) deep.
+In a balanced tree, recursion depth is O(log N).
+No Extra Data Structures Used:
+
+Only recursion stack is utilized.
+Total Space Complexity:
+
+Best case (Balanced Tree): 
+𝑂
+(
+log
+⁡
+𝑁
+)
+O(logN) (logarithmic recursion depth).
+Worst case (Skewed Tree): 
+𝑂
+(
+𝑁
+)
+O(N) (linear recursion depth).
+Final Complexity Summary:
+Time Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)
+Space Complexity: 
+𝑂
+(
+log
+⁡
+𝑁
+)
+O(logN) (for balanced trees) or 
+𝑂
+(
+𝑁
+)
+O(N) (for skewed trees).

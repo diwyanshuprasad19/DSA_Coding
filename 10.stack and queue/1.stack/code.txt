@@ -1,0 +1,50 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Stack{
+    int top;
+    int *arr;
+    int size;
+    public:
+    Stack(){
+        top=-1;
+        size=1000;
+        arr=new int[size];
+    }
+    void push(int x){
+        top++;
+        arr[top]=x;
+    }
+    int pop(){
+        int x=arr[top];
+        top--;
+        return x;
+    }
+    int Top(){
+        return arr[top];
+    }
+    int Size(){
+        return top+1;
+    }
+};
+
+int main()
+{
+    Stack s;
+    s.push(6);
+    s.push(7);
+    s.push(8);
+    cout<<s.pop()<<endl;
+    cout<<s.Top()<<endl;
+    cout<<s.Size()<<endl;
+
+    return 0;
+}

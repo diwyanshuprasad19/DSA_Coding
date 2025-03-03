@@ -1,0 +1,85 @@
+https://www.youtube.com/watch?v=0vVofAhAYjc&t=7s
+
+
+sol:https://takeuforward.org/data-structure/bellman-ford-algorithm-g-41/
+
+
+code:
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+	/*  Function to implement Bellman Ford
+	*   edges: vector of vectors which represents the graph
+	*   S: source vertex to start traversing graph with
+	*   V: number of vertices
+	*/
+	vector<int> bellman_ford(int V, vector<vector<int>>& edges, int S) {
+		vector<int> dist(V, 1e8);
+		dist[S] = 0;
+		for (int i = 0; i < V - 1; i++) {
+			for (auto it : edges) {
+				int u = it[0];
+				int v = it[1];
+				int wt = it[2];
+				if (dist[u] != 1e8 && dist[u] + wt < dist[v]) {
+					dist[v] = dist[u] + wt;
+				}
+			}
+		}
+		// Nth relaxation to check negative cycle
+		for (auto it : edges) {
+			int u = it[0];
+			int v = it[1];
+			int wt = it[2];
+			if (dist[u] != 1e8 && dist[u] + wt < dist[v]) {
+				return { -1};
+			}
+		}
+
+
+		return dist;
+	}
+};
+
+
+int main() {
+
+	int V = 6;
+	vector<vector<int>> edges(7, vector<int>(3));
+	edges[0] = {3, 2, 6};
+	edges[1] = {5, 3, 1};
+	edges[2] = {0, 1, 5};
+	edges[3] = {1, 5, -3};
+	edges[4] = {1, 2, -2};
+	edges[5] = {3, 4, -2};
+	edges[6] = {2, 4, 3};
+
+	int S = 0;
+	Solution obj;
+	vector<int> dist = obj.bellman_ford(V, edges, S);
+	for (auto d : dist) {
+		cout << d << " ";
+	}
+	cout << endl;
+
+	return 0;
+}
+
+see we run this n-1 times because we need to 
+because like in edges we have 6 edges from 0 to 6
+4-5,3-4,2-3,1-2,0-1 like hence hence each iteration will update like deom 0-1 first second will 1-2 and hence 
+we need at most n-1 iteration
+
+
+tc:O(v*e)
+sc:O(v)
+
+
+The Bellman-Ford algorithm has a time complexity of O(V * E), where V is the number of vertices and E is the number of edges in the graph, and a space complexity of O(V), meaning it requires memory proportional to the number of vertices to store distance information. 
+Explanation:
+Time complexity:
+The algorithm iterates through all edges V-1 times, relaxing each edge in each iteration, resulting in a total time complexity of O(V * E). 
+Space complexity:
+The algorithm primarily needs to store an array to keep track of the current shortest distances for each vertex, which requires space proportional to the number of vertices (V). 

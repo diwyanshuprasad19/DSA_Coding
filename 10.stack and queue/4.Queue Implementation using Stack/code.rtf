@@ -1,0 +1,200 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2759
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;\f1\fnil\fcharset0 HelveticaNeue-Italic;\f2\froman\fcharset0 Times-Bold;
+\f3\froman\fcharset0 Times-Roman;\f4\fnil\fcharset0 STIXTwoMath-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c0\c0\c0\c84706;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{circle\}}{\leveltext\leveltemplateid2\'01\uc0\u9702 ;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab560
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f0\fs26 \cf0 #include <bits/stdc++.h>\
+\
+using namespace std;\
+\
+class MyQueue \{\
+  public:\
+    stack < int > input, output;\
+  
+\f1\i /** Initialize your data structure here. */
+\f0\i0 \
+  MyQueue() \{\
+\
+  \}\
+\
+  
+\f1\i /** Push element x to the back of queue. */
+\f0\i0 \
+  void push(int x) \{\
+    cout << "The element pushed is " << x << endl;\
+    input.push(x);\
+  \}\
+\
+  
+\f1\i /** Removes the element from in front of queue and returns that element. */
+\f0\i0 \
+  int pop() \{\
+    
+\f1\i // shift input to output 
+\f0\i0 \
+    if (output.empty())\
+      while (input.size())\
+        output.push(input.top()), input.pop();\
+\
+    int x = output.top();\
+    output.pop();\
+    return x;\
+  \}\
+\
+  
+\f1\i /** Get the front element. */
+\f0\i0 \
+  int top() \{\
+    
+\f1\i // shift input to output 
+\f0\i0 \
+    if (output.empty())\
+      while (input.size())\
+        output.push(input.top()), input.pop();\
+    return output.top();\
+  \}\
+\
+  int size() \{\
+    return (output.size() + input.size()); \
+  \}\
+\
+\};\
+int main() \{\
+  MyQueue q;\
+  q.push(3);\
+  q.push(4);\
+  cout << "The element poped is " << q.pop() << endl;\
+  q.push(5);\
+  cout << "The top of the queue is " << q.top() << endl;\
+  cout << "The size of the queue is " << q.size() << endl;\
+\
+\
+\}\
+\
+This uses 2 stack to implement it.\
+\
+\
+Now using 1 stack and code for that:\
+#include <iostream>\
+#include <stack>\
+using namespace std;\
+\
+class Queue \{\
+    stack<int> s;\
+\
+public:\
+    // Enqueue operation\
+    void enqueue(int x) \{\
+        s.push(x);\
+    \}\
+\
+    // Dequeue operation\
+    int dequeue() \{\
+        // Base case: if stack is empty, the queue is empty\
+        if (s.empty()) \{\
+            cout << "Queue is empty" << endl;\
+            return -1;\
+        \}\
+\
+        // Recursively remove elements until the last one is reached\
+        int x = s.top();\
+        s.pop();\
+\
+        if (s.empty()) \{\
+            // Base case: this is the element to dequeue\
+            return x;\
+        \} else \{\
+            // Recursive case: dequeue the last element\
+            int result = dequeue();\
+            // Push the current element back after dequeuing the last one\
+            s.push(x);\
+            return result;\
+        \}\
+    \}\
+\
+    // Check if queue is empty\
+    bool isEmpty() \{\
+        return s.empty();\
+    \}\
+\
+    // Get the size of the queue\
+    int size() \{\
+        return s.size();\
+    \}\
+\};\
+\
+int main() \{\
+    Queue q;\
+    q.enqueue(1);\
+    q.enqueue(2);\
+    q.enqueue(3);\
+    q.enqueue(4);\
+\
+    cout << "Dequeued: " << q.dequeue() << endl; // Should output 1\
+    cout << "Dequeued: " << q.dequeue() << endl; // Should output 2\
+    cout << "Size of queue: " << q.size() << endl; // Should output 2\
+\
+    q.enqueue(5);\
+    cout << "Dequeued: " << q.dequeue() << endl; // Should output 3\
+\
+    return 0;\
+\}\
+\
+\
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls1\ilvl0
+\f2\b\fs24 \cf0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Enqueue Operation
+\f3\b0 :\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls1\ilvl1
+\f2\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Time Complexity
+\f3\b0 : 
+\f4 O\uc0\u8232 (\u8232 1\u8232 )\u8232 \u8232 
+\f3 O(1)
+\f4 \uc0\u8232 
+\f3 O(1)\
+\ls1\ilvl1
+\f2\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Space Complexity
+\f3\b0 : 
+\f4 O\uc0\u8232 (\u8232 1\u8232 )\u8232 \u8232 
+\f3 O(1)
+\f4 \uc0\u8232 
+\f3 O(1) (no additional space used)\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sa240\partightenfactor0
+\ls1\ilvl0
+\f2\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u8226 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Dequeue Operation
+\f3\b0 :\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\partightenfactor0
+\ls1\ilvl1
+\f2\b \cf0 \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Time Complexity
+\f3\b0 : 
+\f4 O\uc0\u8232 (\u8232 n\u8232 )\u8232 \u8232 
+\f3 O(n)
+\f4 \uc0\u8232 
+\f3 O(n)\
+\ls1\ilvl1
+\f2\b \kerning1\expnd0\expndtw0 \outl0\strokewidth0 {\listtext	\uc0\u9702 	}\expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 Space Complexity
+\f3\b0 : 
+\f4 O\uc0\u8232 (\u8232 n\u8232 )\u8232 \u8232 
+\f3 O(n)
+\f4 \uc0\u8232 
+\f3 O(n)\
+\pard\pardeftab720\partightenfactor0
+\cf0 \
+\pard\pardeftab720\qc\partightenfactor0
+
+\f0\fs22 \cf3 \strokec3 \
+}

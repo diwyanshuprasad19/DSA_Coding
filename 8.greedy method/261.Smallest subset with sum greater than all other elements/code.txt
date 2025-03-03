@@ -1,0 +1,49 @@
+Ques:https://www.geeksforgeeks.org/smallest-subset-sum-greater-elements/
+
+sol:
+
+code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to find the minimum elements needed
+int minElements(vector<int>& arr) {
+  
+    // Calculate total sum of the array
+    int totalSum = accumulate(arr.begin(), arr.end(), 0);
+
+    // Sort the array in descending order
+    sort(arr.begin(), arr.end(), greater<int>());
+
+    int res = 0, currSum = 0;
+    for (int x : arr) {
+        currSum += x;
+        res++;
+
+        // Current sum greater than the remaining sum
+        if (currSum > totalSum - currSum)
+            return res;
+    }
+    return res;
+}
+
+int main() {
+    vector<int> arr = { 3, 1, 7, 1 };
+    cout << minElements(arr) << endl;
+    return 0;
+}
+
+
+Time and sapce complexity:
+Time Complexity Analysis:
+Computing total sum: accumulate(arr.begin(), arr.end(), 0); → O(n)
+Sorting the array: sort(arr.begin(), arr.end(), greater<int>()); → O(n log n)
+Iterating through the sorted array: O(n) in the worst case.
+Thus, the overall time complexity is O(n log n) due to the sorting step.
+
+Space Complexity Analysis:
+The algorithm uses a constant amount of extra space (excluding input storage).
+Sorting is done in-place using sort(), which has O(1) auxiliary space.
+The variables totalSum, res, and currSum use O(1) space.
+Thus, the overall space complexity is O(1).

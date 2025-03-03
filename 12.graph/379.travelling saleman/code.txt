@@ -1,0 +1,112 @@
+Ques:https://www.geeksforgeeks.org/travelling-salesman-problem-using-dynamic-programming/
+
+Sol:https://www.youtube.com/watch?v=JE0JE8ce1V0
+
+#define RED (1 << 0)      // 0001 -> 1
+#define YELLOW (1 << 1)   // 0010 -> 2
+#define GREEN (1 << 2)    // 0100 -> 4
+
+Understanding 1 << n in vector<vector<int>> memo(n, vector<int>(1 << n, -1));
+This line of code creates a memoization table of size:
+
+n (number of cities) rows
+1 << n (or 2^n) columns, representing different possible visit states (bitmasking).
+Why 1 << n (or 2^n) columns?
+Each city can either be visited (1) or not visited (0). Since there are n cities, we need 2^n different visit states.
+
+For example, if n = 4 (4 cities), the number of possible states (subsets of cities visited) is:
+
+2
+4
+=
+16
+2 
+4
+ =16
+The possible masks (binary states) are:
+
+Mask (Decimal)	Mask (Binary)	Meaning
+0	0000	No city visited
+1	0001	Only city 0 visited
+2	0010	Only city 1 visited
+3	0011	Cities 0 and 1 visited
+4	0100	Only city 2 visited
+5	0101	Cities 0 and 2 visited
+6	0110	Cities 1 and 2 visited
+...	...	...
+15	1111	All cities visited
+Since the highest mask for n=4 is 1111 (decimal 15), it might seem like we only need 15 states. However, we need 16 slots (2^4 = 16), because we start from 0000 (0) and go up to 1111 (15).
+
+
+
+
+Code:
+// C++ program to find the shortest possible route
+// that visits every city exactly once and returns to
+// the starting point using memoization and bitmasking
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int totalCost(int mask, int curr, int n, 
+              vector<vector<int>> &cost, vector<vector<int>> &memo) {
+    
+   // Base case: if all cities are visited, return the
+    // cost to return to the starting city (0)
+    if (mask == (1 << n) - 1) {
+        return cost[curr][0];
+    }
+
+    if (memo[curr][mask] != -1)
+        return memo[curr][mask];
+
+    int ans = INT_MAX;
+
+    // Try visiting every city that has not been visited yet
+    for (int i = 0; i < n; i++) {
+        if ((mask & (1 << i)) == 0) {
+          
+            // If city i is not visited, visit it and update 
+           // the mask
+            ans = min(ans, cost[curr][i] + 
+                      totalCost((mask | (1 << i)), i, n, cost, memo));
+        }
+    }
+
+    return memo[curr][mask] = ans;
+}
+ 
+int tsp(vector<vector<int>> &cost) {
+    int n = cost.size();
+    vector<vector<int>> memo(n, vector<int>(1 << n, -1));
+  
+    // Start from city 0, and only city 0 is visited
+      // initially (mask = 1)
+    return totalCost(1, 0, n, cost,
+                     memo);  
+}
+
+int main() {
+  
+    vector<vector<int>> cost = {{0, 10, 15, 20}, 
+                                {10, 0, 35, 25}, 
+                                {15, 35, 0, 30}, 
+                                {20, 25, 30, 0}};
+ 
+    int res = tsp(cost);
+    cout << res << endl;
+    return 0;
+}
+
+
+TC:O(n*n*2^n)
+SC:O(n*2^n)
+
+1. Number of States (n * 2ⁿ)
+We have n cities, and for each city, we maintain a bitmask of visited cities.
+The total number of distinct masks (subsets of cities visited) is 2ⁿ (since every city can either be visited (1) or not (0)).
+For each city (n choices), we store results for each mask → O(n * 2ⁿ) states.
+
+2. Transition Complexity (O(n))
+In each state (mask, curr), we loop through all n cities to find the next unvisited city.
+This means we do O(n) work per state.

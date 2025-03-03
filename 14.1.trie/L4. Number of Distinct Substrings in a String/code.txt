@@ -1,0 +1,135 @@
+Sol:https://www.youtube.com/watch?v=RV0QeTyHZxo&list=PLgUwDviBIf0pcIDCZnxhv0LkHf5KzG9zp&index=4
+
+Code:
+
+#include<iostream>
+
+using namespace std;
+
+struct Node {
+  Node * links[26];
+
+  bool containsKey(char ch) {
+    return (links[ch - 'a'] != NULL);
+  }
+
+  Node * get(char ch) {
+    return links[ch - 'a'];
+  }
+
+  void put(char ch, Node * node) {
+    links[ch - 'a'] = node;
+  }
+};
+
+int countDistinctSubstrings(string & s) {
+  Node * root = new Node();
+  int count = 0;
+  int n = s.size();
+  for (int i = 0; i < n; i++) {
+    Node * node = root;
+
+    for (int j = i; j < n; j++) {
+      if (!node -> containsKey(s[j])) {
+        node -> put(s[j], new Node());
+        count++;
+      }
+      node = node -> get(s[j]);
+    }
+
+  }
+  return count + 1;
+}
+
+int main() {
+  string s1 = "ababa";
+  cout << "Total number of distinct substrings : " << countDistinctSubstrings(s1);
+  cout << "\n";
+
+  string s2 = "ccfdf";
+  cout << "Total number of distinct substrings : " << countDistinctSubstrings(s2);
+
+  return 0;
+}
+
+
+Time and space compelxity:
+Time Complexity Analysis
+The function iterates over all possible substrings of the string s.
+The outer loop runs from i = 0 to n-1 (O(n)).
+The inner loop runs from j = i to n-1, meaning it processes O(n²) suffixes in total.
+Each Trie insertion takes O(1) per character since there are at most 26 children (constant-time operation).
+Thus, the overall time complexity is:
+
+𝑂
+(
+𝑛
+2
+)
+O(n 
+2
+ )
+Space Complexity Analysis
+Each distinct substring creates a new node in the Trie.
+In the worst case (when all characters are unique), the Trie stores O(n²) nodes since there are at most n(n+1)/2 distinct substrings.
+Each node has an array of 26 pointers, but at most O(n²) nodes are created.
+Thus, the worst-case space complexity is:
+
+𝑂
+(
+𝑛
+2
+)
+O(n 
+2
+ )
+Final Complexity Summary
+Operation	Time Complexity	Space Complexity
+Constructing Trie (all suffixes)	
+𝑂
+(
+𝑛
+2
+)
+O(n 
+2
+ )	
+𝑂
+(
+𝑛
+2
+)
+O(n 
+2
+ )
+Insertion in Trie	
+𝑂
+(
+1
+)
+O(1) per character	
+𝑂
+(
+𝑛
+2
+)
+O(n 
+2
+ ) (in worst case)
+Overall Complexity	
+𝑂
+(
+𝑛
+2
+)
+O(n 
+2
+ )	
+𝑂
+(
+𝑛
+2
+)
+O(n 
+2
+ )

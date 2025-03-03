@@ -1,0 +1,119 @@
+Ques:https://www.geeksforgeeks.org/diagonal-traversal-of-binary-tree/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Structure for a binary tree node
+struct Node
+{
+    int data;
+    Node *left, *right;
+};
+
+// Function to perform diagonal traversal of the binary tree
+vector<int> diagonal(Node *root)
+{
+    vector<int> ans;
+    if (root == NULL)
+        return ans;
+
+    queue<Node *> q;
+    q.push(root);
+
+    while (!q.empty())
+    {
+        Node *temp = q.front();
+        q.pop();
+
+        // Process the current diagonal
+        while (temp != NULL)
+        {
+            ans.push_back(temp->data);
+
+            // If left child exists, push it into the queue for next diagonal
+            if (temp->left != NULL)
+                q.push(temp->left);
+
+            // Move to the right child (same diagonal)
+            temp = temp->right;
+        }
+    }
+    return ans;
+}
+
+
+Time and space complexity:
+
+Time Complexity Analysis:
+Each Node is Visited Once:
+
+Every node is processed exactly once in the while loop → 
+𝑂
+(
+𝑁
+)
+O(N).
+Queue Operations (Push & Pop):
+
+Each node is pushed and popped once → 
+𝑂
+(
+𝑁
+)
+O(N).
+Traversal Along Right Pointers:
+
+Each node's right pointer is followed at most once → 
+𝑂
+(
+𝑁
+)
+O(N).
+Total Time Complexity:
+𝑂
+(
+𝑁
+)
+O(N)
+(Each node is processed once in a level-order traversal)
+
+Space Complexity Analysis:
+Queue Storage:
+
+Stores up to 
+𝑂
+(
+𝑁
+)
+O(N) nodes in the worst case (when the tree is skewed).
+Result Vector (ans) Storage:
+
+Stores 
+𝑂
+(
+𝑁
+)
+O(N) elements (one for each node).
+Total Space Complexity:
+𝑂
+(
+𝑁
+)
+O(N)
+(for queue storage and result vector)
+
+Final Complexity Summary:
+Time Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)
+Space Complexity: 
+𝑂
+(
+𝑁
+)
+O(N)

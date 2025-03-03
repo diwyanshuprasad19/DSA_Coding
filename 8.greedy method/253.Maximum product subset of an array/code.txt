@@ -1,0 +1,79 @@
+Ques:https://www.geeksforgeeks.org/maximum-product-subset-array/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int maxProductSubset(int a[], int n) {
+    if (n == 1) return a[0];
+
+    int zero = 0;
+    int neg = 0;
+    long long int prod = 1;
+    int negmin = INT_MIN;
+
+    // Iterate through the array
+    for (int i = 0; i < n; i++) {
+        if (a[i] == 0) {
+            zero++;
+            continue;
+        }
+        if (a[i] < 0) {
+            neg++;
+            negmin = max(a[i], negmin);
+        }
+        prod = prod * a[i];
+    }
+
+    // If all elements are zero
+    if (zero == n) {
+        return 0;
+    }
+
+    // If there's only one negative number and the rest are zeros
+    if (neg == 1 && neg + zero == n) {
+        return 0;
+    }
+
+    // If the count of negative numbers is odd, remove the smallest negative number
+    if (neg % 2 != 0) {
+        prod = prod / negmin;
+    }
+
+    return prod;
+}
+
+int main() {
+    int arr[] = {-1, -1, -2, 4, 3};  // Example input
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    cout << "Maximum product subset: " << maxProductSubset(arr, n) << endl;
+    return 0;
+}
+
+Time and sapce complexity:
+Base Case: If the array has only one element, return it directly.
+Iterate through the array:
+Count zeros (zero).
+Count negative numbers (neg).
+Track the smallest negative number (negmin).
+Compute the product of non-zero elements.
+Handling Edge Cases:
+If all elements are 0, return 0.
+If there's exactly one negative number and all other elements are 0, return 0.
+Handling Odd Number of Negatives:
+If there are an odd number of negative numbers, remove the smallest negative number (negmin) from the product.
+Complexity Analysis:
+Time Complexity: 
+𝑂
+(
+𝑁
+)
+O(N) (single iteration through the array)
+Space Complexity: 
+𝑂
+(
+1
+)
+O(1) (constant extra space)

@@ -1,0 +1,97 @@
+code:
+
+Recursion Stack with Space Complexity Analysis
+Here’s a detailed breakdown of how the call stack grows and the space complexity involved in both tail recursion and Fibonacci recursion (n-1 + n-2).
+
+1️⃣ Tail Recursion - O(1) Space Complexity
+Code:
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+void tailRecursion(int n) {
+    if (n == 0) return;  // Base case
+    cout << n << " ";    // Process current value
+    tailRecursion(n - 1); // Recursive call at the tail position
+}
+
+int main() {
+    tailRecursion(3);
+    return 0;
+}
+Call Stack Growth for tailRecursion(3)
+scss
+Copy
+Edit
+tailRecursion(3) → Calls tailRecursion(2)
+tailRecursion(2) → Calls tailRecursion(1)
+tailRecursion(1) → Calls tailRecursion(0) (Base case reached)
+Stack Memory Usage
+lua
+Copy
+Edit
++-----------------+       --> tailRecursion(0) (Base Case, removed instantly)
+| tailRecursion(1) |       --> Removed
++-----------------+
+| tailRecursion(2) |       --> Removed
++-----------------+
+| tailRecursion(3) |       --> Removed
++-----------------+
+📝 Space Complexity: O(1) (Optimized)
+If the compiler optimizes for tail recursion, it does not need to keep previous function calls in memory, effectively making space usage constant.
+If not optimized, the maximum depth is O(n), but in most cases, compilers optimize tail recursion to O(1) space.
+2️⃣ Fibonacci Recursion - O(2ⁿ) Space Complexity
+Code:
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+int fibonacci(int n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+int main() {
+    cout << fibonacci(5);
+    return 0;
+}
+Recursive Calls for fibonacci(4)
+scss
+Copy
+Edit
+fib(4)
+ ├── fib(3)
+ │   ├── fib(2)
+ │   │   ├── fib(1) -> returns 1
+ │   │   ├── fib(0) -> returns 0
+ │   ├── fib(1) -> returns 1
+ ├── fib(2)
+ │   ├── fib(1) -> returns 1
+ │   ├── fib(0) -> returns 0
+Stack Memory Usage
+sql
+Copy
+Edit
++-----------------+
+| fib(0) |  -> returns 0
++-----------------+
+| fib(1) |  -> returns 1
++-----------------+
+| fib(2) |  -> returns fib(1) + fib(0)
++-----------------+
+| fib(3) |  -> returns fib(2) + fib(1)
++-----------------+
+| fib(4) |  -> returns fib(3) + fib(2)
++-----------------+
+📝 Space Complexity: O(n) (Depth) or O(2ⁿ) (Total Calls)
+The recursion depth is O(n) (linear).
+The number of function calls is O(2ⁿ) (exponential growth).
+This recursion is inefficient due to repeated calculations.
+Comparison of Space Complexity
+Recursion Type	Time Complexity	Space Complexity
+Tail Recursion	O(n)	O(1) (Optimized)
+Fibonacci Recursion	O(2ⁿ)	O(n) (Depth) or O(2ⁿ) (Total Calls)

@@ -1,0 +1,96 @@
+sol:https://www.youtube.com/watch?v=aBxjDBC4M1U
+
+code:
+#include <bits/stdc++.h>
+using namespace std;
+
+class DisjointSet {
+    vector<int> rank, parent; 
+public: 
+    DisjointSet(int n) {
+        rank.resize(n+1, 0); 
+        parent.resize(n+1);
+        for(int i = 0; i <= n; i++) {
+            parent[i] = i;  
+        }
+    }
+
+    int findUPar(int node) {
+        if(node == parent[node])
+            return node; 
+        return parent[node] = findUPar(parent[node]); 
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u); 
+        int ulp_v = findUPar(v); 
+        if(ulp_u == ulp_v) return; 
+        if(rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v; 
+        }
+        else if(rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u; 
+        }
+        else {
+            parent[ulp_v] = ulp_u; 
+            rank[ulp_u]++; 
+        }
+    }
+}; 
+
+int main() {
+    DisjointSet ds(7);
+    ds.unionByRank(1, 2); 
+    ds.unionByRank(2, 3); 
+    ds.unionByRank(4, 5); 
+    ds.unionByRank(6, 7); 
+    ds.unionByRank(5, 6); 
+
+    // if 3 and 7 are in the same set
+    if(ds.findUPar(3) == ds.findUPar(7)) {
+        cout << "Same\n"; 
+    }
+    else cout << "Not same\n"; 
+
+    ds.unionByRank(3, 7); 
+
+    if(ds.findUPar(3) == ds.findUPar(7)) {
+        cout << "Same\n"; 
+    }
+    else cout << "Not same\n"; 
+
+    return 0;
+}
+
+
+by rank only make it work
+
+time and space compelxity:
+
+
+1. Time Complexity Analysis
+The code implements Disjoint Set Union (DSU) / Union-Find using Union by Rank and Path Compression.
+
+findUPar(int node) (Find Operation):
+
+Uses Path Compression, making it O(α(n)), where α(n) is the Inverse Ackermann function, which is almost constant O(1) for practical inputs.
+unionByRank(int u, int v) (Union Operation):
+
+Uses Union by Rank, ensuring that the depth of any tree is at most log(n).
+The time complexity per union operation is O(α(n)).
+Overall Complexity:
+
+For m operations (including both find and union), the total time complexity is O(m * α(n)), which is almost O(m) in real-world cases.
+✅ Final Time Complexity: O(m * α(n)) ≈ O(m) (amortized)
+
+2. Space Complexity Analysis
+parent array: O(n) (stores parent of each node)
+rank array: O(n) (stores rank of each node)
+Additional Variables: O(1)
+✅ Final Space Complexity: O(n)
+
+Operation	                     Worst-Case Time Complexity	    Amortized Time Complexity
+Find (with Path Compression)	     O(log n)	                    O(α(n)) ≈ O(1)
+Union (with Rank)	                 O(log n)	                    O(α(n)) ≈ O(1)
+Total (for m operations)	         O(m log n)	                   O(m α(n)) ≈ O(m)
+

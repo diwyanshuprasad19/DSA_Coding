@@ -1,0 +1,154 @@
+Ques:
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Definition for a Binary Tree Node
+struct Node {
+    int data;
+    Node* left, * right;
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+class Solution {
+public:
+    // Function to check if two trees are isomorphic
+    bool isIsomorphic(Node *root1, Node *root2) {
+        // If both trees are empty, they are isomorphic
+        if (root1 == NULL && root2 == NULL) return true;
+        
+        // If one of the trees is empty and the other is not, they are not isomorphic
+        if (root1 == NULL || root2 == NULL) return false;
+
+        // If the values at the root nodes do not match, they are not isomorphic
+        if (root1->data != root2->data) return false;
+
+        // Two cases: 
+        // 1. Left subtree of root1 matches with left subtree of root2 and right subtree matches with right subtree
+        // 2. Left subtree of root1 matches with right subtree of root2 and right subtree matches with left subtree
+        bool case1 = isIsomorphic(root1->left, root2->left) && isIsomorphic(root1->right, root2->right);
+        bool case2 = isIsomorphic(root1->left, root2->right) && isIsomorphic(root1->right, root2->left);
+
+        return case1 || case2;
+    }
+};
+
+// Driver code
+int main() {
+    Node* root1 = new Node(1);
+    root1->left = new Node(2);
+    root1->right = new Node(3);
+    root1->left->left = new Node(4);
+    root1->left->right = new Node(5);
+
+    Node* root2 = new Node(1);
+    root2->left = new N
+}
+
+
+
+Explaination:
+What is an Isomorphic Tree?
+Two binary trees are isomorphic if one of them can be transformed into the other by swapping left and right children at any number of nodes. The structure of the trees must remain the same, but the child nodes can be swapped.
+
+Key Conditions for Isomorphism:
+Both trees must have the same structure (ignoring left-right order).
+Data at corresponding nodes must be the same.
+Subtrees can be swapped at any number of places.
+Example with Diagram:
+Example 1: Isomorphic Trees
+Tree 1
+markdown
+Copy
+Edit
+      1
+     / \
+    2   3
+   / \
+  4   5
+Tree 2
+markdown
+Copy
+Edit
+      1
+     / \
+    3   2
+       / \
+      5   4
+✅ Both trees are isomorphic because:
+
+The root nodes (1) are the same.
+The left subtree of root1 (2) is swapped with the right subtree of root2 (2).
+The right subtree of root1 (3) is swapped with the left subtree of root2 (3).
+4 and 5 are swapped positions, but the structure is preserved.
+Example 2: Non-Isomorphic Trees
+Tree 1
+markdown
+Copy
+Edit
+      1
+     / \
+    2   3
+   / \
+  4   5
+Tree 2
+markdown
+Copy
+Edit
+      1
+     / \
+    2   3
+   /  
+  4   
+❌ These trees are NOT isomorphic because:
+
+The first tree has two children (4 and 5) under 2, but the second tree has only 4.
+The structures are different.
+
+
+
+Time and space complexity:
+Time and Space Complexity Analysis
+Time Complexity:
+This function checks each node once, performing a DFS traversal.
+Each node has at most 2 recursive calls.
+The worst-case scenario is when all nodes need to be checked, leading to:
+𝑂
+(
+𝑁
+)
+O(N)
+where 
+𝑁
+N is the number of nodes in the tree.
+Space Complexity:
+The space required depends on recursion depth, which is O(H), where 
+𝐻
+H is the height of the tree.
+For a balanced tree, 
+𝐻
+=
+𝑂
+(
+log
+⁡
+𝑁
+)
+H=O(logN), so O(log N) space.
+For a skewed tree, 
+𝐻
+=
+𝑂
+(
+𝑁
+)
+H=O(N), so O(N) space in the worst case.
+Thus, worst-case space complexity:
+
+𝑂
+(
+𝑁
+)
+O(N)

@@ -1,0 +1,121 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2759
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 HelveticaNeue;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab560
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f0\fs26 \cf0 class Solution \{   \
+    public:\
+        int daysBetweenDates(string date1, string date2) \{\
+            return abs(date_to_int(date2) - date_to_int(date1));\
+        \}\
+        \
+    protected:\
+        int date_to_int(string s_date)\
+        \{\
+            int Y = stoi(s_date.substr(0, 4));\
+            int M = stoi(s_date.substr(5, 2));\
+            int D = stoi(s_date.substr(8, 2));\
+            \
+            int date = 0;\
+            for(int y = 1971; y < Y; ++y) date += is_leap_year(y) ? 366 : 365;\
+            for(int m = 1; m < M; ++m) date += days_in_month(m, Y);\
+            return date + D;\
+        \}\
+        \
+        bool is_leap_year(int year)\
+        \{\
+            return (year %4  == 0 && year % 100 != 0) || year % 400 == 0;\
+        \}\
+        \
+        int days_in_month(int m, int year)\
+        \{ \
+            if(m==1 || m==3 || m==5 || m==7 || m==8 || m==10 || m==12 ) return 31;\
+            if(m==2) return is_leap_year(year) ? 29 : 28;\
+            return 30;\
+        \}\
+\};\
+\uc0\u8232 \u8232 more complex\u8232 /******************************************************************************\
+\
+                              Online C++ Compiler.\
+               Code, Compile, Run and Debug C++ program online.\
+Write your code in this editor and press "Run" button to compile and execute it.\
+\
+*******************************************************************************/\
+\
+#include <bits/stdc++.h>\
+using namespace std;\
+\
+int inmonthdays(int month,int year)\{\
+    vector<int> v=\{31,28,31,30,31,30,31,31,30,31,30,31\};\
+    if(year %4==0 && year%100!=0 && month==2)\{\
+        return 29;\
+    \}\
+    return v[month-1];\
+\}\
+ \
+ int convert(string s)\{\
+     int num=0;\
+     for(int i=0;i<s.size();i++)\{\
+         num=num*10+(s[i]-'0');\
+     \}\
+     return num;\
+ \}\
+\
+int main()\
+\{\
+    string s1 = "2023-12-01T07:01:59";\
+    string s2 = "2024-09-23T10:40:12";\
+    int year1=convert(s1.substr(0,4));\
+    int month1=convert(s1.substr(5,2));\
+    int day1=convert(s1.substr(8,2));\
+    int hour1=convert(s1.substr(11,2));\
+    int minute1=convert(s1.substr(14,2));\
+    int second1=convert(s1.substr(17,2));\
+    int year2=convert(s2.substr(0,4));\
+    int month2=convert(s2.substr(5,2));\
+    int day2=convert(s2.substr(8,2));\
+    int hour2=convert(s2.substr(11,2));\
+    int minute2=convert(s2.substr(14,2));\
+    int second2=convert(s2.substr(17,2));\
+    cout<<day2<<endl;\
+    \
+    int year,month,day,hour,minute,second;\
+    \
+    if(second2<second1)\{\
+        second2+=60;\
+        minute2--;\
+    \}\
+    second=second2-second1;\
+    \
+    if(minute2<minute1)\{\
+        minute2+=60;\
+        hour2--;\
+    \}\
+    minute=minute2-minute1;\
+    if(hour2<hour1)\{\
+        hour2+=24;\
+        day2--;\
+    \}\
+    hour=hour2-hour1;\
+    if(day2<day1)\{\
+        day2+=inmonthdays(month2,year2);\
+        month2--;\
+    \}\
+    day=day2-day1;\
+    \
+    if(month2<month1)\{\
+        month2+=12;\
+        year2--;\
+    \}\
+    month=month2-month1;\
+    \
+    year=year2-year1;\
+    \
+    cout<<year<<"year "<<month<<"month "<<day<<"day "<<hour<<"hour "<<minute<<"minute "<<second<<"second ";\
+    \
+\
+    return 0;\
+\}}
