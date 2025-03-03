@@ -1,3 +1,5 @@
+proof:https://stackoverflow.com/questions/3952805/proof-of-detecting-the-start-of-cycle-in-linked-list
+
 #include<bits/stdc++.h>
 using namespace std;
 
