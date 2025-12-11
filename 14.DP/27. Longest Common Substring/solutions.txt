@@ -1,10 +1,9 @@
-https://www.youtube.com/watch?v=_wP9mWNPL5w
 ques:https://leetcode.com/problems/maximum-length-of-repeated-subarray/solutions/2599740/iterative-dp-same-as-longest-common-substring/
-similar questions
 
-recursion
+Sol:https://www.youtube.com/watch?v=_wP9mWNPL5w
 
-optimized
+Code:
+
 #include 
 using namespace std;
 
@@ -42,4 +41,25 @@ int main() {
 
     return 0; // Return 0 to indicate successful program execution
 }
+
+
+Sample Input & Output
+🔹 Input:
+cpp
+Copy
+Edit
+s1 = "abcjklp";
+s2 = "acjkp";
+🔹 Output:
+mathematica
+Copy
+Edit
+The Length of Longest Common Substring is 3
+🔹 Explanation:
+The longest common substring is "jkp" → Length = 3.
+
+⏱ Time and Space Complexity
+Metric	Value
+Time	O(n * m)
+Space	O(n * m)
 

@@ -1,0 +1,104 @@
+Ques:
+
+Code:
+
+#include <iostream>
+using namespace std;
+
+class Queue {
+    int front, rear, size, capacity, *arr;
+
+public:
+    Queue(int cap) {
+        capacity = cap;
+        arr = new int[capacity];
+        front = 0;
+        size = 0;
+        rear = -1;
+    }
+
+    void push(int x) {
+        if (size == capacity) {
+            cout << "Queue is full" << endl;
+            return;
+        }
+        rear++;
+        arr[rear] = x;
+        size++;
+    }
+
+    int pop() {
+        if (size == 0) {
+            cout << "Queue is empty" << endl;
+            return -1;
+        }
+        int x = arr[front];
+        for (int i = 0; i < size - 1; i++) {
+            arr[i] = arr[i + 1]; // Shift elements left
+        }
+        rear--;
+        size--;
+        return x;
+    }
+
+    int Front() {
+        if (size == 0) {
+            cout << "Queue is empty" << endl;
+            return -1;
+        }
+        return arr[front];
+    }
+
+    int Size() {
+        return size;
+    }
+};
+
+int main() {
+    Queue q(10);  // Queue with capacity of 10 elements
+    q.push(5);
+    q.push(10);
+    q.push(15);
+
+    cout << "Popped: " << q.pop() << endl;       // Expected output: 5
+    cout << "Front element: " << q.Front() << endl; // Expected output: 10
+    cout << "Queue size: " << q.Size() << endl;     // Expected output: 2
+
+    return 0;
+}
+
+
+Time and space:
+
+Time Complexity Analysis
+Push Operation (push(x)): 
+𝑂
+(
+1
+)
+O(1) → Inserts at the rear in constant time.
+Pop Operation (pop()): 
+𝑂
+(
+𝑁
+)
+O(N) → Needs to shift elements after removal.
+Front Operation (Front()): 
+𝑂
+(
+1
+)
+O(1) → Retrieves front element without modifying the queue.
+Size Operation (Size()): 
+𝑂
+(
+1
+)
+O(1) → Returns the number of elements.
+Space Complexity Analysis
+Space Complexity: 
+𝑂
+(
+𝑁
+)
+O(N) → The queue stores up to N elements.

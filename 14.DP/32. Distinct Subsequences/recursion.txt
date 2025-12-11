@@ -1,18 +1,71 @@
-#include<bits/stdc++.h>
+Quers:https://leetcode.com/problems/distinct-subsequences/description/
 
-int solve(int i,int j,string s1,string s2)
-{
-    if(j<0)return 1;
-    if(i<0)return 0;
-    if(s1[i]==s2[j])
-    {
-        return (solve(i-1,j-1,s1,s2)+solve(i-1,j,s1,s2));
+Sol:https://www.youtube.com/watch?v=nVG7eTiD2bY
+
+COde:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int countSubsequences(int i, int j, string &s, string &t) {
+    // If target exhausted, 1 valid subsequence found
+    if (j < 0) return 1;
+
+    // If source exhausted but target still remains
+    if (i < 0) return 0;
+
+    // If characters match: we have 2 choices
+    if (s[i] == t[j]) {
+        return countSubsequences(i - 1, j - 1, s, t) + countSubsequences(i - 1, j, s, t);
+    } else {
+        // If characters don't match: skip current character of s
+        return countSubsequences(i - 1, j, s, t);
     }
-    else
-        return solve(i-1,j,s1,s2);
 }
 
-int subsequenceCounting(string &t, string &s, int lt, int ls) {
-    int count=solve(lt-1,ls-1,t,s);
-    return count;
-} 
+int numDistinct(string s, string t) {
+    int n = s.size();
+    int m = t.size();
+    return countSubsequences(n - 1, m - 1, s, t);
+}
+
+Sample Input & Output
+Input:
+
+cpp
+Copy
+Edit
+s = "babgbag"
+t = "bag"
+Function Call:
+
+cpp
+Copy
+Edit
+cout << numDistinct("babgbag", "bag") << endl;
+Output:
+
+txt
+Copy
+Edit
+5
+Explanation:
+The string "bag" can be formed in 5 different ways from "babgbag" as subsequences:
+
+b a g
+
+b a g (second g)
+
+b a g (third g)
+
+b g g
+
+b g a g
+
+⏱ Time & Space Complexity
+Metric	Value
+Time	O(2^n) (Exponential in n)
+Space (stack)	O(n + m) (recursive depth)
+
+Where n = s.length(), m = t.length()
+

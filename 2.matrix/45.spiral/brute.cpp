@@ -1,3 +1,6 @@
+Ques:https://leetcode.com/problems/spiral-matrix/description/
+
+
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -42,6 +45,22 @@ int main()
     return 0;
 }
 
-TC:O(m*n)
-SC:O(1)
+Sample Output
+sql
+Copy
+Edit
+Spiral order of matrix 1:
+1 2 3 4 5 6 12 18 17 16 15 14 13 7 8 9 10 11 
+
+Spiral order of matrix 2:
+1 2 3 6 9 8 7 4 5 
+
+Spiral order of matrix 3:
+10 20 30 
+
+
+ Time & Space Complexity
+Time Complexity: O(m * n) — Every element is visited once
+
+Space Complexity: O(1) — Constant extra space
 

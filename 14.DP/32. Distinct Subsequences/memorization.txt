@@ -1,20 +1,55 @@
-#include<bits/stdc++.h>
+Quers:https://leetcode.com/problems/distinct-subsequences/description/
 
-int solve(int i,int j,string s1,string s2,vector<vector<int>> &dp)
-{
-    if(j<0)return 1;
-    if(i<0)return 0;
-    if(dp[i][j]!=-1)return dp[i][j];
-    if(s1[i]==s2[j])
-    {
-        return dp[i][j]=(solve(i-1,j-1,s1,s2,dp)+solve(i-1,j,s1,s2,dp));
+Sol:https://www.youtube.com/watch?v=nVG7eTiD2bY
+
+COde:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int MOD = 1e9 + 7;
+
+int solve(int i, int j, string &s1, string &s2, vector<vector<int>> &dp) {
+    if (j < 0) return 1;     // matched all of s2
+    if (i < 0) return 0;     // s1 exhausted before s2
+    if (dp[i][j] != -1) return dp[i][j];
+
+    if (s1[i] == s2[j]) {
+        return dp[i][j] = (solve(i - 1, j - 1, s1, s2, dp) + solve(i - 1, j, s1, s2, dp)) % MOD;
+    } else {
+        return dp[i][j] = solve(i - 1, j, s1, s2, dp);
     }
-    else
-        return dp[i][j]=solve(i-1,j,s1,s2,dp);
 }
 
 int subsequenceCounting(string &t, string &s, int lt, int ls) {
-    vector<vector<int>> dp(lt,vector<int>(ls,-1));
-    int count=solve(lt-1,ls-1,t,s,dp);
-    return count;
-} 
+    vector<vector<int>> dp(lt, vector<int>(ls, -1));
+    return solve(lt - 1, ls - 1, t, s, dp);
+}
+
+int main() {
+    string t = "babgbag";
+    string s = "bag";
+    int lt = t.size(), ls = s.size();
+    cout << "Count of distinct subsequences: " << subsequenceCounting(t, s, lt, ls) << endl;
+    return 0;
+}
+
+
+Sample Input/Output
+Input:
+
+cpp
+Copy
+Edit
+t = "babgbag";
+s = "bag";
+Output:
+
+sql
+Copy
+Edit
+Count of distinct subsequences: 5
+⏱ Time and Space Complexity
+Metric	Value
+Time	O(n * m) where n = t.length(), m = s.length()
+Space	O(n * m) for dp + O(n + m) for recursion stack

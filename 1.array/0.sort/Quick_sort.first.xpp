@@ -1,0 +1,68 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/**
+ * Hoare Partition Scheme using the first element as the pivot.
+ * This function partitions the array and returns the index of partition.
+ */
+int partitionFirst(vector<int>& arr, int low, int high) {
+    int pivot = arr[low]; // First element as pivot
+    int i = low - 1;
+    int j = high + 1;
+
+    while (true) {
+        // Find the leftmost element >= pivot
+        do { i++; } while (arr[i] < pivot);
+
+        // Find the rightmost element <= pivot
+        do { j--; } while (arr[j] > pivot);
+
+        // If pointers have crossed, return the partition index
+        if (i >= j)
+            return j;
+
+        // Swap elements at i and j
+        swap(arr[i], arr[j]);
+    }
+}
+
+/**
+ * QuickSort function using Hoare Partition scheme with first element as pivot
+ */
+void quickSortFirst(vector<int>& arr, int low, int high) {
+    if (low < high) {
+        int pi = partitionFirst(arr, low, high);
+
+        // Recursively sort the left and right partitions
+        quickSortFirst(arr, low, pi);      // Not pi - 1
+        quickSortFirst(arr, pi + 1, high);
+    }
+}
+
+/**
+ * Utility to print the array
+ */
+void printArray(const vector<int>& arr) {
+    for (int num : arr)
+        cout << num << " ";
+    cout << endl;
+}
+
+/**
+ * Main function to test the QuickSort with first element as pivot
+ */
+int main() {
+    vector<int> arr = {64, 34, 25, 12, 22, 11, 90};
+
+    cout << "Original array: ";
+    printArray(arr);
+
+    // Apply QuickSort
+    quickSortFirst(arr, 0, arr.size() - 1);
+
+    cout << "Sorted array using First Element as Pivot (Hoare Partition): ";
+    printArray(arr);
+
+    return 0;
+}

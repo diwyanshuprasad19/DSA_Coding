@@ -1,45 +1,85 @@
-    void heapify(vector<int> &arr,int i,int len)
-    {
-        int parent=i;
-        if(parent>=len)
-        return;
-        int left=2*parent+1;
-         int right=2*parent+2;
-         if(left<len && arr[parent]<arr[left])
-         parent =left;
-          if(right<len && arr[parent]<arr[right])
-         parent =right;
-         if(right<len && left<len && arr[parent]<arr[left] && arr[parent]<arr[right])
-         {
-             if(arr[right]<arr[left])
-             parent=left;
-             else
-             parent=right;
-         }
-         if(parent!=i)
-         {
-             swap(arr[parent],arr[i]);
-             heapify(arr,parent,len);
-         }
-    }
-    vector<int> mergeHeaps(vector<int> &a, vector<int> &b, int n, int m) {
-        vector<int> arr;
-        for(int i=0;i<n;i++)
-        arr.push_back(a[i]);
-        for(int i=0;i<m;i++)
-        arr.push_back(b[i]);
-        int tot=n+m;
-        int nlef=tot/2-1;
-        for(int i=nlef;i>=0;i--)
-        {
-            heapify(arr,i,tot);
+Ques: https://www.geeksforgeeks.org/dsa/merge-two-binary-max-heaps/
+
+Code:
+
+  #include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    // Max Heapify function
+    void heapify(vector<int>& arr, int i, int n) {
+        int largest = i;
+        int left = 2 * i + 1;
+        int right = 2 * i + 2;
+
+        if (left < n && arr[left] > arr[largest])
+            largest = left;
+
+        if (right < n && arr[right] > arr[largest])
+            largest = right;
+
+        if (largest != i) {
+            swap(arr[i], arr[largest]);
+            heapify(arr, largest, n);
         }
-        return arr;
     }
 
+    vector<int> mergeHeaps(vector<int>& a, vector<int>& b, int n, int m) {
+        vector<int> merged;
 
-Time Complexity: O(N + M)
-Auxiliary Space: O(N + M)
+        // Step 1: Combine both arrays
+        for (int i = 0; i < n; i++) merged.push_back(a[i]);
+        for (int i = 0; i < m; i++) merged.push_back(b[i]);
+
+        int size = n + m;
+
+        // Step 2: Heapify from last non-leaf to root
+        for (int i = size / 2 - 1; i >= 0; i--) {
+            heapify(merged, i, size);
+        }
+
+        return merged;
+    }
+};
+
+// 🧪 Test driver
+int main() {
+    vector<int> heap1 = {9, 8, 7, 5};
+    vector<int> heap2 = {10, 6, 4, 2};
+
+    Solution obj;
+    vector<int> result = obj.mergeHeaps(heap1, heap2, heap1.size(), heap2.size());
+
+    cout << "Merged Max Heap: ";
+    for (int x : result) cout << x << " ";
+    cout << endl;
+
+    return 0;
+}
+
+Sample Input
+cpp
+Copy
+Edit
+heap1 = {9, 8, 7, 5}
+heap2 = {10, 6, 4, 2}
+📤 Sample Output
+yaml
+Copy
+Edit
+Merged Max Heap: 10 9 7 5 8 6 4 2
+
+
+Time and Space Complexity
+✅ Time Complexity: O(n + m)
+Building heap from combined array of size n + m takes O(n + m) using bottom-up heapify approach.
+
+Each heapify call is logarithmic, but the total across all nodes is linear.
+
+✅ Space Complexity: O(n + m)
+Output heap requires O(n + m) space to store the merged array.
+
 
 Sure! Let’s go through the entire process of merging two binary max heaps step by step, including tree diagrams for each step. We’ll use the same sample data:
 

@@ -1,31 +1,41 @@
+Ques:https://www.geeksforgeeks.org/insertion-sort-algorithm/
+
+code:
+
 #include <iostream>
 #include <vector>
 using namespace std;
 
+// Function to perform Insertion Sort
 void insertionSort(vector<int>& arr) {
     int n = arr.size();
     for (int i = 1; i < n; i++) {
-        int key = arr[i];
+        int key = arr[i];  // Current element to be inserted
         int j = i - 1;
-        // Move elements of arr[0..i-1], that are greater than key, to one position ahead of their current position
+
+        // Shift elements of arr[0..i-1], that are greater than key, to one position ahead
         while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
+            arr[j + 1] = arr[j];  // Move element one position to the right
             j = j - 1;
         }
-        arr[j + 1] = key;
+        arr[j + 1] = key;  // Place the key at its correct position
     }
 }
 
 int main() {
     vector<int> arr = {64, 34, 25, 12, 22, 11, 90};
+
+    // Displaying original array
     cout << "Original array: ";
     for (int num : arr) {
         cout << num << " ";
     }
     cout << endl;
 
+    // Sorting the array using Insertion Sort
     insertionSort(arr);
 
+    // Displaying sorted array
     cout << "Sorted array using Insertion Sort: ";
     for (int num : arr) {
         cout << num << " ";
@@ -35,5 +45,12 @@ int main() {
     return 0;
 }
 
-Algorithm	Time Complexity	Space Complexity (Worst Case)
-Insertion Sort	O(N^2)	O(1)
+/*
+Time Complexity Analysis:
+1. Worst-case: O(N^2) - When the array is sorted in reverse order.
+2. Best-case: O(N) - When the array is already sorted (only one comparison per element).
+3. Average-case: O(N^2) - When the array elements are randomly sorted.
+
+Space Complexity Analysis:
+1. Space Complexity: O(1) - Sorting is done in-place with constant extra memory.
+*/

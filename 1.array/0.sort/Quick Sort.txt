@@ -1,60 +1,129 @@
-#include <iostream>
-#include <vector>
+Sol:https://www.youtube.com/watch?v=WIrA4YexLRQ
+striver pelase read
+
+
+🔹 1. First Element as Pivot
+
+Here we always choose the first element of the subarray.
+This uses a Hoare-style partition.
+
+#include <bits/stdc++.h>
 using namespace std;
 
-// Partition function to partition the array around the pivot
-int partition(vector<int>& arr, int low, int high) {
-    int pivot = arr[high]; // Selecting the last element as the pivot
-    int i = low - 1; // Index of the smaller element
+int partitionFirst(int arr[], int low, int high) {
+    int pivot = arr[low];  // pivot = first element
+    int i = low + 1, j = high;
+
+    while (true) {
+        while (i <= high && arr[i] <= pivot) i++;
+        while (j >= low && arr[j] > pivot) j--;
+        if (i >= j) break;
+        swap(arr[i], arr[j]);
+    }
+    swap(arr[low], arr[j]);  // put pivot in correct place
+    return j;
+}
+
+void quickSortFirst(int arr[], int low, int high) {
+    if (low < high) {
+        int p = partitionFirst(arr, low, high);
+        quickSortFirst(arr, low, p - 1);
+        quickSortFirst(arr, p + 1, high);
+    }
+}
+
+🔹 2. Last Element as Pivot
+
+This is the Lomuto partition scheme, commonly taught.
+
+int partitionLast(int arr[], int low, int high) {
+    int pivot = arr[high];  // pivot = last element
+    int i = low - 1;
 
     for (int j = low; j < high; j++) {
-        if (arr[j] < pivot) {
+        if (arr[j] <= pivot) {
             i++;
             swap(arr[i], arr[j]);
         }
     }
-    swap(arr[i + 1], arr[high]);
+    swap(arr[i + 1], arr[high]);  // put pivot in correct place
     return i + 1;
 }
 
-// Quick sort function
-void quickSort(vector<int>& arr, int low, int high) {
+void quickSortLast(int arr[], int low, int high) {
     if (low < high) {
-        int pi = partition(arr, low, high); // Partitioning index
-
-        // Recursively sort elements before and after the partition
-        quickSort(arr, low, pi - 1);
-        quickSort(arr, pi + 1, high);
+        int p = partitionLast(arr, low, high);
+        quickSortLast(arr, low, p - 1);
+        quickSortLast(arr, p + 1, high);
     }
 }
 
+🔹 3. Middle Element as Pivot
+
+Pick the middle element. Works like Hoare’s partition.
+
+int partitionMiddle(int arr[], int low, int high) {
+    int mid = low + (high - low) / 2;
+    int pivot = arr[mid];  // pivot = middle element
+    int i = low, j = high;
+
+    while (i <= j) {
+        while (arr[i] < pivot) i++;
+        while (arr[j] > pivot) j--;
+        if (i <= j) {
+            swap(arr[i], arr[j]);
+            i++; j--;
+        }
+    }
+    return i;
+}
+
+void quickSortMiddle(int arr[], int low, int high) {
+    if (low < high) {
+        int p = partitionMiddle(arr, low, high);
+        quickSortMiddle(arr, low, p - 1);
+        quickSortMiddle(arr, p, high);
+    }
+}
+
+🔹 Driver Code (Test All Three)
 int main() {
-    vector<int> arr = {64, 34, 25, 12, 22, 11, 90};
-    int n = arr.size();
-    cout << "Original array: ";
-    for (int num : arr) {
-        cout << num << " ";
-    }
-    cout << endl;
+    int arr1[] = {10, 7, 8, 9, 1, 5};
+    int arr2[] = {10, 7, 8, 9, 1, 5};
+    int arr3[] = {10, 7, 8, 9, 1, 5};
+    int n = sizeof(arr1) / sizeof(arr1[0]);
 
-    quickSort(arr, 0, n - 1);
+    quickSortFirst(arr1, 0, n - 1);
+    quickSortLast(arr2, 0, n - 1);
+    quickSortMiddle(arr3, 0, n - 1);
 
-    cout << "Sorted array using Quick Sort with last element as pivot: ";
-    for (int num : arr) {
-        cout << num << " ";
-    }
-    cout << endl;
+    cout << "Sorted with First Element Pivot: ";
+    for (int x : arr1) cout << x << " ";
+    cout << "\n";
+
+    cout << "Sorted with Last Element Pivot: ";
+    for (int x : arr2) cout << x << " ";
+    cout << "\n";
+
+    cout << "Sorted with Middle Element Pivot: ";
+    for (int x : arr3) cout << x << " ";
+    cout << "\n";
 
     return 0;
 }
 
+✅ Sample Output
+Sorted with First Element Pivot: 1 5 7 8 9 10 
+Sorted with Last Element Pivot: 1 5 7 8 9 10 
+Sorted with Middle Element Pivot: 1 5 7 8 9 10 
 
-Time Complexity:
-Best Case: O(n log n)
-Average Case: O(n log n)
-Worst Case: O(n^2)
-The time complexity of Quick Sort depends on the choice of pivot and how balanced the partitioning is. When the pivot divides the array into roughly equal halves, as is often the case in practice, the algorithm performs well, resulting in an average and best-case time complexity of O(n log n). However, in the worst-case scenario, such as when the pivot is consistently the smallest or largest element, the algorithm may exhibit quadratic behavior, resulting in a time complexity of O(n^2).
-Space Complexity:
-Average Case: O(log n)
-Worst Case: O(n)
-Quick Sort is not a stable sort and is an in-place sorting algorithm, meaning it does not require additional space proportional to the size of the input array for sorting. However, it does require additional space for function call stack frames during recursive calls. In the average case, the space complexity of Quick Sort is O(log n), corresponding to the maximum depth of the recursion stack. In the worst case, the space complexity can degrade to O(n) if the recursion tree is highly unbalanced, potentially leading to stack overflow errors for very large arrays.
+
+
+
+
+📌 Time and Space Complexity Analysis
+Pivot Type	Best Case	Average Case	Worst Case	Space Complexity
+First Element	O(N log N)	O(N log N)	O(N^2)	O(log N)
+Last Element	O(N log N)	O(N log N)	O(N^2)	O(log N)
+Middle Element	O(N log N)	O(N log N)	O(N^2)	O(log N)
+Random Element	O(N log N)	O(N log N)	O(N^2)	O(log N)

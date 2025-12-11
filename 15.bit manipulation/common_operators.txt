@@ -1,0 +1,38 @@
+ Common Bitwise Operators in C++
+Operator	Symbol	Meaning	Example (a = 5, b = 3)	Result
+AND	&	Bitwise AND	a & b → 0101 & 0011	0001 → 1
+OR	`	`	Bitwise OR	`a
+XOR	^	Bitwise XOR (differs)	a ^ b → 0101 ^ 0011	0110 → 6
+NOT	~	Bitwise NOT (1’s complement)	~a → ~0101	1010 → -6 (2's comp form)
+LEFT SHIFT	<<	Shift bits left (multiply)	a << 1 → 01010	10
+RIGHT SHIFT	>>	Shift bits right (divide)	a >> 1 → 0010	2
+
+💡 Explanation with Real Example
+cpp
+Copy
+Edit
+#include <iostream>
+using namespace std;
+
+int main() {
+    int a = 5;  // Binary: 0101
+    int b = 3;  // Binary: 0011
+
+    cout << "a & b: " << (a & b) << endl;   // 1
+    cout << "a | b: " << (a | b) << endl;   // 7
+    cout << "a ^ b: " << (a ^ b) << endl;   // 6
+    cout << "~a: " << (~a) << endl;         // -6
+    cout << "a << 1: " << (a << 1) << endl; // 10
+    cout << "a >> 1: " << (a >> 1) << endl; // 2
+
+    return 0;
+}
+🧠 Use Cases
+Use Case	Bitwise Tool Used	Example
+Check if number is even	x & 1 == 0	4 & 1 → 0
+Swap values (XOR trick)	x = x ^ y	Useful in-place swap
+Set a bit	`x	(1 << n)`
+Clear a bit	x & ~(1 << n)	Clear n-th bit
+Toggle a bit	x ^ (1 << n)	Flip n-th bit
+Check if bit is set	(x >> n) & 1	Returns 1 or 0
+Count set bits	__builtin_popcount(x) (GCC)	Fast bit count

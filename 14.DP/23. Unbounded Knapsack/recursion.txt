@@ -1,18 +1,50 @@
-#include<bits/stdc++.h>
-int solve(int index,int maxweight,vector<int> &profit, vector<int> &weight)
-{
-    if(index==0)
-    {
-            return (maxweight/weight[0])*profit[0];
+Ques:https://www.geeksforgeeks.org/dsa/unbounded-knapsack-repetition-items-allowed/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int index, int maxweight, vector<int> &profit, vector<int> &weight) {
+    if (index == 0) {
+        // You can take as many as fit of item 0
+        return (maxweight / weight[0]) * profit[0];
     }
-    int nottake=0+solve(index-1,maxweight,profit,weight);
-    int take=INT_MIN;
-    if(weight[index]<=maxweight)
-        take=profit[index]+solve(index,maxweight-weight[index],profit,weight);
-    return max(take,nottake);
+
+    int notTake = solve(index - 1, maxweight, profit, weight);
+    int take = INT_MIN;
+    if (weight[index] <= maxweight)
+        take = profit[index] + solve(index, maxweight - weight[index], profit, weight);
+
+    return max(take, notTake);
 }
-int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight)
-{
-    int count=solve(n-1,w,profit,weight);
-    return count;
+
+int unboundedKnapsack(int n, int w, vector<int> &profit, vector<int> &weight) {
+    return solve(n - 1, w, profit, weight);
 }
+
+int main() {
+    vector<int> profit = {10, 30, 20};
+    vector<int> weight = {5, 10, 15};
+    int w = 100;
+    cout << unboundedKnapsack(profit.size(), w, profit, weight) << endl;  // Output: 300
+    return 0;
+}
+
+Sample Input & Output
+Input:
+cpp
+Copy
+Edit
+n = 3, w = 100
+profit = {10, 30, 20}
+weight = {5, 10, 15}
+Output:
+Copy
+Edit
+300
+
+Time & Space Complexity
+Metric	Value
+⏱ Time Complexity	O(2^n * w) (Exponential)
+💾 Space Complexity	O(w) (max stack depth)

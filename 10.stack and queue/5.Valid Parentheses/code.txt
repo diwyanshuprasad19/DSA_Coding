@@ -1,0 +1,76 @@
+Ques:
+
+Code:
+
+#include <iostream>
+#include <stack>
+using namespace std;
+
+class ValidParentheses {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+
+        for (char c : s) {
+            if (c == '(' || c == '{' || c == '[') {
+                st.push(c);  // Push opening brackets
+            } else {
+                if (st.empty()) return false;  // Unmatched closing bracket
+
+                char top = st.top();
+                st.pop();
+
+                if ((c == ')' && top != '(') ||
+                    (c == '}' && top != '{') ||
+                    (c == ']' && top != '[')) {
+                    return false;  // Mismatched closing bracket
+                }
+            }
+        }
+        return st.empty();  // Stack should be empty if valid
+    }
+};
+
+int main() {
+    ValidParentheses vp;
+    
+    string test1 = "()[]{}";
+    string test2 = "(]";
+    string test3 = "{[()]}";
+    
+    cout << "Test 1: " << (vp.isValid(test1) ? "Valid" : "Invalid") << endl; // Expected: Valid
+    cout << "Test 2: " << (vp.isValid(test2) ? "Valid" : "Invalid") << endl; // Expected: Invalid
+    cout << "Test 3: " << (vp.isValid(test3) ? "Valid" : "Invalid") << endl; // Expected: Valid
+    
+    return 0;
+}
+
+
+Time and space:
+
+Time Complexity Analysis
+Push (push(x)) → 
+𝑂
+(
+1
+)
+O(1) per bracket.
+Pop (pop()) → 
+𝑂
+(
+1
+)
+O(1) per bracket.
+Overall Complexity → 
+𝑂
+(
+𝑁
+)
+O(N) since each character is pushed/popped once.
+Space Complexity Analysis
+Worst-case Space Complexity → 
+𝑂
+(
+𝑁
+)
+O(N) (If all brackets are unclosed, the stack stores all of them).

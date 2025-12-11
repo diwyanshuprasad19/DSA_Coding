@@ -1,105 +1,113 @@
-#include<iostream>
-#include<stack>
+Ques:https://www.geeksforgeeks.org/convert-infix-expression-to-postfix-expression/
+
+
+Code:
+
+
+#include <iostream>
+#include <stack>
+
 using namespace std;
 
-bool isOperator(char c)
-{
-	if(c=='+'||c=='-'||c=='*'||c=='/'||c=='^')
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+// Function to check if the character is an operator
+bool isOperator(char c) {
+    return (c == '+' || c == '-' || c == '*' || c == '/' || c == '^');
 }
 
-int precedence(char c) 
-{ 
-    if(c == '^') 
-    return 3; 
-    else if(c == '*' || c == '/') 
-    return 2; 
-    else if(c == '+' || c == '-') 
-    return 1; 
-    else
-    return -1; 
-} 
-
-string InfixToPostfix(stack<char> s, string infix)
-{
-	string postfix;
-	for(int i=0;i<infix.length();i++)
-	{
-		if((infix[i] >= 'a' && infix[i] <= 'z')
-		||(infix[i] >= 'A' && infix[i] <= 'Z'))
-		{
-			postfix+=infix[i];
-		}
-		else if(infix[i] == '(')
-		{
-			s.push(infix[i]);
-		}
-		else if(infix[i] == ')')
-		{
-			while((s.top()!='(') && (!s.empty()))
-			{
-				char temp=s.top();
-				postfix+=temp;
-				s.pop();
-			}
-			if(s.top()=='(')
-			{
-				s.pop();
-			}
-		}
-		else if(isOperator(infix[i]))
-		{
-			if(s.empty())
-			{
-				s.push(infix[i]);
-			}
-			else
-			{
-				if(precedence(infix[i])>precedence(s.top()))
-				{
-					s.push(infix[i]);
-				}	
-				else if((precedence(infix[i])==precedence(s.top()))&&(infix[i]=='^'))
-				{
-					s.push(infix[i]);
-				}
-				else
-				{
-					while((!s.empty())&&( precedence(infix[i])<=precedence(s.top())))
-					{
-						postfix+=s.top();
-						s.pop();
-					}
-					s.push(infix[i]);
-				}
-			}
-		}
-	}
-	while(!s.empty())
-	{
-		postfix+=s.top();
-		s.pop();
-	}
-	
-	return postfix;
+// Function to get the precedence of operators
+int precedence(char c) {
+    if (c == '^') return 3;
+    else if (c == '*' || c == '/') return 2;
+    else if (c == '+' || c == '-') return 1;
+    else return -1;
 }
 
-int main() 
-{  
+// Function to convert infix expression to postfix expression
+string InfixToPostfix(string infix) {
+    stack<char> s;
+    string postfix;
 
-  	string infix_exp, postfix_exp;
-  	cout<<"Enter a Infix Expression :"<<endl;
-  	cin>>infix_exp;
-  	stack <char> stack;
-	cout<<"INFIX EXPRESSION: "<<infix_exp<<endl;
-  	postfix_exp = InfixToPostfix(stack, infix_exp);
-  	cout<<endl<<"POSTFIX EXPRESSION: "<<postfix_exp;
-	  
-	return 0;
+    for (int i = 0; i < infix.length(); i++) {
+        char c = infix[i];
+
+        // If operand, add it to the postfix expression
+        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+            postfix += c;
+        }
+        // If '(', push to stack
+        else if (c == '(') {
+            s.push(c);
+        }
+        // If ')', pop and add to postfix until '(' is found
+        else if (c == ')') {
+            while (!s.empty() && s.top() != '(') {
+                postfix += s.top();
+                s.pop();
+            }
+            if (!s.empty() && s.top() == '(') {
+                s.pop();
+            }
+        }
+        // If operator, check precedence and push accordingly
+        else if (isOperator(c)) {
+            while (!s.empty() && precedence(c) <= precedence(s.top()) && c != '^') {
+                postfix += s.top();
+                s.pop();
+            }
+            s.push(c);
+        }
+    }
+
+    // Pop all remaining operators in the stack
+    while (!s.empty()) {
+        postfix += s.top();
+        s.pop();
+    }
+
+    return postfix;
 }
+
+// Driver Code
+int main() {
+    string infix_exp, postfix_exp;
+    
+    cout << "Enter an Infix Expression: ";
+    cin >> infix_exp;
+    
+    cout << "\nINFIX EXPRESSION: " << infix_exp << endl;
+    postfix_exp = InfixToPostfix(infix_exp);
+    
+    cout << "POSTFIX EXPRESSION: " << postfix_exp << endl;
+    
+    return 0;
+}
+
+
+Time and space:
+Time and Space Complexity Analysis
+Operation	Time Complexity	Space Complexity
+Iterate through infix expression	O(N)	-
+Push/pop from stack (at most once per operator)	O(N)	O(N) (for stack storage)
+Appending to result (string concatenation)	O(N)	O(N) (for output string)
+Total Complexity	O(N)	O(N)
+🔹 Time Complexity: O(N), since we process each character at most once.
+🔹 Space Complexity: O(N), due to stack storage for operators.
+
+
+
+Step-by-step Conversion Process
+Step	Symbol Read	Stack (Operators Only)	Postfix Expression (Result)	Action
+1	A		A	Operand → Add to output
+2	+	+	A	Operator → Push to stack
+3	B	+	A B	Operand → Add to output
+4	*	+ *	A B	Operator → Push to stack (Higher precedence than +)
+5	(	+ * (	A B	Left parenthesis → Push to stack
+6	C	+ * (	A B C	Operand → Add to output
+7	^	+ * ( ^	A B C	Operator → Push to stack (Exponent has highest precedence)
+8	D	+ * ( ^	A B C D	Operand → Add to output
+9	-	+ * ( -	A B C D ^	^ has higher precedence, pop and add to output, then push -
+10	E	+ * ( -	A B C D ^ E	Operand → Add to output
+11	)	+ *	A B C D ^ E -	Pop and add operators until ( is found
+12	/	+ /	A B C D ^ E - *	* has higher precedence, pop * first, then push /
+13	F	+ /	A B C D ^ E - * F	Operand → Add to output
+14	End of Expression		A B C D ^ E - * F / +	Pop remaining operators

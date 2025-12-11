@@ -1,5 +1,8 @@
 Ques:https://leetcode.com/problems/word-ladder/description/
 
+ChatGPT said:
+Yes ✅ — your solution for the Word Ladder problem is using Breadth-First Search (BFS).
+
 code:
     int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
         unordered_set<string> s;

@@ -48,6 +48,7 @@ int main() {
 
 	int V = 6;
 	vector<vector<int>> edges(7, vector<int>(3));
+	//vertex start,vertex end and weight
 	edges[0] = {3, 2, 6};
 	edges[1] = {5, 3, 1};
 	edges[2] = {0, 1, 5};

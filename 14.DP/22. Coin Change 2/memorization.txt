@@ -1,23 +1,51 @@
-#include<bits/stdc++.h>
-int solve(int index,int target,int *deno, vector<vector<int>> &dp)
-{
-    if(index==0)
-    {
-        if(target%deno[0]==0)
-            return 1;
-        else 
-            return 0;
-    }
-    if(dp[index][target]!=-1)return dp[index][target];
-    int nottake=solve(index-1,target,deno,dp);
-    int take=0;
-    if(deno[index]<=target)
-        take=solve(index,target-deno[index],deno,dp);
-    return dp[index][target]=nottake+take;
+Ques: https://leetcode.com/problems/coin-change-ii/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int index, int target, int *deno, vector<vector<int>> &dp) {
+    if (index == 0)
+        return (target % deno[0] == 0) ? 1 : 0;
+
+    if (dp[index][target] != -1)
+        return dp[index][target];
+
+    int notTake = solve(index - 1, target, deno, dp);
+    int take = 0;
+    if (deno[index] <= target)
+        take = solve(index, target - deno[index], deno, dp);
+
+    return dp[index][target] = notTake + take;
 }
-long countWaysToMakeChange(int *denominations, int n, int value)
-{
-    vector<vector<int>> dp(n,vector<int>(value+1,-1));
-   int count =solve(n-1,value,denominations,dp);
-    return count;
+
+long countWaysToMakeChange(int *denominations, int n, int value) {
+    vector<vector<int>> dp(n, vector<int>(value + 1, -1));
+    return solve(n - 1, value, denominations, dp);
 }
+
+int main() {
+    int denominations[] = {1, 2, 3};
+    int n = 3, value = 4;
+    cout << countWaysToMakeChange(denominations, n, value) << endl;  // Output: 4
+    return 0;
+}
+
+
+Sample Input & 📤 Output
+Input:
+cpp
+Copy
+Edit
+denominations = {1, 2, 3}
+value = 4
+Output:
+Copy
+Edit
+4
+
+📊 Time & Space Complexity
+Metric	Value
+⏱ Time Complexity	O(n * value)
+💾 Space Complexity	O(n * value) (for DP) + recursion stack

@@ -2,6 +2,8 @@ Ques:https://www.geeksforgeeks.org/problems/bipartite-graph/1?utm_source=youtube
 
 Sol:https://takeuforward.org/graph/bipartite-graph-bfs-implementation/
 
+vid: https://www.youtube.com/watch?v=-vu34sct1g8
+
 Code:
 #include<bits/stdc++.h>
 using namespace std;

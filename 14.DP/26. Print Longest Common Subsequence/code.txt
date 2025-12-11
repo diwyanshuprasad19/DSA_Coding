@@ -1,28 +1,69 @@
-    int len=dp[n][m];
-    int i=n;
-    int j=m;
-    string s1="";
-    for(int k=0;k<len;k++)
-        s1+="$";
-    int index=len-1;
-    while(i>0&&j>0)
-    {
-        if(s[i-1]==t[j-1])
-        {
-            s1[index]=s[i-1];
-            i--;
-            j--;
+Ques:https://takeuforward.org/data-structure/print-longest-common-subsequence-dp-26/
+
+Sol:https://www.youtube.com/watch?v=-zI4mrF2Pb4
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int i, int j, string &s1, string &s2, vector<vector<int>> &dp) {
+    if (i < 0 || j < 0)
+        return 0;
+
+    if (dp[i][j] != -1)
+        return dp[i][j];
+
+    if (s1[i] == s2[j])
+        return dp[i][j] = 1 + solve(i - 1, j - 1, s1, s2, dp);
+
+    return dp[i][j] = max(solve(i - 1, j, s1, s2, dp), solve(i, j - 1, s1, s2, dp));
+}
+
+void lcs(string s1, string s2) {
+    int n = s1.length(), m = s2.length();
+    vector<vector<int>> dp(n, vector<int>(m, -1));
+
+    // Fill dp using memoization
+    solve(n - 1, m - 1, s1, s2, dp);
+
+    // Step 2: Reconstruct LCS using filled dp table
+    int len = dp[n - 1][m - 1];
+    string str(len, '$');
+    int index = len - 1;
+    int i = n - 1, j = m - 1;
+
+    while (i >= 0 && j >= 0) {
+        if (s1[i] == s2[j]) {
+            str[index] = s1[i];
             index--;
-        }
-        else if(dp[i-1][j]>dp[i][j-1])
-        {
             i--;
-        }
-        else
             j--;
+        } else if (i > 0 && (j == 0 || dp[i - 1][j] > dp[i][j - 1])) {
+            i--;
+        } else {
+            j--;
+        }
     }
-    cout<<s1<<endl;
 
+    cout << str << endl;
+}
 
-https://takeuforward.org/data-structure/print-longest-common-subsequence-dp-26/
-full explaiantion
+int main() {
+    string s1 = "abcde";
+    string s2 = "bdgek";
+
+    cout << "The Longest Common Subsequence is: ";
+    lcs(s1, s2);  // Output: "bde"
+    return 0;
+}
+
+ Output
+csharp
+Copy
+Edit
+The Longest Common Subsequence is: bde
+📊 Time and Space Complexity
+Metric	Value
+⏱ Time Complexity	O(n × m)
+💾 Space Complexity	O(n × m) (for dp[][]) + recursion stack

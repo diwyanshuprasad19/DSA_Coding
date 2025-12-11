@@ -1,3 +1,9 @@
+Ques:https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/description/
+
+Expaliantion:https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/solutions/5816678/video-sell-a-stock-immediately/
+
+Code:
+
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -20,3 +26,5 @@ int main()
 	
 	return 0;
 }
+
+O(n)

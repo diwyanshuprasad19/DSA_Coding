@@ -1,106 +1,100 @@
-/* CPP Program to move last element
-to front in a given linked list */
+Ques:https://www.geeksforgeeks.org/dsa/move-last-element-to-front-of-a-given-linked-list/
+
+Code:
+
 #include <bits/stdc++.h>
 using namespace std;
 
-/* A linked list node */
-class Node
-{
-	public:
-	int data;
-	Node *next;
+struct Node {
+    int data;
+    Node* next;
 };
 
-/* We are using a double pointer
-head_ref here because we change
-head of the linked list inside
-this function.*/
-void moveToFront(Node **head_ref)
-{
-	/* If linked list is empty, or
-	it contains only one node,
-	then nothing needs to be done,
-	simply return */
-	if (*head_ref == NULL || (*head_ref)->next == NULL)
-		return;
-
-	/* Initialize second last
-	and last pointers */
-	Node *secLast = NULL;
-	Node *last = *head_ref;
-
-	/*After this loop secLast contains
-	address of second last node and
-	last contains address of last node in Linked List */
-	while (last->next != NULL)
-	{
-		secLast = last;
-		last = last->next;
-	}
-
-	/* Set the next of second last as NULL */
-	secLast->next = NULL;
-
-	/* Set next of last as head node */
-	last->next = *head_ref;
-
-	/* Change the head pointer
-	to point to last node now */
-	*head_ref = last;
+// Push node at head
+void push(Node** head_ref, int new_data) {
+    Node* new_node = new Node();
+    new_node->data = new_data;
+    new_node->next = (*head_ref);
+    (*head_ref) = new_node;
 }
 
-/* UTILITY FUNCTIONS */
-/* Function to add a node
-at the beginning of Linked List */
-void push(Node** head_ref, int new_data)
-{
-	/* allocate node */
-	Node* new_node = new Node();
+// Move last node to front
+void moveToFront(Node** head_ref) {
+    if (*head_ref == NULL || (*head_ref)->next == NULL)
+        return;
 
-	/* put in the data */
-	new_node->data = new_data;
+    Node* secondLast = NULL;
+    Node* last = *head_ref;
 
-	/* link the old list off the new node */
-	new_node->next = (*head_ref);
+    // Traverse till last node
+    while (last->next != NULL) {
+        secondLast = last;
+        last = last->next;
+    }
 
-	/* move the head to point to the new node */
-	(*head_ref) = new_node;
+    // Disconnect last from secondLast
+    secondLast->next = NULL;
+
+    // Move last to front
+    last->next = *head_ref;
+    *head_ref = last;
 }
 
-
-/* Function to print nodes in a given linked list */
-void printList(Node *node)
-{
-	while(node != NULL)
-	{
-		cout << node->data << " ";
-		node = node->next;
-	}
+// Print list
+void printList(Node* node) {
+    while (node != NULL) {
+        cout << node->data << " ";
+        node = node->next;
+    }
+    cout << endl;
 }
 
-/* Driver code */
-int main()
-{
-	Node *start = NULL;
+// Main function
+int main() {
+    Node* head = NULL;
 
-	/* The constructed linked list is:
-	1->2->3->4->5 */
-	push(&start, 5);
-	push(&start, 4);
-	push(&start, 3);
-	push(&start, 2);
-	push(&start, 1);
+    // Linked list: 1 -> 2 -> 3 -> 4 -> 5
+    push(&head, 5);
+    push(&head, 4);
+    push(&head, 3);
+    push(&head, 2);
+    push(&head, 1);
 
-	cout<<"Linked list before moving last to front\n";
-	printList(start);
+    cout << "Linked list before moving last to front" << endl;
+    printList(head);
 
-	moveToFront(&start);
+    moveToFront(&head);
 
-	cout<<"\nLinked list after removing last to front\n";
-	printList(start);
+    cout << "Linked list after moving last to front" << endl;
+    printList(head);
 
-	return 0;
+    return 0;
 }
 
-// This code is contributed by rathbhupendra
+Input Example
+The linked list:
+
+Copy
+Edit
+1 → 2 → 3 → 4 → 5
+After moving the last to the front:
+
+Copy
+Edit
+5 → 1 → 2 → 3 → 4
+
+Output
+pgsql
+Copy
+Edit
+Linked list before moving last to front
+1 2 3 4 5 
+Linked list after moving last to front
+5 1 2 3 4 
+
+✅ Time and Space Complexity
+Metric	Value
+Time Complexity	O(N) — one traversal to reach the last node
+Space Complexity	O(1) — constant space, done in-place
+
 

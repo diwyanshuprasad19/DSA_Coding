@@ -1,0 +1,84 @@
+Ques:https://leetcode.com/problems/longest-increasing-subsequence/description/
+
+Sol:https://www.youtube.com/watch?v=IFfYfonAFGc&list=PLgUwDviBIf0qUlt5H_kiKYaNSqJ81PMMY&index=43
+
+Good epxaliantion:https://takeuforward.org/data-structure/printing-longest-increasing-subsequence-dp-42/
+
+at 18 minutes it start
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int longestIncreasingSubsequence(int arr[], int n) {
+    vector<int> dp(n, 1);      // dp[i] = length of LIS ending at i
+    vector<int> hash(n);       // hash[i] = previous index of LIS at i
+
+    for (int i = 0; i < n; i++) {
+        hash[i] = i; // initialization: element starts its own sequence
+        for (int prev = 0; prev < i; prev++) {
+            if (arr[prev] < arr[i] && dp[prev] + 1 > dp[i]) {
+                dp[i] = dp[prev] + 1;
+                hash[i] = prev; // store previous index
+            }
+        }
+    }
+
+    // Find the maximum length and its index
+    int maxLen = -1, lastIndex = -1;
+    for (int i = 0; i < n; i++) {
+        if (dp[i] > maxLen) {
+            maxLen = dp[i];
+            lastIndex = i;
+        }
+    }
+
+    // Reconstruct LIS using hash array
+    vector<int> lis;
+    lis.push_back(arr[lastIndex]);
+    while (hash[lastIndex] != lastIndex) {
+        lastIndex = hash[lastIndex];
+        lis.push_back(arr[lastIndex]);
+    }
+
+    reverse(lis.begin(), lis.end());
+
+    // Print the LIS
+    cout << "The subsequence elements are: ";
+    for (int val : lis) {
+        cout << val << " ";
+    }
+    cout << endl;
+
+    return maxLen;
+}
+
+int main() {
+    int arr[] = {10, 9, 2, 5, 3, 7, 101, 18};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    int len = longestIncreasingSubsequence(arr, n);
+    cout << "Length of LIS: " << len << endl;
+    return 0;
+}
+
+Sample Input/Output
+Input:
+
+cpp
+Copy
+Edit
+arr[] = {10, 9, 2, 5, 3, 7, 101, 18}
+Output:
+
+yaml
+Copy
+Edit
+The subsequence elements are: 2 3 7 101 
+Length of LIS: 4
+(Note: Output sequence may vary based on multiple valid LIS)
+
+📈 Time and Space Complexity
+Time: O(n^2)
+
+Space: O(n) for dp and hash

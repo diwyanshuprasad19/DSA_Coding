@@ -1,21 +1,60 @@
-static void insert_at_bottom(char x){
+Ques:https://www.geeksforgeeks.org/program-to-insert-an-element-at-the-bottom-of-a-stack/
 
-    if(st.isEmpty())
+Code:
+
+#include <iostream>
+#include <stack>
+
+using namespace std;
+
+// Function to insert an element at the bottom of the stack
+void insert_at_bottom(stack<char> &st, char x) {
+    if (st.empty()) {
         st.push(x);
-
-    else{
-        /* All items are held in Function Call Stack until we
-           reach end of the stack. When the stack becomes
-           empty, the st.size() becomes 0, the
-           above if part is executed and the item is inserted
-           at the bottom */
-
-        char a = st.peek();
+    } else {
+        // Hold all items in function call stack until we reach an empty stack
+        char topElement = st.top();
         st.pop();
-        insert_at_bottom(x);
+        
+        // Recursive call to reach the bottom
+        insert_at_bottom(st, x);
 
-        //push all the items held in Function Call Stack
-        //once the item is inserted at the bottom
-        st.push(a);
+        // Push all stored items back into the stack
+        st.push(topElement);
     }
 }
+
+// Driver Code
+int main() {
+    stack<char> st;
+    
+    // Sample stack elements
+    st.push('A');
+    st.push('B');
+    st.push('C');
+    st.push('D');
+
+    cout << "Stack before inserting at bottom: ";
+    stack<char> temp = st;
+    while (!temp.empty()) {
+        cout << temp.top() << " ";
+        temp.pop();
+    }
+    cout << endl;
+
+    char x = 'X'; // Element to insert at the bottom
+    insert_at_bottom(st, x);
+
+    cout << "Stack after inserting '" << x << "' at bottom: ";
+    while (!st.empty()) {
+        cout << st.top() << " ";
+        st.pop();
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+
+Time and space:

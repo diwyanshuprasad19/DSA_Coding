@@ -1,21 +1,104 @@
-#include<bits/stdc++.h>
-int solve(int i,int j,string s1,string s2,vector<vector<int>> &dp)
-{
-    if(i<0)return j+1;
-    if(j<0)return i+1;
-    if(dp[i][j]!=-1)return dp[i][j];
-    if(s1[i]==s2[j]) 
-        return dp[i][j]=0+solve(i-1,j-1,s1,s2,dp);
-    int insert=1+solve(i,j-1,s1,s2,dp);
-    int del=1+solve(i-1,j,s1,s2,dp);
-    int replace=1+solve(i-1,j-1,s1,s2,dp);
-    return dp[i][j]=min(insert,min(del,replace));
+
+Ques: https://www.geeksforgeeks.org/dsa/minimum-number-deletions-insertions-transform-one-string-another/
+
+Sol:https://www.youtube.com/watch?v=yMnH0jrir0Q
+
+Code:
+
+// C++ program to find the minimum of insertion and deletion
+// using memoization.
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int lcs(string &s1, string &s2, int m, int n, 
+        vector<vector<int>> &memo) {
+  
+    // Base case: If either string is empty, the LCS length is 0
+    if (m == 0 || n == 0)
+        return 0;
+
+     // If the value is already computed, return
+    // it from the memo array
+     if(memo[m][n]!=-1)
+        return memo[m][n];
+   
+    // If the last characters of both substrings match
+    if (s1[m - 1] == s2[n - 1])
+      
+        // Include the matching character in LCS and recurse for
+       // remaining substrings
+        return memo[m][n] = 1 + lcs(s1, s2, m - 1, n - 1, memo);
+
+    else
+      
+        // If the last characters do not match, find the maximum LCS length by:
+        // 1. Excluding the last character of s1
+        // 2. Excluding the last character of s2
+        return memo[m][n] = max(lcs(s1, s2, m, n - 1, memo),
+                                lcs(s1, s2, m - 1, n, memo));
 }
-int editDistance(string str1, string str2)
-{
-    int n=str1.length();
-    int m=str2.length();
-    vector<vector<int>> dp(n,vector<int>(m,-1));
-    int count=solve(n-1,m-1,str1,str2,dp);
-    return count;
+
+int minOperations(string s1, string s2) {
+  
+    int m = s1.size();  
+    int n = s2.size();  
+     
+     // Initialize the memoization array with -1.
+  vector<vector<int>> memo = vector<vector<int>>
+    						(m+1,vector<int>(n+1,-1));
+   
+    // the length of the LCS for 
+  	// s1[0..m-1] and s2[0..n-1]
+    int len = lcs(s1, s2, m, n, memo);
+
+    // Characters to delete from s1
+    int minDeletions = m - len;
+
+    // Characters to insert into s1
+    int minInsertions = n - len;
+
+    // Total operations needed
+    int total = minDeletions + minInsertions;
+    return total;
 }
+
+int main() {
+  
+    string s1 = "AGGTAB";
+    string s2 = "GXTXAYB";
+    int res = minOperations(s1, s2);
+    cout << res;
+    return 0;
+}
+
+
+Sample Input & Output
+Input:
+cpp
+Copy
+Edit
+s1 = "AGGTAB"
+s2 = "GXTXAYB"
+Output:
+Copy
+Edit
+5
+Explanation:
+LCS = "GTAB" → length = 4
+
+Deletions from s1: 6 - 4 = 2
+
+Insertions to reach s2: 7 - 4 = 3
+
+Total = 2 + 3 = 5
+
+✅ Time & Space Complexity
+Complexity	Value
+Time	O(m * n)
+Space	O(m * n) (for memo table)
+
+Where m = s1.length() and n = s2.length()
+
+

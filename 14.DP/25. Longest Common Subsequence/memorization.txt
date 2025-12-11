@@ -1,20 +1,49 @@
-#include<bits/stdc++.h>
-int solve(int index1,int index2,string s1,string s2,vector<vector<int>> &dp)
-{
-    if(index1<0 || index2<0)
+Ques: https://leetcode.com/problems/longest-common-subsequence/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int i, int j, string &s1, string &s2, vector<vector<int>> &dp) {
+    if (i < 0 || j < 0)
         return 0;
-    if(dp[index1][index2]!=-1)return dp[index1][index2];
-    if(s1[index1]==s2[index2])
-        return dp[index1][index2]=1+solve(index1-1,index2-1,s1,s2,dp);
-    return dp[index1][index2]=max(solve(index1-1,index2,s1,s2,dp),solve(index1,index2-1,s1,s2,dp));
+
+    if (dp[i][j] != -1)
+        return dp[i][j];
+
+    if (s1[i] == s2[j])
+        return dp[i][j] = 1 + solve(i - 1, j - 1, s1, s2, dp);
+
+    return dp[i][j] = max(
+        solve(i - 1, j, s1, s2, dp),
+        solve(i, j - 1, s1, s2, dp)
+    );
 }
 
-int lcs(string s, string t)
-{
-    vector<vector<int>> dp(s.length(),vector<int>(t.length(),-1));
-	int count=solve(s.length()-1,t.length()-1,s,t,dp);
-    return count;
+int lcs(string s, string t) {
+    int n1 = s.length(), n2 = t.length();
+    vector<vector<int>> dp(n1, vector<int>(n2, -1));
+    return solve(n1 - 1, n2 - 1, s, t, dp);
 }
 
-TC:O(n1*n2)- only calculated once
-SC:O(n1*n2) - due to dp array
+int main() {
+    string s1 = "abcde", s2 = "ace";
+    cout << lcs(s1, s2) << endl;  // Output: 3
+    return 0;
+}
+
+Sample Input & Output
+Input:
+cpp
+Copy
+Edit
+s1 = "abcde", s2 = "ace"
+Output:
+Copy
+Edit
+3
+📊 Time & Space Complexity
+Metric	Value
+⏱ Time Complexity	O(n1 × n2)
+💾 Space Complexity	O(n1 × n2) for dp[][] + recursion stack

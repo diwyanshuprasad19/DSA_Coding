@@ -1,0 +1,74 @@
+Ques:https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left, *right;
+    
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+
+// Function to find LCA of two nodes in BST
+Node* LCA(Node *root, int n1, int n2) {
+    if (root == NULL) return NULL;
+
+    int curr = root->data;
+
+    // If both values are greater, LCA lies in the right subtree
+    if (curr < n1 && curr < n2)
+        return LCA(root->right, n1, n2);
+
+    // If both values are smaller, LCA lies in the left subtree
+    else if (curr > n1 && curr > n2)
+        return LCA(root->left, n1, n2);
+
+    // If neither of the above cases, root is the LCA
+    return root;
+}
+
+// Utility function to insert nodes into the BST
+Node* insert(Node* root, int key) {
+    if (root == NULL) return new Node(key);
+    
+    if (key < root->data)
+        root->left = insert(root->left, key);
+    else
+        root->right = insert(root->right, key);
+    
+    return root;
+}
+
+// Driver code
+int main() {
+    Node* root = NULL;
+    root = insert(root, 20);
+    root = insert(root, 10);
+    root = insert(root, 30);
+    root = insert(root, 5);
+    root = insert(root, 15);
+    root = insert(root, 25);
+    root = insert(root, 35);
+
+    int n1 = 5, n2 = 15;
+    Node* lca = LCA(root, n1, n2);
+
+    if (lca != NULL)
+        cout << "LCA of " << n1 << " and " << n2 << " is: " << lca->data << endl;
+    else
+        cout << "LCA does not exist." << endl;
+
+    return 0;
+}
+
+
+Final Complexity Summary
+Case	                  Time Complexity	    Space Complexity
+Balanced BST	             O(log N)	           O(log N)
+Skewed BST	                   O(N)	                O(N)

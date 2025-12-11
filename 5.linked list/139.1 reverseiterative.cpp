@@ -1,3 +1,7 @@
+Ques:https://leetcode.com/problems/reverse-linked-list/description/
+
+Code:
+
 #include<bits/stdc++.h>
 using namespace std;
  struct Node
@@ -61,3 +65,15 @@ using namespace std;
  	
  	return 0;
  }
+
+Output:
+
+12345
+54321
+
+Time and Space Complexity
+Insertion at head:
+Time Complexity: O(1) per insertion.
+
+Space Complexity: O(1) (just node allocation per element).
+

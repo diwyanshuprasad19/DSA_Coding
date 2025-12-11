@@ -1,73 +1,83 @@
-// C++ program for the above approach
-#include <bits/stdc++.h>
+Ques:https://www.geeksforgeeks.org/union-of-two-sorted-arrays/
+
+Code:
+
+#include <iostream>
+#include <vector>
+#include <unordered_set>
 using namespace std;
 
-	static void UnionArray(int arr1[],
-						int arr2[], int l1, int l2)
-	{
-		// Taking max element present in either array
-		int m = arr1[l1 - 1];
-		int n = arr2[l2 - 1];
+void unionArray(const vector<int>& arr1, const vector<int>& arr2) {
+    unordered_set<int> seen;
 
-		int ans = 0;
+    // Insert all elements from arr1
+    for (int num : arr1) {
+        if (seen.find(num) == seen.end()) {
+            cout << num << " ";
+            seen.insert(num);
+        }
+    }
 
-		if (m > n) {
-			ans = m;
-		}
-		else
-			ans = n;
-
-		// Finding elements from 1st array
-		// (non duplicates only). Using
-		// another array for storing union
-		// elements of both arrays
-		// Assuming max element present
-		// in array is not more than 10^7
-		int newtable[ans + 1];
-		memset(newtable,0,sizeof(newtable));
-		// First element is always
-		// present in final answer
-		cout << arr1[0] << " ";
-
-		// Incrementing the First element's count
-		// in it's corresponding index in newtable
-		++newtable[arr1[0]];
-
-		// Starting traversing the first
-		// array from 1st index till last
-		for (int i = 1; i < l1; i++) {
-			// Checking whether current element
-			// is not equal to it's previous element
-			if (arr1[i] != arr1[i - 1]) {
-				cout << arr1[i] << " ";
-				++newtable[arr1[i]];
-			}
-		}
-
-		// Finding only non common
-		// elements from 2nd array
-		for (int j = 0; j < l2; j++) {
-			// By checking whether it's already
-			// present in newtable or not
-			if (newtable[arr2[j]] == 0) {
-				cout << arr2[j] << " ";
-				++newtable[arr2[j]];
-			}
-		}
-	}
-
-// Driver Code
-int main()
-{
-	int arr1[] = { 1, 2, 2, 2, 3 };
-	int arr2[] = { 2, 3, 4, 5 };
-	int n = sizeof(arr1) / sizeof(arr1[0]);
-	int m = sizeof(arr2) / sizeof(arr2[0]);
-
-	UnionArray(arr1, arr2, n, m);
-
-	return 0;
+    // Insert elements from arr2 if not already seen
+    for (int num : arr2) {
+        if (seen.find(num) == seen.end()) {
+            cout << num << " ";
+            seen.insert(num);
+        }
+    }
+    cout << endl;
 }
 
-// This code is contributed by splevel62.
+int main() {
+    int n, m;
+    cout << "Enter size of first array: ";
+    cin >> n;
+    vector<int> arr1(n);
+    cout << "Enter elements of first array: ";
+    for (int i = 0; i < n; i++) {
+        cin >> arr1[i];
+    }
+
+    cout << "Enter size of second array: ";
+    cin >> m;
+    vector<int> arr2(m);
+    cout << "Enter elements of second array: ";
+    for (int i = 0; i < m; i++) {
+        cin >> arr2[i];
+    }
+
+    cout << "Union of arrays: ";
+    unionArray(arr1, arr2);
+
+    // Sample test case
+    vector<int> test1 = {1, 2, 2, 2, 3};
+    vector<int> test2 = {2, 3, 4, 5};
+    cout << "Sample Test - Union: ";
+    unionArray(test1, test2);
+
+    return 0;
+}
+
+Output:
+
+Enter size of first array: 5
+Enter elements of first array: 1 2 2 2 3
+Enter size of second array: 4
+Enter elements of second array: 2 3 4 5
+Union of arrays: 1 2 3 4 5 
+Sample Test - Union: 1 2 3 4 5 
+
+
+
+Time and space complexity:
+
+Time Complexity:
+
+O(n + m)
+👉 You loop through both arrays once each.
+
+Space Complexity:
+
+O(n + m)
+👉 The unordered_set may store up to all unique elements.
 

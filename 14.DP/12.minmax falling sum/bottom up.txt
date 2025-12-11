@@ -1,29 +1,72 @@
-#include<bits/stdc++.h>
-int getMaxPathSum(vector<vector<int>> &matrix)
-{
-    int n=matrix.size();
-    int m=matrix[0].size();
-    int count=-1e8;
-          vector<vector<int>> dp(n,vector<int>(m,-1));
-    // here dp just push as nowhere  we are putting or comparing sp.hence 
-    //just put value max of down,ld,rd.
-    for(int i=0;i<m;i++)
-    {
-        dp[0][i]=matrix[0][i];
-    }
-    for(int i=1;i<n;i++)
-    {
-        for(int j=0;j<m;j++)
-        {
-            int down=-1e8,rd=-1e8,ld=-1e8;
-            if(j-1>=0)ld=matrix[i][j]+dp[i-1][j-1];
-            if(j+1<m)rd=matrix[i][j]+dp[i-1][j+1];
-            dp[i][j]=max(down,max(ld,rd));
-        }
-    }
-    for(int i=0;i<m;i++)
-    {
-        count=max(count,dp[n-1][i]);
-    }
-    return count;
+Ques: https://leetcode.com/problems/minimum-falling-path-sum/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Recursive function with memoization
+int solve(int i, int j, vector<vector<int>>& matrix, vector<vector<int>>& dp, int n, int m) {
+    // Out of bounds
+    if (j < 0 || j >= m) return -1e8;
+
+    // Base case: top row
+    if (i == 0) return matrix[0][j];
+
+    // If already calculated
+    if (dp[i][j] != -1) return dp[i][j];
+
+    int up = matrix[i][j] + solve(i - 1, j, matrix, dp, n, m);
+    int ld = matrix[i][j] + solve(i - 1, j - 1, matrix, dp, n, m);
+    int rd = matrix[i][j] + solve(i - 1, j + 1, matrix, dp, n, m);
+
+    return dp[i][j] = max({up, ld, rd});
 }
+
+int getMaxPathSum(vector<vector<int>> &matrix) {
+    int n = matrix.size();
+    int m = matrix[0].size();
+
+    vector<vector<int>> dp(n, vector<int>(m, -1));
+
+    int maxSum = -1e8;
+    for (int j = 0; j < m; j++) {
+        maxSum = max(maxSum, solve(n - 1, j, matrix, dp, n, m));
+    }
+
+    return maxSum;
+}
+
+int main() {
+    vector<vector<int>> matrix = {
+        {10, 10, 2, 0, 20, 4},
+        {1, 0, 0, 30, 2, 5},
+        {0, 10, 4, 0, 2, 0},
+        {1, 0, 2, 20, 0, 4}
+    };
+    cout << getMaxPathSum(matrix) << endl;  // Output: 74
+    return 0;
+}
+
+
+✅ Sample Input & Output
+🔸 Input:
+cpp
+Copy
+Edit
+matrix = {
+  {10, 10, 2, 0, 20, 4},
+  {1, 0, 0, 30, 2, 5},
+  {0, 10, 4, 0, 2, 0},
+  {1, 0, 2, 20, 0, 4}
+};
+🔸 Output:
+Copy
+Edit
+74
+✅ Time and Space Complexity
+Metric	Value
+⏱ Time Complexity	O(n * m)
+💾 Space Complexity	O(n * m) for dp + O(n) recursion stack
+
+

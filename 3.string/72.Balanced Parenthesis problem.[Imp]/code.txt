@@ -1,41 +1,74 @@
-    bool ispar(string x)
-    {
-        stack<char> s;
-        char c;
-        for(int i=0;i<x.size();i++)
-        {
-            if(x[i]=='{'||x[i]=='['||x[i]=='(')
-            {
-                s.push(x[i]);
-            }
-            if(s.empty())
-            return false; 
-            //for ()} like this
-            switch(x[i])
-            {
-                case ')':
-                 c=s.top();
-                s.pop();
-                if(c=='{' || c=='[')
-                return false;
-                break;
-                
-                  case ']':
-                 c=s.top();
-                s.pop();
-                if(c=='{' || c=='(')
-                return false;
-                break;
-                
-                  case '}':
-                 c=s.top();
-                s.pop();
-                if(c=='(' || c=='[')
-                return false;
-                break;
-            }
-            
+#include <bits/stdc++.h>
+using namespace std;
+
+bool ispar(string x) {
+    stack<char> s;
+    char c;
+
+    for (int i = 0; i < x.size(); i++) {
+        // If opening bracket, push to stack
+        if (x[i] == '{' || x[i] == '[' || x[i] == '(') {
+            s.push(x[i]);
+            continue;
         }
-        return(s.empty());
-        //for {() like this
+
+        // If closing bracket appears but stack is empty → invalid
+        if (s.empty())
+            return false;
+
+        // Match closing with top of stack
+        switch (x[i]) {
+            case ')':
+                c = s.top();
+                s.pop();
+                if (c == '{' || c == '[') return false;
+                break;
+
+            case ']':
+                c = s.top();
+                s.pop();
+                if (c == '{' || c == '(') return false;
+                break;
+
+            case '}':
+                c = s.top();
+                s.pop();
+                if (c == '(' || c == '[') return false;
+                break;
+        }
     }
+
+    // Valid only if stack is empty at end
+    return (s.empty());
+}
+
+// Driver code
+int main() {
+    vector<string> tests = {
+        "{[()]}",   // valid
+        "{()}",     // valid
+        "{(})",     // invalid
+        "(([]))",   // valid
+        "({[}])",   // invalid
+        "{[}",      // invalid
+        "()"        // valid
+    };
+
+    for (auto &expr : tests) {
+        cout << "Expression: " << expr 
+             << " -> " << (ispar(expr) ? "Balanced" : "Not Balanced") 
+             << endl;
+    }
+
+    return 0;
+}
+
+
+✅ Sample Output
+Expression: {[()]} -> Balanced
+Expression: {()} -> Balanced
+Expression: {(}) -> Not Balanced
+Expression: (([])) -> Balanced
+Expression: ({[}]) -> Not Balanced
+Expression: {[} -> Not Balanced
+Expression: () -> Balanced

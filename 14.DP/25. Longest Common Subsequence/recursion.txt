@@ -1,21 +1,48 @@
-1143. Longest Common Subsequence
+Ques: https://leetcode.com/problems/longest-common-subsequence/description/
 
+Code:
 
-#include<bits/stdc++.h>
-int solve(int index1,int index2,string s1,string s2)
-{
-    if(index1<0 || index2<0)
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int index1, int index2, string s1, string s2) {
+    if (index1 < 0 || index2 < 0)
         return 0;
-    if(s1[index1]==s2[index2])
-        return 1+solve(index1-1,index2-1,s1,s2);
-    return max(solve(index1-1,index2,s1,s2),solve(index1,index2-1,s1,s2));
+
+    if (s1[index1] == s2[index2])
+        return 1 + solve(index1 - 1, index2 - 1, s1, s2);
+
+    return max(
+        solve(index1 - 1, index2, s1, s2),
+        solve(index1, index2 - 1, s1, s2)
+    );
 }
 
-int lcs(string s, string t)
-{
-	int count=solve(s.length()-1,t.length()-1,s,t);
-    return count;
+int lcs(string s, string t) {
+    return solve(s.length() - 1, t.length() - 1, s, t);
 }
 
-TC:O(2^min(n1,n2))
-SC:O(min(n1,n2)
+int main() {
+    string s1 = "abcde", s2 = "ace";
+    cout << lcs(s1, s2) << endl;  // Output: 3
+    return 0;
+}
+
+
+Sample Input & 📤 Output
+Input:
+cpp
+Copy
+Edit
+s1 = "abcde", s2 = "ace"
+Output:
+Copy
+Edit
+3
+Explanation:
+The LCS is "ace", which has length 3.
+
+📊 Time & Space Complexity
+Metric	Value
+⏱ Time Complexity	O(2^min(n1, n2))
+💾 Space Complexity	O(min(n1, n2)) (Recursion Stack)

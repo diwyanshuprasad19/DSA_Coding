@@ -1,3 +1,7 @@
+Ques:https://www.geeksforgeeks.org/common-elements-in-all-rows-of-a-given-matrix/
+
+Code:
+
 #include<bits/stdc++.h>
 using namespace std;
 int main()
@@ -40,5 +44,27 @@ for(itr=mp.begin();itr!=mp.end();itr++)
     
  return 0;
 }
+
+✅ Sample Input
+markdown
+Copy
+Edit
+{
+    {1, 2, 1, 4, 8},
+    {3, 7, 8, 5, 1},
+    {8, 7, 7, 3, 1},
+    {8, 1, 2, 7, 9},
+}
+✅ Sample Output
+sql
+Copy
+Edit
+Common elements in all rows: 1 8
+
+
+✅ Time and Space Complexity
+Metric	Value
+Time Complexity	O(r * c)
+Space Complexity	O(c)
 
 

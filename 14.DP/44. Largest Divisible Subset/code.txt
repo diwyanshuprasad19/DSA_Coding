@@ -1,3 +1,10 @@
+Ques:https://leetcode.com/problems/largest-divisible-subset/submissions/1694190362/
+
+Sol:https://www.youtube.com/watch?v=gDuZwBW9VvM&list=PLgUwDviBIf0qUlt5H_kiKYaNSqJ81PMMY&index=45
+
+similar to longest increasing subsequence
+Code:
+
 #include<bits/stdc++.h>
 using namespace std;
 

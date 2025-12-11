@@ -62,6 +62,7 @@ int main()
     int V = 3, E = 3, S = 2;
     vector<vector<int>> adj[V];
     vector<vector<int>> edges;
+    //vertex,edge
     vector<int> v1{1, 1}, v2{2, 6}, v3{2, 3}, v4{0, 1}, v5{1, 3}, v6{0, 6};
     int i = 0;
     adj[0].push_back(v1);
@@ -90,9 +91,20 @@ Relaxation is a key concept in graph algorithms, particularly in Dijkstra’s al
 
 
 Time Complexity: O( E log(V) ), Where E = Number of edges and V = Number of Nodes.
+3️⃣ Counting the operations
+Push to priority queue happens O(E) times (once per edge relaxation).
+
+Pop from priority queue happens O(V + E) times in practice, but each pop is O(log V).
 
 Space Complexity: O( |E| + |V| ), Where E = Number of edges and V = Number of Nodes.
 
 
 https://www.youtube.com/watch?v=3dINsjyfooY
 explaiantion
+
+📌 Priority Queue (Min/Max Heap) — Operation Costs
+Operation	Meaning	Time Complexity
+Push / Insert	Add a new element to the heap	O(log N)
+Pop / Extract-min	Remove the smallest (or largest) element from the heap	O(log N)
+Top / Peek	Get the smallest (or largest) element without removing	O(1)
+Size / Empty	Get number of elements / check if empty	O(1)

@@ -8,51 +8,52 @@ Code:
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution {
-public:
-    string chooseandswap(string a) {
-        set<char> s;
-        
-        // Step 1: Store all unique characters in a set
-        for (int i = 0; i < a.length(); i++) 
-            s.insert(a[i]);
+int findMin(int n, vector<int> denomination)
+{
+    int count = 0; 
 
-        // Step 2: Iterate through the string and find the first smaller lexicographic character
-        for (int i = 0; i < a.length(); i++) {
-            s.erase(a[i]); // Remove current character from set
-            
-            if (s.empty()) 
-                break;
+    // Traverse through all denomination
+    for (int i = denomination.size() - 1; i >= 0; i--) {
 
-            char ch = *s.begin(); // Get the smallest remaining character
-            
-            if (ch < a[i]) { // If we found a smaller character to swap
-                char k = a[i];
-
-                // Step 3: Perform the swapping operation in the entire string
-                for (int j = 0; j < a.length(); j++) {
-                    if (a[j] == ch) 
-                        a[j] = k;
-                    else if (a[j] == k) 
-                        a[j] = ch;
-                }
-                break; // Swap only once and break
-            }
+        // Find denominations
+        while (n >= denomination[i]) {
+            n -= denomination[i];
+            count++;
         }
-        return a;
     }
-};
-
-Lexicographically Smallest String: aacd
-
-// Driver Code
-int main() {
-    Solution obj;
-    string s = "ccad";
-    cout << "Lexicographically Smallest String: " << obj.chooseandswap(s) << endl;
-    
-    return 0;
+    return count; 
 }
 
+int main()
+{
+    vector<int> denomination = { 1, 2, 5, 10 };
+    int n = 39;
+    cout << findMin(n, denomination);
+    return 0;
+}
+Sample Input
+ini
+Copy
+Edit
+denomination = [1, 2, 5, 10]
+n = 39
+Sample Output
+Copy
+Edit
+6
+(Explanation: 10+10+10+5+2+2)
 
-Time and space Complexity:
+Time Complexity
+Let k = number of denominations.
+
+The while loops run once per coin used. In the worst case (e.g., many 1s), that’s O(n) total iterations.
+
+Outer loop over denominations is O(k), but dominated by the while work.
+
+Overall (with pre-sorted denominations descending): O(n).
+If you first sort the list, add O(k log k).
+
+Space Complexity
+Uses a few integers; no extra structures proportional to n or k.
+
+O(1) auxiliary space.

@@ -1,0 +1,127 @@
+Ques:https://www.geeksforgeeks.org/design-a-stack-with-find-middle-operation/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class myStack {
+    struct Node {
+        int num;
+        Node* next;
+        Node* prev;
+
+        Node(int num) { this->num = num; }
+    };
+
+    // Members of stack
+    Node* head = NULL;
+    Node* mid = NULL;
+    int size = 0;
+
+public:
+    // Push an element into the stack
+    void push(int data) {
+        Node* temp = new Node(data);
+        if (size == 0) {
+            head = temp;
+            mid = temp;
+        } else {
+            head->next = temp;
+            temp->prev = head;
+            head = temp;
+
+            // Update middle pointer
+            if (size % 2 == 1) {
+                mid = mid->next;
+            }
+        }
+        size++;
+    }
+
+    // Pop the top element from the stack
+    int pop() {
+        if (size == 0) return -1;
+        
+        Node* toPop = head;
+        int data = toPop->num;
+
+        if (size == 1) {
+            head = NULL;
+            mid = NULL;
+        } else {
+            head = head->prev;
+            head->next = NULL;
+
+            // Update middle pointer
+            if (size % 2 == 0) {
+                mid = mid->prev;
+            }
+        }
+        delete toPop;
+        size--;
+        return data;
+    }
+
+    // Get the middle element
+    int findMiddle() {
+        return (size == 0) ? -1 : mid->num;
+    }
+
+    // Delete the middle element
+    void deleteMiddle() {
+        if (size == 0) return;
+
+        Node* toDelete = mid;
+
+        if (size == 1) {
+            head = NULL;
+            mid = NULL;
+        } else if (size == 2) {
+            head = head->prev;
+            mid = mid->prev;
+            head->next = NULL;
+        } else {
+            mid->next->prev = mid->prev;
+            mid->prev->next = mid->next;
+
+            // Update middle pointer
+            mid = (size % 2 == 0) ? mid->prev : mid->next;
+        }
+        delete toDelete;
+        size--;
+    }
+};
+
+int main() {
+    myStack st;
+    st.push(11);
+    st.push(22);
+    st.push(33);
+    st.push(44);
+    st.push(55);
+    st.push(66);
+    st.push(77);
+    st.push(88);
+    st.push(99);
+
+    cout << "Popped : " << st.pop() << endl;
+    cout << "Popped : " << st.pop() << endl;
+    cout << "Middle Element : " << st.findMiddle() << endl;
+
+    st.deleteMiddle();
+    cout << "New Middle Element : " << st.findMiddle() << endl;
+
+    return 0;
+}
+
+
+Time and space complexity
+
+Time Complexity:
+push(int x) → O(1) (Adding at the end of DLL, updating mid)
+pop() → O(1) (Removing last element, updating mid)
+findMiddle() → O(1) (Direct access to mid)
+deleteMiddle() → O(1) (Removing mid, updating its pointer)
+Space Complexity:
+O(N) (Extra space for N elements stored in the doubly linked list)

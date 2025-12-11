@@ -1,0 +1,90 @@
+Ques:https://www.geeksforgeeks.org/sum-minimum-maximum-elements-subarrays-size-k/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    long long sumOfMinAndMax(vector<int>& arr, int N, int K) {
+        deque<int> minDeque, maxDeque;
+        long long sum = 0;
+
+        // Process first K elements
+        for (int i = 0; i < K; i++) {
+            while (!minDeque.empty() && arr[minDeque.back()] >= arr[i])
+                minDeque.pop_back();
+            while (!maxDeque.empty() && arr[maxDeque.back()] <= arr[i])
+                maxDeque.pop_back();
+
+            minDeque.push_back(i);
+            maxDeque.push_back(i);
+        }
+
+        // Process rest of the elements
+        for (int i = K; i < N; i++) {
+            // Add min and max of the previous window to sum
+            sum += arr[minDeque.front()] + arr[maxDeque.front()];
+
+            // Remove elements that are out of this window
+            while (!minDeque.empty() && minDeque.front() <= i - K)
+                minDeque.pop_front();
+            while (!maxDeque.empty() && maxDeque.front() <= i - K)
+                maxDeque.pop_front();
+
+            // Add current element in the window
+            while (!minDeque.empty() && arr[minDeque.back()] >= arr[i])
+                minDeque.pop_back();
+            while (!maxDeque.empty() && arr[maxDeque.back()] <= arr[i])
+                maxDeque.pop_back();
+
+            minDeque.push_back(i);
+            maxDeque.push_back(i);
+        }
+
+        // Add min and max of last window
+        sum += arr[minDeque.front()] + arr[maxDeque.front()];
+
+        return sum;
+    }
+};
+
+// Driver Code
+int main() {
+    vector<int> arr = {2, 5, -1, 7, -3, -1, -2};
+    int N = arr.size();
+    int K = 3;
+
+    Solution obj;
+    cout << "Sum of min and max elements of all subarrays of size K: " 
+         << obj.sumOfMinAndMax(arr, N, K) << endl;
+
+    return 0;
+}
+
+
+Time and space :
+
+Time & Space Complexity Analysis
+Time Complexity:
+Each element is pushed and popped from deque at most once → O(N)
+Total Complexity: O(N)
+Space Complexity:
+Two deques (min & max): O(K)
+Total Space Complexity: O(K) (since output storage is ignored in space calculations).
+
+
+
+Deque (Double-Ended Queue) – All Operations in Table Format
+Operation	Function	Description	Time Complexity
+Insertion at Front	dq.push_front(x);	Inserts x at the front of the deque.	O(1)
+Insertion at Rear	dq.push_back(x);	Inserts x at the rear of the deque.	O(1)
+Deletion from Front	dq.pop_front();	Removes the element from the front.	O(1)
+Deletion from Rear	dq.pop_back();	Removes the element from the rear.	O(1)
+Access Front Element	dq.front();	Returns the element at the front.	O(1)
+Access Rear Element	dq.back();	Returns the element at the rear.	O(1)
+Check if Empty	dq.empty();	Returns true if the deque is empty.	O(1)
+Size of Deque	dq.size();	Returns the number of elements in the deque.	O(1)
+Erase a Specific Element	dq.erase(pos);	Erases the element at position pos.	O(N)
+Clear Deque	dq.clear();	Removes all elements from the deque.	O(N)

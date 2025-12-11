@@ -1,29 +1,83 @@
-#include<bits/stdc++.h>
-bool solve(int i,int j,string s1,string s2,vector<vector<int>> &dp)
-{
-    if(i<0 && j<0)return true;
-    if(i<0 && j>=0)return false;
-    if(j<0 && i>=0)
-    {
-        for(int k=0;k<=i;k++)
-        {
-            if(s1[k]!='*')return false;
+Ques:https://leetcode.com/problems/wildcard-matching/description/
+
+Sol:https://www.youtube.com/watch?v=ZmlQ3vgAOMo
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+bool solve(int i, int j, string &s1, string &s2, vector<vector<int>> &dp) {
+    // Base Case 1: both strings are fully matched
+    if (i < 0 && j < 0) return true;
+
+    // Base Case 2: pattern exhausted, but text remains
+    if (i < 0 && j >= 0) return false;
+
+    // Base Case 3: text exhausted, check if remaining pattern is all '*'
+    if (j < 0 && i >= 0) {
+        for (int k = 0; k <= i; k++) {
+            if (s1[k] != '*') return false;
         }
         return true;
     }
-    if(dp[i][j]!=-1)return dp[i][j];
-    if(s1[i]==s2[j] || s1[i]=='?')
-        return dp[i][j]=solve(i-1,j-1,s1,s2,dp);
-    else if(s1[i]=='*')
-        return dp[i][j]=solve(i-1,j,s1,s2,dp)||solve(i,j-1,s1,s2,dp);
-    else
-        return dp[i][j]=false;
+
+    // Memoized result
+    if (dp[i][j] != -1) return dp[i][j];
+
+    if (s1[i] == s2[j] || s1[i] == '?') {
+        return dp[i][j] = solve(i - 1, j - 1, s1, s2, dp);
+    } else if (s1[i] == '*') {
+        // '*' matches 0 chars (i-1, j) or 1+ chars (i, j-1)
+        return dp[i][j] = solve(i - 1, j, s1, s2, dp) || solve(i, j - 1, s1, s2, dp);
+    } else {
+        return dp[i][j] = false;
+    }
 }
-bool wildcardMatching(string pattern, string text)
-{
-    int m=text.length();
-    int n=pattern.length();
-    vector<vector<int>> dp(n,vector<int>(m,-1));
-bool b=solve(n-1,m-1,pattern,text,dp);
-    return b;
+
+bool wildcardMatching(string pattern, string text) {
+    int n = pattern.length();
+    int m = text.length();
+
+    vector<vector<int>> dp(n, vector<int>(m, -1));
+    return solve(n - 1, m - 1, pattern, text, dp);
 }
+
+int main() {
+    string pattern = "a*b?d";
+    string text = "aaabxd";
+
+    if (wildcardMatching(pattern, text)) {
+        cout << "Match" << endl;
+    } else {
+        cout << "No Match" << endl;
+    }
+
+    return 0;
+}
+
+ Time & Space Complexity
+Metric	Complexity
+Time	O(n * m)
+Space (Memo + stack)	O(n * m) + O(n + m)
+
+n = pattern.length()
+
+m = text.length()
+
+🧪 Sample I/O
+Input:
+cpp
+Copy
+Edit
+pattern = "a*b?d"
+text = "aaabxd"
+Output:
+sql
+Copy
+Edit
+Match
+
+
+
+

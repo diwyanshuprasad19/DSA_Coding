@@ -48,55 +48,144 @@ int main() {
     
     return 0;
 }
+Time Complexity: Sorting O(n log n) + nested slot search O(n²) ⇒ O(n²) overall.
+Space Complexity: Boolean array v of size n ⇒ O(n) (sort is in-place, other vars O(1)).
 
-Time and sapce comeplxity:
 
-Time Complexity Analysis
-Sorting the Jobs by Profit → O(n log n)
 
-The jobs are sorted in descending order of profit using the sort() function.
-Allocating Jobs to Slots (Nested Loop) → O(n^2)
+Code Explanation (Step-by-Step)
+We have two arrays:
 
-The outer loop runs O(n) times for each job.
-The inner loop searches for an available slot from min(n, arr[i].dead) - 1 down to 0.
-In the worst case, the inner loop runs n times for each job, leading to O(n^2).
-Thus, the overall time complexity is:
+deadline[i] → last time slot in which the job can be done
 
-𝑂
-(
-𝑛
-log
-⁡
-𝑛
-)
-+
-𝑂
-(
-𝑛
-2
-)
-=
-𝑂
-(
-𝑛
-2
-)
-O(nlogn)+O(n 
-2
- )=O(n 
-2
- )
-which is suboptimal for large inputs.
+profit[i] → profit if we complete this job
 
-🔹 Space Complexity Analysis
-Sorting Uses Extra Memory → O(1) (since sort() is in-place).
-Boolean Array v[n] → O(n).
-The array v[n] is used to track whether a time slot is filled.
-Other variables (day, profit, loop counters, etc.) → O(1).
-Thus, the overall space complexity is:
+Goal:
+✅ Maximize total profit
+✅ Find how many jobs are done
 
-𝑂
-(
-𝑛
-)
-O(n)
+1. Pair deadline and profit
+cpp
+Copy
+Edit
+vector<pair<int, int>> jobs;
+for (int i = 0; i < n; i++) {
+    jobs.push_back({deadline[i], profit[i]});
+}
+Now we have something like:
+
+css
+Copy
+Edit
+[(2,100), (1,19), (2,27), (1,25), (1,15)]
+Each pair = (deadline, profit)
+
+2. Sort jobs by deadline (ascending)
+cpp
+Copy
+Edit
+sort(jobs.begin(), jobs.end());
+Sorted result:
+
+css
+Copy
+Edit
+[(1,19), (1,25), (1,15), (2,100), (2,27)]
+This ensures we consider earlier deadlines first.
+
+3. Use a Min-Heap (priority_queue with greater<int>)
+cpp
+Copy
+Edit
+priority_queue<int, vector<int>, greater<int>> pq;
+This heap stores profits of currently scheduled jobs.
+
+The smallest profit job is always at the top (so we can remove it if a better profit job comes).
+
+4. Iterate over jobs
+For each job (deadline, profit):
+
+Case 1:
+If the current job can be scheduled within its deadline:
+
+cpp
+Copy
+Edit
+if (job.first > pq.size())
+    pq.push(job.second);
+We push its profit into pq.
+
+Case 2:
+If the schedule is already full (heap size == deadline),
+replace the lowest profit job if the current one is better:
+
+cpp
+Copy
+Edit
+else if (!pq.empty() && pq.top() < job.second) {
+    pq.pop();          // remove lowest profit job
+    pq.push(job.second);
+}
+5. Compute results
+At the end:
+
+cpp
+Copy
+Edit
+while (!pq.empty()) {
+    ans[1] += pq.top(); // total profit
+    pq.pop();
+    ans[0]++;           // total jobs
+}
+ans[0] → total jobs done
+ans[1] → total profit
+
+Sample Input / Output
+Input
+ini
+Copy
+Edit
+deadline = {2, 1, 2, 1, 1}
+profit   = {100, 19, 27, 25, 15}
+Process
+Jobs after sorting: (1,19), (1,25), (1,15), (2,100), (2,27)
+
+Heap operations:
+
+(1,19) → heap = [19]
+
+(1,25) → heap full (size=1, deadline=1), replace 19 → heap = [25]
+
+(1,15) → heap full, 15 < 25 → skip
+
+(2,100) → heap size=1 < deadline=2 → heap = [25,100]
+
+(2,27) → heap full (size=2), replace 25 → heap = [27,100]
+
+Final heap: [27, 100]
+
+Output
+Copy
+Edit
+2 127
+2 jobs done
+
+Total profit = 100 + 27 = 127
+
+Time Complexity
+Pairing jobs: O(n)
+
+Sorting: O(n log n)
+
+Heap operations: each job push/pop takes O(log k), where k ≤ n
+⇒ O(n log n) in worst case
+
+Total: O(n log n)
+
+Space Complexity
+Jobs array: O(n)
+
+Min-heap: O(n) in worst case
+
+Total: O(n)
+

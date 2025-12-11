@@ -1,0 +1,48 @@
+Ques: https://leetcode.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/description/
+
+Sol:https://www.youtube.com/watch?v=xPBLEj41rFU
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Memoized LCS function
+int lcs(int i, int j, string &s1, string &s2, vector<vector<int>> &dp) {
+    if (i < 0 || j < 0)
+        return 0;
+
+    if (dp[i][j] != -1) return dp[i][j];
+
+    if (s1[i] == s2[j])
+        return dp[i][j] = 1 + lcs(i - 1, j - 1, s1, s2, dp);
+    else
+        return dp[i][j] = max(lcs(i - 1, j, s1, s2, dp), lcs(i, j - 1, s1, s2, dp));
+}
+
+int minInsertions(string s) {
+    string rev = s;
+    reverse(rev.begin(), rev.end());
+
+    int n = s.length();
+    vector<vector<int>> dp(n, vector<int>(n, -1));
+
+    int lps = lcs(n - 1, n - 1, s, rev, dp);
+    return n - lps;
+}
+
+int main() {
+    string input = "mbadm";
+    cout << "Minimum insertions to make palindrome: " << minInsertions(input) << endl;
+    return 0;
+}
+
+
+🧪 Sample Input & Output
+Input: "mbadm"
+Output: 2
+
+⏱ Time and 💾 Space Complexity
+Metric	Value
+⏱ Time Complexity	O(n^2)
+💾 Space Complexity	O(n^2) (for dp matrix) + O(n) recursion stack

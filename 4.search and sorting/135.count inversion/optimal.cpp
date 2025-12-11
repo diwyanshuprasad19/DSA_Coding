@@ -1,5 +1,6 @@
+Ques:https://www.geeksforgeeks.org/inversion-count-in-array-using-merge-sort/
 
-//question:https://www.geeksforgeeks.org/inversion-count-in-array-using-merge-sort/
+Code:
 
 // C++ program to Count
 // Inversions in an array
@@ -97,3 +98,20 @@ int main()
 
 // This is code is contributed by rathbhupendra
 
+
+Sample Input
+cpp
+Copy
+Edit
+arr[] = {5, 3, 2, 4, 1}
+📤 Output
+javascript
+Copy
+Edit
+Number of inversions are 8
+
+
+Time & Space Complexity
+Metric	Value
+Time Complexity	O(n log n)
+Space Complexity	O(n) (for temp array)

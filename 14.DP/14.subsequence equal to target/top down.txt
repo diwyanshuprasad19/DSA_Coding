@@ -1,17 +1,53 @@
-#include<bits/stdc++.h>
-bool solve(int index,int target,vector<int> &arr,vector<vector<int>> & dp)
-{
-    if(target==0) return true;
-    if(index==0)return(arr[index]==target);
-    if(dp[index][target]!=-1)return dp[index][target];
-    bool nottake=solve(index-1,target,arr,dp);
-    bool take=false;
-    if(target>=arr[index])
-        take=solve(index-1,target-arr[index],arr,dp);
-    return dp[index][target]=nottake || take;
+Ques: https://leetcode.com/problems/partition-equal-subset-sum/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+bool solve(int index, int target, vector<int> &arr, vector<vector<int>> &dp) {
+    if (target == 0) return true;
+    if (index == 0) return arr[0] == target;
+
+    if (dp[index][target] != -1) return dp[index][target];
+
+    bool notTake = solve(index - 1, target, arr, dp);
+    bool take = false;
+    if (target >= arr[index])
+        take = solve(index - 1, target - arr[index], arr, dp);
+
+    return dp[index][target] = take || notTake;
 }
+
 bool subsetSumToK(int n, int k, vector<int> &arr) {
-    vector<vector<int>> dp(n,vector<int>(k+1,-1));
-    bool ans=solve(n-1,k,arr,dp);
-    return ans;
+    vector<vector<int>> dp(n, vector<int>(k + 1, -1));
+    return solve(n - 1, k, arr, dp);
 }
+
+int main() {
+    vector<int> arr = {2, 3, 1, 5};
+    int k = 4;
+    cout << (subsetSumToK(arr.size(), k, arr) ? "true" : "false") << endl;
+    return 0;
+}
+
+✅ Sample Input & Output
+🔸 Input:
+cpp
+Copy
+Edit
+arr = {2, 3, 1, 5}
+k = 4
+🔸 Output:
+arduino
+Copy
+Edit
+true
+🔸 Explanation:
+Subset {3, 1} adds up to 4.
+
+✅ Time & Space Complexity
+Metric	Value
+⏱ Time Complexity	O(n * k)
+💾 Space Complexity	O(n * k) (DP table) + O(n) (recursion stack)
+

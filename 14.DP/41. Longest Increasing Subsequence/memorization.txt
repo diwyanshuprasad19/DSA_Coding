@@ -1,21 +1,55 @@
-#include<bits/stdc++.h>
-int solve(int index,int previndex,int arr[],int n,vector<vector<int>> &dp)
-{
-    if(index==n)return 0;
-    if(dp[index][previndex+1]!=-1)return dp[index][previndex];
-    int nottake=0+solve(index+1,previndex,arr,n,dp);
-    int take=0;
-    if(previndex==-1 || arr[index]>arr[previndex])
-        take=1+solve(index+1,index,arr,n,dp);
-    return dp[index][previndex+1]=max(take,nottake);
+Ques:https://leetcode.com/problems/longest-increasing-subsequence/description/
+
+Sol:https://www.youtube.com/watch?v=ekcwMsSIzVc&list=PLgUwDviBIf0qUlt5H_kiKYaNSqJ81PMMY&index=42
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int index, int prevIndex, int arr[], int n, vector<vector<int>> &dp) {
+    if (index == n) return 0;
+
+    if (dp[index][prevIndex + 1] != -1)
+        return dp[index][prevIndex + 1]; // ✅ Fix: access using prevIndex + 1
+
+    int notTake = solve(index + 1, prevIndex, arr, n, dp);
+
+    int take = 0;
+    if (prevIndex == -1 || arr[index] > arr[prevIndex])
+        take = 1 + solve(index + 1, index, arr, n, dp);
+
+    return dp[index][prevIndex + 1] = max(take, notTake);
 }
-int longestIncreasingSubsequence(int arr[], int n)
-{
-    vector<vector<int>> dp(n,vector<int>(n+1,-1));
-   int count=solve(0,-1,arr,n,dp);
-    return count;
+
+int longestIncreasingSubsequence(int arr[], int n) {
+    vector<vector<int>> dp(n, vector<int>(n + 1, -1)); // prevIndex ranges from -1 to n-1
+    return solve(0, -1, arr, n, dp);
+}
+
+int main() {
+    int arr[] = {10, 9, 2, 5, 3, 7, 101, 18};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    cout << "Length of LIS: " << longestIncreasingSubsequence(arr, n) << endl;
+    return 0;
 }
 
 
-TC:O(n^2)
-SC:O(n^2)
+ Input & Output
+Input:
+
+cpp
+Copy
+Edit
+arr = {10, 9, 2, 5, 3, 7, 101, 18}
+Output:
+
+yaml
+Copy
+Edit
+Length of LIS: 4
+⏱️ Time and Space Complexity
+Metric	Value
+Time Complexity	O(n^2) — For n indices and n possible prevIndex + 1 values
+Space Complexity	O(n^2) — Due to 2D DP table

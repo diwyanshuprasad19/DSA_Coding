@@ -1,25 +1,78 @@
-https://www.geeksforgeeks.org/the-celebrity-problem/
-For gig know everyone
-Verify candidate (person 2):
+Ques: https://www.geeksforgeeks.org/the-celebrity-problem/
 
-Knows no one: matrix[2][k] = 0 for all k.
-Is known by everyone: matrix[k][2] = 1 for all k (except matrix[2][2]).
+Code:
 
-Solution best
+#include <iostream>
+#include <stack>
+#include <vector>
 
-    int celebrity(vector<vector<int> >& M, int n) 
-    {
-       int c=0;
-       for(int i=1;i<n;i++)
-       {
-           if(M[c][i]==1)
-           c=i;
-       }
-       for(int i=0;i<n;i++)
-       {
-           if(i!=c  && (M[c][i]==1 || M[i][c]==0))
-           return -1;
-       }
-       return c;
+using namespace std;
+
+class Solution {
+public:
+    int celebrity(vector<vector<int>>& M, int n) {
+        stack<int> s;
+
+        // Step 1: Push all people onto the stack
+        for (int i = 0; i < n; i++) {
+            s.push(i);
+        }
+
+        // Step 2: Find a potential celebrity
+        while (s.size() > 1) {
+            int A = s.top();
+            s.pop();
+            int B = s.top();
+            s.pop();
+
+            if (M[A][B] == 1) {
+                // A knows B -> A is not a celebrity, push B back
+                s.push(B);
+            } else {
+                // A does not know B -> B is not a celebrity, push A back
+                s.push(A);
+            }
+        }
+
+        // Step 3: Verify if the remaining person is a celebrity
+        int candidate = s.top();
+        for (int i = 0; i < n; i++) {
+            if (i != candidate) {
+                if (M[candidate][i] == 1 || M[i][candidate] == 0) {
+                    return -1; // Not a celebrity
+                }
+            }
+        }
+
+        return candidate;
     }
+};
 
+// Driver Code
+int main() {
+    Solution sol;
+    vector<vector<int>> M = {
+        {0, 1, 0},
+        {0, 0, 0},
+        {0, 1, 0}
+    };
+    int n = 3;
+    
+    int result = sol.celebrity(M, n);
+    if (result == -1)
+        cout << "No celebrity found" << endl;
+    else
+        cout << "Celebrity is at index: " << result << endl;
+
+    return 0;
+}
+
+
+Time and space
+
+Time and Space Complexity
+Operation	Time Complexity	Explanation
+Finding potential celebrity	O(N)	Each person is pushed and popped at most once.
+Celebrity verification	O(N)	Checks all rows and columns for the candidate.
+Total Time Complexity	O(N)	Linear traversal is performed twice.
+Space Complexity	O(N)	Stack stores at most N people.

@@ -1,3 +1,9 @@
+Ques:
+
+Sol:https://www.youtube.com/watch?v=cKVl1TFdNXg&list=PLgUwDviBIf0qUlt5H_kiKYaNSqJ81PMMY&index=48
+
+Code:
+
 int findNumberOfLIS(vector<int> &arr)
 {
     int n=arr.size();

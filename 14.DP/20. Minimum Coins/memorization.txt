@@ -1,23 +1,58 @@
-#include<bits/stdc++.h>
-int solve(int index,vector<int> &num, int x,vector<vector<int>> dp)
-{
-    if(index==0)
-    {
-        if(x%num[index]==0)return x/num[index];
+Ques:https://leetcode.com/problems/coin-change/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int index, vector<int>& num, int x, vector<vector<int>>& dp) {
+    if (index == 0) {
+        if (x % num[0] == 0)
+            return x / num[0];
         else
-            return 1e9;
+            return 1e9;  // very large, means invalid
     }
-    if(dp[index][x]!=-1)return dp[index][x];
-    int nottake=0+solve(index-1,num,x,dp);
-    int take=1e9;
-    if(num[index]<=x)
-        take=1+solve(index,num,x-num[index],dp);
-    return dp[index][x]=min(nottake,take);
+
+    if (dp[index][x] != -1)
+        return dp[index][x];
+
+    int notTake = solve(index - 1, num, x, dp);
+    int take = 1e9;
+    if (num[index] <= x)
+        take = 1 + solve(index, num, x - num[index], dp);
+
+    return dp[index][x] = min(take, notTake);
 }
-int minimumElements(vector<int> &num, int x)
-{
-    vector<vector<int>> dp(num.size(),vector<int>(x+1,-1));
-    int count=solve(num.size()-1,num,x,dp);
-    if(count>=1e9)return -1;
-    return count;
+
+int minimumElements(vector<int>& num, int x) {
+    int n = num.size();
+    vector<vector<int>> dp(n, vector<int>(x + 1, -1));
+
+    int result = solve(n - 1, num, x, dp);
+    return (result >= 1e9) ? -1 : result;
 }
+
+int main() {
+    vector<int> num = {1, 2, 3};
+    int x = 7;
+    cout << minimumElements(num, x) << endl;  // Output: 3
+    return 0;
+}
+
+
+ Sample Input & 📤 Output
+Input:
+cpp
+Copy
+Edit
+num = {1, 2, 3}
+x = 7
+Output:
+Copy
+Edit
+3
+
+Time & Space Complexity
+Metric	Value
+⏱ Time Complexity	O(n × x)
+💾 Space Complexity	O(n × x) for dp + recursion stack

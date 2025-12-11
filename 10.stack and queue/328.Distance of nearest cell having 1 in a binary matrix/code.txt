@@ -1,59 +1,92 @@
-	vector<vector<int>>nearest(vector<vector<int>>grid)
-	{
-	    int n=grid.size();
-	    int m=grid[0].size();
-	    
-	    vector<vector<int>> vis(n,vector<int>(m,0));
-	    vector<vector<int>> dis(n,vector<int>(m,0));
-	    queue<pair<pair<int,int>,int>> q;
-	    
-	    for(int i=0;i<n;i++)
-	    {
-	        for(int j=0;j<m;j++)
-	        {
-	            if(grid[i][j]==1)
-	            {
-	                q.push({{i,j},0});
-	                vis[i][j]=1;
-	            }
-	        }
-	    }
-	    int arow[]={-1,0,1,0};
-	    int acol[]={0,1,0,-1};
-	    while(q.empty()==false)
-	    {
-	        int nrow=q.front().first.first;
-	        int ncol=q.front().first.second;
-	        int step=q.front().second;
-	        q.pop();
-	        dis[nrow][ncol]=step;
-	        for(int i=0;i<4;i++)
-	        {
-	            int trow=nrow+arow[i];
-	            int tcol=ncol+acol[i];
-	            if(trow>=0 && trow<n && tcol>=0 && tcol<m && vis[trow][tcol]==0)
-	            {
-	                vis[trow][tcol]=1;
-	                q.push({{trow,tcol},step+1});
-	            }
-	        }
-	    }
-	    return dis;
-	}
+Ques:https://www.geeksforgeeks.org/distance-nearest-cell-1-binary-matrix/
 
-Time Complexity: 
-𝑂
-(
-𝑛
-×
-𝑚
-)
-O(n×m)
-Space Complexity: 
-𝑂
-(
-𝑛
-×
-𝑚
-)
-O(n×m)
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    vector<vector<int>> nearest(vector<vector<int>> &grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        vector<vector<int>> dis(n, vector<int>(m, 0));
+        queue<pair<pair<int, int>, int>> q;
+
+        // Step 1: Push all cells with 1 into the queue with distance 0
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (grid[i][j] == 1) {
+                    q.push({{i, j}, 0});
+                    vis[i][j] = 1;
+                }
+            }
+        }
+
+        // Directions for moving in 4 directions (up, right, down, left)
+        int dRow[] = {-1, 0, 1, 0};
+        int dCol[] = {0, 1, 0, -1};
+
+        // Step 2: BFS traversal
+        while (!q.empty()) {
+            int row = q.front().first.first;
+            int col = q.front().first.second;
+            int step = q.front().second;
+            q.pop();
+            dis[row][col] = step;
+
+            // Explore all 4 directions
+            for (int i = 0; i < 4; i++) {
+                int newRow = row + dRow[i];
+                int newCol = col + dCol[i];
+
+                if (newRow >= 0 && newRow < n && newCol >= 0 && newCol < m && vis[newRow][newCol] == 0) {
+                    vis[newRow][newCol] = 1;
+                    q.push({{newRow, newCol}, step + 1});
+                }
+            }
+        }
+
+        return dis;
+    }
+};
+
+// Driver Code
+int main() {
+    vector<vector<int>> grid = {
+        {0, 1, 0},
+        {0, 0, 0},
+        {1, 0, 0}
+    };
+
+    Solution obj;
+    vector<vector<int>> result = obj.nearest(grid);
+
+    cout << "Distance Matrix:\n";
+    for (auto row : result) {
+        for (auto val : row) {
+            cout << val << " ";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
+
+
+
+Time and space Complexity:
+
+Time & Space Complexity Analysis:
+Time Complexity:
+Every cell is visited at most once (pushed and popped from queue once).
+There are 4 possible movements for each cell.
+Hence, the overall time complexity is O(n × m).
+Space Complexity:
+Visited matrix: O(n × m)
+Distance matrix: O(n × m)
+Queue (Worst case all elements stored at once): O(n × m)
+Total space complexity: O(n × m)

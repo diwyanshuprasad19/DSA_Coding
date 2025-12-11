@@ -1,46 +1,63 @@
-#include<bits/stdc++.h>
+Ques:https://www.geeksforgeeks.org/find-the-row-with-maximum-number-1s/
+
+Sol:https://www.youtube.com/watch?v=mmSSzbOGnPc
+see this is upper bound solutiona nd hecne n*log m is time compelxity further can be reduce tiem compelxity
+
+Code:
+
+#include <bits/stdc++.h>
 using namespace std;
 
+// The main function that returns index of row with maximum
+// number of 1s.
+int rowWithMax1s(vector<vector<bool>>& mat) {
+    int maxRow = -1, row = 0;
+    int R = mat.size();
+    int C = mat[0].size();
+    int col = C - 1;
 
-int first(int arr[],int low ,int high)
-{
-	int mid;
-	while(low<=high)
-	{
-		mid=low+(high-low)/2;
-		
-		if(mid==0||arr[mid-1]==0 &&arr[mid]==1)  //mid ==0 as if arr[mid]==0 the mid always shift to the right
-		return mid;
-		else if(arr[mid]==0)
-		return first(arr,mid+1,high);
-		return first(arr,low,mid-1);    //arr[mid]==1 comes
-	}
-	return -1; //all col is 0
+    // Move till we are inside the matrix
+    while (row < R && col >= 0) {
+        // If the current value is 0, move down to the next row
+        if (mat[row][col] == 0) {
+            row += 1;
+        }
+        // Else if the current value is 1, update ans and
+        // move to the left column
+        else {
+            maxRow = row;
+            col -= 1;
+        }
+    }
+    return maxRow;
 }
 
-int row(int arr[4][4])
-{
-	int index,max=INT_MIN;
-	int pos;
-	for(int i=0;i<4;i++)
-	{
-		index=first(arr[i],0,3);
-		if(index!=-1 && 4-index>max)
-		{
-			max=4-index;
-			pos=i;
-		}
-	}
-	return pos;
-}
-int main()
-{
-    int mat[4][4] = { {0, 0, 0, 1},
-                    {0, 1, 1, 1},
-                    {1, 1, 1, 1},
-                    {0, 0, 0, 0}};
- 
-    cout << "Index of row with maximum 1s is " << row(mat);
- 
+// Driver Code
+int main() {
+    vector<vector<bool>> mat = { { 0, 0, 0, 1 },
+                                 { 0, 1, 1, 1 },
+                                 { 1, 1, 1, 1 },
+                                 { 0, 0, 0, 0 } };
+
+    cout << "Index of row with maximum 1s is "
+         << rowWithMax1s(mat);
+
     return 0;
 }
+
+
+ Time & Space Complexity
+⏱️ Time Complexity:
+scss
+Copy
+Edit
+O(n + m)
+At most, you move m steps left and n steps down.
+
+🧠 Space Complexity:
+scss
+Copy
+Edit
+O(1)
+No extra space used apart from variables.
+

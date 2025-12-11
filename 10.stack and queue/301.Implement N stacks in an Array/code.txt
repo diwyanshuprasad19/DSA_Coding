@@ -1,0 +1,95 @@
+Ques:https://www.naukri.com/code360/problems/n-stacks-in-an-array_1164271
+
+sol:https://www.youtube.com/watch?v=9x7TYLP3714
+
+Code:
+
+#include <iostream>
+using namespace std;
+
+class NStack {
+private:
+    int *arr, *top, *next;
+    int n, size, freeSpot;
+
+public:
+    // Constructor to initialize N stacks in a single array of given size
+    NStack(int N, int S) {
+        n = N;          // Number of stacks
+        size = S;       // Size of the array
+        arr = new int[size]; 
+        top = new int[n]; 
+        next = new int[size];
+
+        // Initialize all stacks as empty (-1 indicates empty)
+        for (int i = 0; i < n; i++)
+            top[i] = -1;
+
+        // Initialize all spaces as free
+        freeSpot = 0;
+        for (int i = 0; i < size - 1; i++)
+            next[i] = i + 1;
+        next[size - 1] = -1; // Last index points to -1 (end of free spots)
+    }
+
+    // Push an element into a specific stack
+    bool push(int stackNum, int value) {
+        if (freeSpot == -1) {
+            cout << "Stack Overflow" << endl;
+            return false;
+        }
+
+        int index = freeSpot; // Get the first free index
+        freeSpot = next[index]; // Update freeSpot to next available index
+
+        arr[index] = value; // Store value in array
+        next[index] = top[stackNum]; // Link new index to previous top
+        top[stackNum] = index; // Update top for this stack
+
+        return true;
+    }
+
+    // Pop an element from a specific stack
+    int pop(int stackNum) {
+        if (top[stackNum] == -1) {
+            cout << "Stack Underflow" << endl;
+            return -1;
+        }
+
+        int index = top[stackNum]; // Get top index of the stack
+        top[stackNum] = next[index]; // Update top to next element in stack
+        next[index] = freeSpot; // Add the popped index to the free list
+        freeSpot = index; // Update freeSpot
+
+        return arr[index];
+    }
+};
+
+// Driver Code
+int main() {
+    NStack stacks(3, 10); // 3 stacks in an array of size 10
+
+    stacks.push(0, 10);
+    stacks.push(0, 20);
+    stacks.push(1, 30);
+    stacks.push(2, 40);
+
+    cout << "Popped from Stack 0: " << stacks.pop(0) << endl; // Output: 20
+    cout << "Popped from Stack 1: " << stacks.pop(1) << endl; // Output: 30
+    cout << "Popped from Stack 2: " << stacks.pop(2) << endl; // Output: 40
+
+    return 0;
+}
+
+
+
+Time and space:
+Time and Space Complexity
+Operation	Time Complexity	Explanation
+Push	O(1)	Directly inserts into the arr using freeSpot
+Pop	O(1)	Directly retrieves the top element using top[]
+Total Space Complexity	O(N + S)	- O(S) for arr[] (stack storage)
+- O(N) for top[]
+- O(S) for next[]
+🔹 Total Space: O(N + S), where N is the number of stacks and S is the array size.
+

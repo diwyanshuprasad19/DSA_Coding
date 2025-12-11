@@ -1,50 +1,106 @@
-class data{
-    public:
-    int value,row,col;
-    data(int v,int r,int c)
-    {
-        value=v;
-        row=r;
-        col=c;
-    }
-};
-struct mycomp{
-    bool operator()(data &d1,data &d2)
-    {
-        return d1.value>d2.value;
+Ques:https://leetcode.com/problems/merge-k-sorted-lists/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Custom data structure to hold value and its position
+class Data {
+public:
+    int value, row, col;
+    Data(int v, int r, int c) {
+        value = v;
+        row = r;
+        col = c;
     }
 };
 
-class Solution
-{
-    public:
-    //Function to merge k sorted arrays.
-    vector<int> mergeKArrays(vector<vector<int>> arr, int K)
-    {
-      vector<int>ans;
-      priority_queue<data,vector<data>,mycomp> pq;
-      for(int i=0;i<K;i++)
-      {
-          data d(arr[i][0],i,0);
-          pq.push(d);
-      }
-      while(pq.empty()==false)
-      {
-          data d=pq.top();
-          pq.pop();
-          int v=d.value,r=d.row,c=d.col;
-          ans.push_back(v);
-          //row wise taken
-          if(c+1<arr[r].size())
-          {
-              data q(arr[r][c+1],r,c+1);
-              pq.push(q);
-          }
-      }
-      return ans;
-      
+// Custom comparator for min-heap
+struct myComp {
+    bool operator()(Data &d1, Data &d2) {
+        return d1.value > d2.value; // min-heap
     }
+};
 
-Time Complexity (O(N log K)) is optimal for merging K sorted arrays.
-Space Complexity (O(N + K)) is necessary since we store both the heap and the final sorted array.
-here is total elements in array
+class Solution {
+public:
+    // GFG-style function to merge K sorted arrays
+    vector<int> mergeKArrays(vector<vector<int>> &arr, int K) {
+        vector<int> ans;
+        priority_queue<Data, vector<Data>, myComp> pq;
+
+        // Push the first element of each array into the heap
+        for (int i = 0; i < K; i++) {
+            if (!arr[i].empty()) {
+                pq.push(Data(arr[i][0], i, 0));
+            }
+        }
+
+        // Extract min and push next element from same row
+        while (!pq.empty()) {
+            Data d = pq.top(); pq.pop();
+            ans.push_back(d.value);
+            int r = d.row, c = d.col;
+            if (c + 1 < arr[r].size()) {
+                pq.push(Data(arr[r][c + 1], r, c + 1));
+            }
+        }
+        return ans;
+    }
+};
+
+int main() {
+    // Sample input: 3 sorted arrays
+    vector<vector<int>> arr = {
+        {1, 4, 5},
+        {1, 3, 4},
+        {2, 6}
+    };
+
+    int K = arr.size();
+    Solution sol;
+
+    vector<int> merged = sol.mergeKArrays(arr, K);
+
+    // Output the merged sorted array
+    cout << "Merged array: ";
+    for (int num : merged)
+        cout << num << " ";
+    cout << endl;
+
+    return 0;
+}
+
+
+
+🧪 Sample Input & Output
+📥 Input:
+cpp
+Copy
+Edit
+vector<vector<int>> arr = {
+    {1, 4, 5},
+    {1, 3, 4},
+    {2, 6}
+};
+📤 Output:
+Copy
+Edit
+1 1 2 3 4 4 5 6
+
+
+Time & Space Complexity
+✅ Time Complexity: O(N log K)
+Where N = total number of elements across all arrays
+
+Each insertion/extraction in the heap takes log K time
+
+We do it N times → O(N log K)
+
+✅ Space Complexity: O(N + K)
+Final output array = O(N)
+
+Min-heap stores at most K elements = O(K)
+
+Total = O(N + K)

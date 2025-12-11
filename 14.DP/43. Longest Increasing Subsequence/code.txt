@@ -1,20 +1,53 @@
-#include<bits/stdc++.h>
+Ques:https://leetcode.com/problems/longest-increasing-subsequence/description/
+
+Sol:https://www.youtube.com/watch?v=on2hvxBXJH4&list=PLgUwDviBIf0qUlt5H_kiKYaNSqJ81PMMY&index=44
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
 int longestIncreasingSubsequence(int arr[], int n)
 {
-vector<int> temp;
+    vector<int> temp;
     temp.push_back(arr[0]);
-  
-    for(int i=1;i<n;i++)
+
+    for (int i = 1; i < n; i++)
     {
-        if(arr[i]>temp.back())
+        if (arr[i] > temp.back())
         {
-            temp.push_back(arr[i]);
+            temp.push_back(arr[i]);  // Extend the LIS
         }
         else
         {
-          int  index=lower_bound(temp.begin(),temp.end(),arr[i])-temp.begin();
-            temp[index]=arr[i];
+            // Replace the first element >= arr[i]
+            int index = lower_bound(temp.begin(), temp.end(), arr[i]) - temp.begin();
+            temp[index] = arr[i];
         }
     }
-    return temp.size();
+
+    return temp.size();  // Length of LIS
 }
+
+int main()
+{
+    int arr[] = {10, 9, 2, 5, 3, 7, 101, 18};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    cout << "Length of Longest Increasing Subsequence is: " << longestIncreasingSubsequence(arr, n) << endl;
+    return 0;
+}
+
+Sample Output
+mathematica
+Copy
+Edit
+Length of Longest Increasing Subsequence is: 4
+For array {10, 9, 2, 5, 3, 7, 101, 18}, one of the LIS is {2, 3, 7, 101}
+
+⏱️ Time and Space Complexity
+Time Complexity: O(n log n)
+
+Each lower_bound call is O(log n) and done n times.
+
+Space Complexity: O(n) (for temp)
+

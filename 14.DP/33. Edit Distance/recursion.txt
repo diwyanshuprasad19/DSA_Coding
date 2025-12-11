@@ -1,22 +1,65 @@
-#include<bits/stdc++.h>
-int solve(int i,int j,string s1,string s2)
-{
-    if(i<0)return j+1;
-    if(j<0)return i+1;
-    if(s1[i]==s2[j]) 
-        return 0+solve(i-1,j-1,s1,s2);
-else
-{
-    int insert=1+solve(i,j-1,s1,s2);
-    int del=1+solve(i-1,j,s1,s2);
-    int replace=1+solve(i-1,j-1,s1,s2);
-    return min(insert,min(del,replace));
+Ques:https://leetcode.com/problems/edit-distance/submissions/1693192535/
+
+Sol:https://www.youtube.com/watch?v=xPBLEj41rFU&t=338s&pp=ygURdGFrZSB1IGZvcndhcmQgMjk%3D
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int i, int j, string s1, string s2) {
+    if (i < 0) return j + 1;  // Need to insert remaining j+1 characters
+    if (j < 0) return i + 1;  // Need to delete remaining i+1 characters
+
+    if (s1[i] == s2[j])
+        return solve(i - 1, j - 1, s1, s2);
+
+    // Try all operations
+    int insert = 1 + solve(i, j - 1, s1, s2);
+    int del = 1 + solve(i - 1, j, s1, s2);
+    int replace = 1 + solve(i - 1, j - 1, s1, s2);
+
+    return min({insert, del, replace});
 }
+
+int editDistance(string str1, string str2) {
+    int n = str1.length();
+    int m = str2.length();
+    return solve(n - 1, m - 1, str1, str2);
 }
-int editDistance(string str1, string str2)
-{
-    int n=str1.length();
-    int m=str2.length();
-    int count=solve(n-1,m-1,str1,str2);
-    return count;
+
+int main() {
+    string str1 = "horse";
+    string str2 = "ros";
+    cout << "Minimum Edit Distance: " << editDistance(str1, str2) << endl;
+    return 0;
 }
+
+
+Time and Space Complexity
+Time Complexity: O(3^max(n, m)) (Exponential — since we explore all three options at every step)
+
+Space Complexity: O(max(n, m)) (Stack space due to recursion)
+
+📥 Sample Input & Output
+Input:
+
+ini
+Copy
+Edit
+str1 = "horse"
+str2 = "ros"
+Output:
+
+yaml
+Copy
+Edit
+Minimum Edit Distance: 3
+Explanation:
+
+csharp
+Copy
+Edit
+horse -> rorse (replace 'h' with 'r')
+rorse -> rose (remove 'r')
+rose -> ros  (remove 'e')

@@ -12,7 +12,7 @@ Yes, Dijkstra’s Algorithm works on directed graphs as well as undirected graph
 
 in negative does not work and if negative cycle also it fails as goes to tle keep runnign infinitly
 
-2. Topological Sort
+2. Topological Sort-kahn algorithm
 When to Use: When solving dependency-based problems (e.g., course scheduling, build dependencies).
 Why Not Use Other Alternatives?
 Other algorithms don’t work for DAG (Directed Acyclic Graph) dependencies.
@@ -29,6 +29,9 @@ Prim’s Algorithm is better when the graph is dense (E ≈ V²).
 When to Use: When the graph is dense and adjacency matrix representation is used.
 Why Not Use Other Alternatives?
 Kruskal’s Algorithm is better if the graph is sparse or using an edge list.
+
+Both Kruskal’s Algorithm and Prim’s Algorithm are used to find the Minimum Spanning Tree (MST) of a graph, and they work for both directed (converted to undirected) and undirected graphs.
+
 
 
 5.
@@ -57,6 +60,16 @@ No other algorithm efficiently solves NP-hard problems like TSP.
 Approximation algorithms (MST-based heuristics) are often used instead.
 hamilton cycle:A Hamiltonian Cycle is a path in a graph that visits every node exactly once and returns to the starting node
 
+8.1 Tarjan algorithm
+
+When to Use: To find critical edges/nodes whose removal increases graph components (network reliability, road planning).
+Why Not Others? DFS-based Tarjan runs in O(V+E), faster than recomputing connectivity for each edge. Uses discovery & low times to detect critical structures.
+
+see like conencted graph and articualtion point
+
+8.2 Kosaraju’s Algorithm
+When to Use: To find Strongly Connected Components in directed graphs.-please reember
+Why Not Others? Runs in O(V+E) with two DFS passes and graph transpose, simpler to implement than Tarjan’s single-pass DFS.
 
 9. Bipartite Graph Check
 When to Use: When checking if a graph can be two-colored (used in matchmaking, job scheduling).

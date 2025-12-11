@@ -1,0 +1,75 @@
+Ques: https://www.geeksforgeeks.org/problems/populate-inorder-successor-for-all-nodes/1?itm_source=geeksforgeeks&itm_medium=article&itm_campaign=practice_card
+
+code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* left, *right, *next;
+    
+    Node(int val) {
+        data = val;
+        left = right = next = NULL;
+    }
+};
+
+// Helper function to populate next pointer
+void func(Node* root, Node*& prev) {
+    if (root == NULL) return;
+    
+    // Recursive call to the left subtree
+    func(root->left, prev);
+    
+    // Set the next pointer of the previous node to the current node
+    if (prev != NULL) {
+        prev->next = root;
+    }
+    
+    // Update prev to the current node
+    prev = root;
+    
+    // Recursive call to the right subtree
+    func(root->right, prev);
+}
+
+// Main function to call the recursive helper
+void populateNext(Node* root) {
+    Node* prev = NULL;
+    func(root, prev);
+}
+
+// Utility function to print next pointers of all nodes
+void printNext(Node* root) {
+    if (root == NULL) return;
+    
+    printNext(root->left);
+    
+    if (root->next)
+        cout << root->data << " → " << root->next->data << endl;
+    else
+        cout << root->data << " → NULL" << endl;
+    
+    printNext(root->right);
+}
+
+// Driver code
+int main() {
+    Node* root = new Node(10);
+    root->left = new Node(8);
+    root->right = new Node(12);
+    root->left->left = new Node(3);
+
+    populateNext(root);
+
+    // Printing the inorder successor of each node
+    printNext(root);
+
+    return 0;
+}
+
+Final Complexity Summary
+Case	            Time Complexity	     Space Complexity
+Balanced BST	         O(N)	            O(log N)
+Skewed BST	             O(N)	             O(N)

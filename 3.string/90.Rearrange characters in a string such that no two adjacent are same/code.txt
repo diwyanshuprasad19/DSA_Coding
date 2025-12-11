@@ -1,3 +1,7 @@
+Ques:https://www.geeksforgeeks.org/dsa/rearrange-characters-string-no-two-adjacent/
+
+Code:
+
     string rearrangeString(string str)
     {          
         unordered_map<char,int> m;

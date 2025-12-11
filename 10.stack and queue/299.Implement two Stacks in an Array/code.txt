@@ -1,28 +1,82 @@
-void twoStacks :: push1(int x)
-{
-  top1++;
-  arr[top1]=x;
-}
-   
-//Function to push an integer into the stack2.
-void twoStacks ::push2(int x)
-{
-  top2--;
-  arr[top2]=x;
-}
-   
-//Function to remove an element from top of the stack1.
-int twoStacks ::pop1()
-{
-  if(top1==-1)return -1;
-  else
-  return arr[top1--];
+Ques:https://www.geeksforgeeks.org/implement-two-stacks-in-an-array/
+
+
+Code:
+
+#include <iostream>
+using namespace std;
+
+class twoStacks {
+    int *arr;
+    int size;
+    int top1, top2;
+    
+public:
+    // Constructor
+    twoStacks(int n) {
+        size = n;
+        arr = new int[n];
+        top1 = -1;
+        top2 = size;
+    }
+    
+    // Function to push an element into Stack1
+    void push1(int x) {
+        if (top1 < top2 - 1) {
+            arr[++top1] = x;
+        } else {
+            cout << "Stack Overflow\n";
+        }
+    }
+
+    // Function to push an element into Stack2
+    void push2(int x) {
+        if (top1 < top2 - 1) {
+            arr[--top2] = x;
+        } else {
+            cout << "Stack Overflow\n";
+        }
+    }
+
+    // Function to pop an element from Stack1
+    int pop1() {
+        if (top1 >= 0) {
+            return arr[top1--];
+        } else {
+            return -1;  // Stack Underflow
+        }
+    }
+
+    // Function to pop an element from Stack2
+    int pop2() {
+        if (top2 < size) {
+            return arr[top2++];
+        } else {
+            return -1;  // Stack Underflow
+        }
+    }
+};
+
+int main() {
+    twoStacks ts(5);
+    
+    ts.push1(10);
+    ts.push2(20);
+    ts.push1(30);
+    ts.push2(40);
+    ts.push1(50);
+    
+    cout << "Pop1: " << ts.pop1() << endl;
+    cout << "Pop2: " << ts.pop2() << endl;
+    
+    return 0;
 }
 
-//Function to remove an element from top of the stack2.
-int twoStacks :: pop2()
-{
-  if(top2==size)return -1;
-  else
-  return arr[top2++];
-}
+
+
+Time and space complexity:
+Time Complexity:
+push1(x), push2(x): O(1) (Constant time insertion)
+pop1(), pop2(): O(1) (Constant time removal)
+Space Complexity:
+O(N) for the array storage

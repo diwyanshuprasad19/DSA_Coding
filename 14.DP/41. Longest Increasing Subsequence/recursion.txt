@@ -1,15 +1,53 @@
-#include<bits/stdc++.h>
-int solve(int index,int previndex,int arr[],int n)
-{
-    if(index==n)return 0;
-    int nottake=0+solve(index+1,previndex,arr,n);
-    int take=0;
-    if(previndex==-1 || arr[index]>arr[previndex])
-        take=1+solve(index+1,index,arr,n);
-    return max(take,nottake);
+Ques:https://leetcode.com/problems/longest-increasing-subsequence/description/
+
+Sol:https://www.youtube.com/watch?v=ekcwMsSIzVc&list=PLgUwDviBIf0qUlt5H_kiKYaNSqJ81PMMY&index=42
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int index, int prevIndex, int arr[], int n) {
+    if (index == n) return 0;
+
+    int notTake = solve(index + 1, prevIndex, arr, n);
+
+    int take = 0;
+    if (prevIndex == -1 || arr[index] > arr[prevIndex]) {
+        take = 1 + solve(index + 1, index, arr, n);
+    }
+
+    return max(take, notTake);
 }
-int longestIncreasingSubsequence(int arr[], int n)
-{
-   int count=solve(0,-1,arr,n);
-    return count;
+
+int longestIncreasingSubsequence(int arr[], int n) {
+    return solve(0, -1, arr, n);
 }
+
+int main() {
+    int arr[] = {10, 9, 2, 5, 3, 7, 101, 18};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    cout << "Length of LIS: " << longestIncreasingSubsequence(arr, n) << endl;
+    return 0;
+}
+
+ Input & Output
+🔹 Input:
+ini
+Copy
+Edit
+arr = {10, 9, 2, 5, 3, 7, 101, 18}
+🔹 Output:
+yaml
+Copy
+Edit
+Length of LIS: 4
+🔹 Explanation:
+The LIS can be one of: [2, 3, 7, 101].
+
+⏱ Time & Space Complexity
+Metric	Value
+Time	O(2^n) → Because we explore all combinations
+Space	O(n) → Max recursion stack
+

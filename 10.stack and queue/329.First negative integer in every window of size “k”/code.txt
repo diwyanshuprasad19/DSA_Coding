@@ -1,64 +1,67 @@
-Explanation:
-Sample Input:
-plaintext
-Copy code
-A = [-8, 2, 3, -6, 10, -1, 2, 8]
-N = 8
-K = 3
-Output:
-plaintext
-Copy code
--8 0 -6 -6 -1 -1
-Explanation:
-Window 1: [-8, 2, 3] → First negative: -8
-Window 2: [2, 3, -6] → First negative: -6
-Window 3: [3, -6, 10] → First negative: -6
-Window 4: [-6, 10, -1] → First negative: -6
-Window 5: [10, -1, 2] → First negative: -1
-Window 6: [-1, 2, 8] → First negative: -1
+Ques:https://www.geeksforgeeks.org/first-negative-integer-every-window-size-k/
 
+Code:
 
-vector<long long> printFirstNegativeInteger(long long int A[],
-                                             long long int N, long long int K) {
-                                                 
-                                                 
-    vector<long long> ans;
-    queue<long long> q;
-    for(int i=0;i<K-1;i++)
-    {
-        if(A[i]<0)q.push(A[i]);
-    }
+#include <bits/stdc++.h>
+using namespace std;
 
-    //here we start from k-1 as this will be window size limit
-    for(int i=K-1;i<N;i++)
-    {
-        if(A[i]<0)q.push(A[i]);
-        //see for pop we need to see the front element of window
-        if(q.empty()==false)
-        {
-            ans.push_back(q.front());
-            if(A[i-K+1]==q.front())
-            q.pop();
+class Solution {
+public:
+    vector<long long> printFirstNegativeInteger(long long int A[], long long int N, long long int K) {
+        vector<long long> ans;  
+        queue<long long> q;    
+
+        // Process first K-1 elements
+        for (int i = 0; i < K - 1; i++) {
+            if (A[i] < 0) q.push(A[i]);  
         }
-        else
-        {
-            ans.push_back(0);
-        }
-    }
-    return ans;
-                                                 
- }
 
-Complexity Summary:
-Time Complexity: 
-𝑂
-(
-𝑁
-)
-O(N)
-Space Complexity: 
-𝑂
-(
-𝐾
-)
-O(K)
+        // Sliding window processing
+        for (int i = K - 1; i < N; i++) {
+            if (A[i] < 0) q.push(A[i]);  
+
+            // If queue has negative numbers, add the first one to the answer
+            if (!q.empty()) {
+                ans.push_back(q.front());
+
+                // Remove elements that are out of the current window
+                if (A[i - K + 1] == q.front()) q.pop();
+            } 
+            else {
+                ans.push_back(0);
+            }
+        }
+
+        return ans;
+    }
+};
+
+// Driver Code
+int main() {
+    long long int A[] = {-8, 2, 3, -6, 10, -1, 2, 8};
+    long long int N = sizeof(A) / sizeof(A[0]);
+    long long int K = 3;
+
+    Solution obj;
+    vector<long long> result = obj.printFirstNegativeInteger(A, N, K);
+
+    cout << "Output: ";
+    for (auto val : result) {
+        cout << val << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+Time and space complexity:
+
+Time Complexity:
+We traverse the array once → O(N)
+Each element is added and removed from the queue at most once → O(N)
+Overall Time Complexity: O(N)
+Space Complexity:
+We store at most K elements in the queue → O(K)
+The output array stores N-K+1 elements, which is required → O(N)
+Total Space Complexity: O(K) (since we ignore the output array storage in complexity calculations)

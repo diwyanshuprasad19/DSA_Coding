@@ -1,4 +1,7 @@
-https://www.geeksforgeeks.org/expression-contains-redundant-bracket-not/
+Ques: https://www.geeksforgeeks.org/expression-contains-redundant-bracket-not/
+
+
+Code:
 
 /* C++ Program to check whether valid
 expression is redundant or not*/
@@ -67,3 +70,10 @@ int main()
 	findRedundant(str);
 	return 0;
 }
+
+Time and space:
+Time and Space Complexity Analysis
+Operation	Time Complexity	Space Complexity
+Iterating through expression	O(N)	O(N) (worst case: all characters pushed to the stack)
+Processing each bracket	O(1)	O(1)
+Total Complexity	O(N)	O(N)

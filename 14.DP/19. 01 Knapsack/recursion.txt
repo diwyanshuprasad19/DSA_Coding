@@ -1,19 +1,59 @@
-#include<bits/stdc++.h>
-int solve(int index,vector<int> weight, vector<int> value,int maxWeight)
-{
-    if(index==0)
-    {
-        if(weight[0]<=maxWeight)return value[0];
-        else return 0;
+Ques:https://www.geeksforgeeks.org/dsa/0-1-knapsack-problem-dp-10/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int index, vector<int>& weight, vector<int>& value, int maxWeight) {
+    // Base case: first item
+    if (index == 0) {
+        if (weight[0] <= maxWeight)
+            return value[0];
+        else
+            return 0;
     }
-    int nottake=solve(index-1,weight,value,maxWeight);
-    int take=INT_MIN;
-    if(weight[index]<=maxWeight)
-        take=value[index]+solve(index-1,weight,value,maxWeight-weight[index]);
-    return max(nottake,take);
+
+    // Not taking the item
+    int notTake = solve(index - 1, weight, value, maxWeight);
+
+    // Taking the item (if it fits)
+    int take = INT_MIN;
+    if (weight[index] <= maxWeight)
+        take = value[index] + solve(index - 1, weight, value, maxWeight - weight[index]);
+
+    return max(take, notTake);
 }
-int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
-{
-	int count=solve(n-1,weight,value,maxWeight);
-    return count;
+
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) {
+    return solve(n - 1, weight, value, maxWeight);
 }
+
+int main() {
+    vector<int> weight = {1, 2, 4, 5};
+    vector<int> value = {5, 4, 8, 6};
+    int maxWeight = 5;
+    cout << knapsack(weight, value, weight.size(), maxWeight) << endl;  // Output: 13
+    return 0;
+}
+
+
+Sample Input & 📤 Output
+cpp
+Copy
+Edit
+Input:
+weight = {1, 2, 4, 5}
+value  = {5, 4, 8, 6}
+maxWeight = 5
+
+Output:
+13
+
+📊 Time and Space Complexity
+Metric	Value
+⏱ Time Complexity	O(2^n) – exponential
+💾 Space Complexity	O(n) – recursion stack depth
+
+
+

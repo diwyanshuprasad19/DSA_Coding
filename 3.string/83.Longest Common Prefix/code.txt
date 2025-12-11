@@ -1,3 +1,7 @@
+Ques:https://www.geeksforgeeks.org/dsa/longest-common-prefix-using-word-by-word-matching/
+
+Code:
+
     string longestCommonPrefix(vector<string>& strs) {
         int len=10000;
         string s;
@@ -32,3 +36,9 @@
         else
         return s.substr(0,count);
     }
+
+✅ Sample Input
+strs = ["flower","flow","flight"]
+
+✅ Sample Output
+Longest Common Prefix: fl

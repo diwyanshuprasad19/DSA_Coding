@@ -1,15 +1,54 @@
-#include<bits/stdc++.h>
-int frogJump(int n, vector<int> &heights)
-{
-   vector<int> dp(n,0);
-    dp[0]=0;
-    for(int i=1;i<n;i++)
-    {
-        int left=dp[i-1]+abs(heights[i]-heights[i-1]);
-        int right=INT_MAX;
-        if(i>1)
-         right=dp[i-2]+abs(heights[i]-heights[i-2]);
-        dp[i]=min(left,right);
-    }
-    return dp[n-1];
+Ques:https://leetcode.com/problems/min-cost-climbing-stairs/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Top-down recursive function with memoization
+int frogJumpHelper(int n, vector<int> &heights, vector<int> &dp) {
+    if (n == 0) return 0;  // base case
+
+    if (dp[n] != -1) return dp[n];  // return cached result
+
+    int left = frogJumpHelper(n - 1, heights, dp) + abs(heights[n] - heights[n - 1]);
+    int right = INT_MAX;
+    if (n > 1)
+        right = frogJumpHelper(n - 2, heights, dp) + abs(heights[n] - heights[n - 2]);
+
+    return dp[n] = min(left, right);  // store and return result
 }
+
+int frogJump(int n, vector<int> &heights) {
+    vector<int> dp(n, -1);
+    return frogJumpHelper(n - 1, heights, dp);
+}
+
+int main() {
+    vector<int> heights = {10, 20, 30, 10};
+    int n = heights.size();
+
+    int result = frogJump(n, heights);
+    cout << "Minimum energy required: " << result << endl;
+
+    return 0;
+}
+
+Input / Output
+Input:
+
+cpp
+Copy
+Edit
+heights = {10, 20, 30, 10}
+Output:
+
+swift
+Copy
+Edit
+Minimum energy required: 20
+
+Time and Space Complexity
+Metric	Value
+Time Complexity	O(n)
+Space Complexity	O(n) (DP + recursion stack)

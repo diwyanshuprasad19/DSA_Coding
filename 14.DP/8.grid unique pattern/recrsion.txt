@@ -1,13 +1,101 @@
-#include <bits/stdc++.h> 
-int solve(int i,int j)
+Ques: https://leetcode.com/problems/unique-paths/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int i, int j)
 {
-    if(i==0 && j==0)return 1;
-    if(i<0 || j<0)return 0;
-    int up=solve(i-1,j);
-    int left=solve(i,j-1);
-    return up+left;
+    if (i == 0 && j == 0) return 1;
+    if (i < 0 || j < 0) return 0;
+
+    int up = solve(i - 1, j);
+    int left = solve(i, j - 1);
+    return up + left;
 }
+
 int uniquePaths(int m, int n) {
-	int q=solve(m-1,n-1);
-    return q;
+    return solve(m - 1, n - 1);
 }
+
+int main()
+{
+    int m = 3, n = 7;
+    int result = uniquePaths(m, n);
+    cout << "Unique Paths: " << result << endl;
+    return 0;
+}
+
+
+🧪 Input
+cpp
+Copy
+Edit
+m = 3, n = 7
+✅ Output
+sql
+Copy
+Edit
+Unique Paths: 28
+⏱️ Time Complexity
+scss
+Copy
+Edit
+O(2^(m+n))
+Due to exponential branching (each call splits into 2).
+
+✅ The Key Idea
+In the pure recursive approach, we’re trying to go from the bottom-right cell (m-1, n-1) to the top-left (0, 0) by moving either up or left.
+
+At each cell (i, j), the function does:
+
+cpp
+Copy
+Edit
+solve(i-1, j) + solve(i, j-1)
+This means:
+
+It branches into two recursive calls.
+
+One goes up, and one goes left.
+
+🔁 Recursive Tree
+The recursive call tree branches like this:
+
+markdown
+Copy
+Edit
+                            solve(m-1, n-1)
+                          /                  \
+                solve(m-2, n-1)         solve(m-1, n-2)
+                /        \                 /        \
+          solve(...)  solve(...)    solve(...)  solve(...)
+This grows exponentially — similar to computing Fibonacci recursively.
+
+Each move either decreases i or j → So, the maximum depth is m + n
+And each call spawns 2 more calls → Like a binary tree.
+
+📌 So, Total Recursive Calls:
+scss
+Copy
+Edit
+≈ 2^(m + n)
+Because:
+
+At most m downward moves and n rightward moves are needed → total m + n steps.
+
+At each step, we make 2 choices (up or left) without memoization.
+
+This leads to exponential growth.
+
+
+
+
+🗂️ Space Complexity
+scss
+Copy
+Edit
+O(m + n)
+Due to recursion call stack (maximum depth = m + n).
+

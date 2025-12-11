@@ -1,3 +1,7 @@
+Ques:https://leetcode.com/problems/merge-intervals/description/
+
+Code:
+
 // 2 boundary condition:1,9 ->6,8 the 6,8 is between 1,9 inside it
 //1,3->2,4the boundary condition is just next to it
 #include<bits/stdc++.h>
@@ -36,12 +40,7 @@ main ()
 	}
 	  ques[i][0] = currs;
 	  ques[i][1] = curre;
-
-
     }
-    
-    
-    
       vector < vector < int >>ans;
       for (int i = 0; i < n; i++)
 	{
@@ -56,3 +55,17 @@ main ()
 
   return 0;
 }
+
+Input:
+{{6,8}, {1,9}, {2,4}, {4,7}}
+
+Output:
+Merged Intervals:
+1 9
+
+ Time & Space Complexity:
+Aspect	Complexity
+Sorting	O(N log N)
+Merging (1 pass)	O(N)
+Total Time	O(N log N)
+Aux Space	O(N) (for the output vector)

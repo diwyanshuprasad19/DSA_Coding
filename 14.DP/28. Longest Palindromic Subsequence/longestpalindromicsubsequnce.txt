@@ -1,0 +1,68 @@
+Ques: https://www.geeksforgeeks.org/dsa/longest-palindromic-subsequence-dp-12/
+
+Sol": https://www.youtube.com/watch?v=6i_T5kkfv4A
+
+Same as lcs
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) {
+        int n = s.length();
+        string s1 = s;
+        reverse(s.begin(), s.end()); // s becomes reversed
+
+        // Create a dp table of size (n+1) x (n+1) initialized to 0
+        vector<vector<int>> dp(n + 1, vector<int>(n + 1, 0));
+
+        // Fill the dp table using bottom-up tabulation
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (s[i - 1] == s1[j - 1]) {
+                    dp[i][j] = 1 + dp[i - 1][j - 1];
+                } else {
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        // dp[n][n] contains the length of the longest palindromic subsequence
+        return dp[n][n];
+    }
+};
+
+int main() {
+    Solution sol;
+
+    string input = "bbabcbcab";
+    int result = sol.longestPalindromeSubseq(input);
+
+    cout << "Longest Palindromic Subsequence Length: " << result << endl;
+
+    return 0;
+}
+
+
+Sample Input & Output
+🔹 Input:
+cpp
+Copy
+Edit
+s = "bbabcbcab"
+🔹 Output:
+Copy
+Edit
+7
+🔹 Explanation:
+The longest palindromic subsequence is "babcbab" (length = 7).
+
+✅ Time & Space Complexity
+Metric	Value
+⏱ Time Complexity	O(n^2)
+💾 Space Complexity	O(n^2)
+
+

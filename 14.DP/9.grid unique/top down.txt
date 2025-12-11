@@ -1,16 +1,75 @@
-#include<bits/stdc++.h>
-int solve(int i, int j, vector< vector< int> > &mat,vector< vector< int> > &dp)
+Ques:https://leetcode.com/problems/unique-paths-ii/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int i, int j, vector<vector<int>> &mat, vector<vector<int>> &dp)
 {
-    if(i>=0 && j>=0 && mat[i][j]==-1)return  dp[i][j]=0;
-    if(i==0 && j==0)return dp[i][j]=1;
-    if(i<0 || j<0)return 0;
-    if(dp[i][j]!=-1)return dp[i][j];
-    int up=solve(i-1,j,mat,dp);
-    int left=solve(i,j-1,mat,dp);
-    return dp[i][j]=up+left;
+    if (i >= 0 && j >= 0 && mat[i][j] == -1) return dp[i][j] = 0;
+    if (i == 0 && j == 0) return dp[i][j] = 1;
+    if (i < 0 || j < 0) return 0;
+
+    if (dp[i][j] != -1) return dp[i][j];
+
+    int up = solve(i - 1, j, mat, dp);
+    int left = solve(i, j - 1, mat, dp);
+
+    return dp[i][j] = up + left;
 }
-int mazeObstacles(int n, int m, vector< vector< int> > &mat) {
-    vector<vector<int>> dp(n,vector<int>(m,-1));
-    int count=solve(n-1,m-1,mat,dp);
-    return dp[n-1][m-1];
+
+int mazeObstacles(int n, int m, vector<vector<int>> &mat)
+{
+    vector<vector<int>> dp(n, vector<int>(m, -1));
+    return solve(n - 1, m - 1, mat, dp);
 }
+
+int main()
+{
+    vector<vector<int>> mat = {
+        {0, 0, 0},
+        {0, -1, 0},
+        {0, 0, 0}
+    };
+
+    int n = mat.size();
+    int m = mat[0].size();
+
+    int result = mazeObstacles(n, m, mat);
+    cout << "Unique Paths (with obstacles): " << result << endl;
+
+    return 0;
+}
+
+
+🧪 Input
+cpp
+Copy
+Edit
+mat = {
+    {0, 0, 0},
+    {0, -1, 0},
+    {0, 0, 0}
+}
+✅ Output
+sql
+Copy
+Edit
+Unique Paths (with obstacles): 2
+⏱️ Time Complexity
+scss
+Copy
+Edit
+O(n * m)
+Each cell (i, j) is computed only once due to memoization.
+
+🗂️ Space Complexity
+scss
+Copy
+Edit
+O(n * m) + O(n + m)
+dp[n][m] for memoization
+
+Recursion stack depth up to n + m
+

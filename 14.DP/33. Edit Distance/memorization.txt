@@ -1,24 +1,66 @@
-#include<bits/stdc++.h>
-int solve(int i,int j,string s1,string s2,vector<vector<int>> &dp)
-{
-    if(i<0)return j+1;
-    if(j<0)return i+1;
-    if(dp[i][j]!=-1)return dp[i][j];
-    if(s1[i]==s2[j]) 
-        return dp[i][j]=0+solve(i-1,j-1,s1,s2,dp);
-else
-{
-    int insert=1+solve(i,j-1,s1,s2,dp);
-    int del=1+solve(i-1,j,s1,s2,dp);
-    int replace=1+solve(i-1,j-1,s1,s2,dp);
-    return dp[i][j]=min(insert,min(del,replace));
+Ques:https://leetcode.com/problems/edit-distance/submissions/1693192535/
+
+Sol:https://www.youtube.com/watch?v=xPBLEj41rFU&t=338s&pp=ygURdGFrZSB1IGZvcndhcmQgMjk%3D
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int i, int j, string &s1, string &s2, vector<vector<int>> &dp) {
+    if (i < 0) return j + 1; // Need to insert j+1 characters
+    if (j < 0) return i + 1; // Need to delete i+1 characters
+
+    if (dp[i][j] != -1) return dp[i][j];
+
+    if (s1[i] == s2[j]) {
+        return dp[i][j] = solve(i - 1, j - 1, s1, s2, dp);
+    } else {
+        int insert = 1 + solve(i, j - 1, s1, s2, dp);
+        int del = 1 + solve(i - 1, j, s1, s2, dp);
+        int replace = 1 + solve(i - 1, j - 1, s1, s2, dp);
+        return dp[i][j] = min({insert, del, replace});
+    }
 }
+
+int editDistance(string str1, string str2) {
+    int n = str1.length();
+    int m = str2.length();
+    vector<vector<int>> dp(n, vector<int>(m, -1));
+    return solve(n - 1, m - 1, str1, str2, dp);
 }
-int editDistance(string str1, string str2)
-{
-    int n=str1.length();
-    int m=str2.length();
-    vector<vector<int>> dp(n,vector<int>(m,-1));
-    int count=solve(n-1,m-1,str1,str2,dp);
-    return count;
+
+int main() {
+    string str1 = "horse";
+    string str2 = "ros";
+    cout << "Minimum Edit Distance: " << editDistance(str1, str2) << endl;
+    return 0;
 }
+
+
+Sample Input & Output
+Input:
+
+ini
+Copy
+Edit
+str1 = "horse"
+str2 = "ros"
+Output:
+
+yaml
+Copy
+Edit
+Minimum Edit Distance: 3
+🔎 Explanation of operations:
+horse → rorse (replace 'h' with 'r')
+
+rorse → rose (delete 'r')
+
+rose → ros (delete 'e')
+
+🧠 Time and Space Complexity
+Type	Complexity
+Time	O(n * m)
+Space	O(n * m) (for DP table)
+Auxiliary Space	O(n + m) (recursion stack)

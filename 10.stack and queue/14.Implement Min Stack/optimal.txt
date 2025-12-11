@@ -1,56 +1,104 @@
+Ques:https://leetcode.com/problems/min-stack/description/
+
+sol:https://www.youtube.com/watch?v=NdDIaH91P0g
+
+
+Code_unoptimised:
+
 class MinStack {
-    stack<long long> s;
-    long long mini;
-public:
-    MinStack() {
-        while(s.empty()==false)s.pop();
-        mini = LLONG_MAX;
-    }
-    
-    void push(int val) {
-        long long val1=val;
-        if(s.empty())
-        {
-            s.push(val1);
-            mini=val1;
-        }
-        else
-        {
-            if(val1<mini)
-            {
-		//2LL*val1*1LL-mini : also this as 1LL converter 1 as long long type from int to long:Just 2 or 1 will create confusion as int type they are
-                s.push(2*val1*1LL-mini); //see here 2*val-mini = 2*mini-val hence both mini=val here this is intuition
-                mini=val1;
-            }
-            else
-                s.push(val1);
-        }
-    }
-    
-    void pop() {
-        if(s.empty())return;
-        long long e=s.top();
-        s.pop();
-        if(e<mini)
-        {
-            mini=2*mini-e;
-        }
-        
-    }
-    
-    int top() {
-        if(s.empty())return -1;
-        long long e=s.top();
-        if(e<mini)return mini;
-        else
-        {
-            return e;
-        }
-    }
-    
-    int getMin() {
-        return mini;
+  stack < pair < int, int >> st;
+
+  public:
+    void push(int x) {
+      int min;
+      if (st.empty()) {
+        min = x;
+      } else {
+        min = std::min(st.top().second, x);
+      }
+      st.push({x,min});
     }
 
-Time Complexity: O(1) for all operations (push, pop, top, getMin).
-Space Complexity: O(n) where n is the number of elements in the stack (due to the storage of elements in the stack).
+  void pop() {
+    st.pop();
+  }
+
+  int top() {
+    return st.top().first;
+  }
+
+  int getMin() {
+    return st.top().second;
+  }
+};
+
+
+
+Time and space complexity:
+
+Time Complexity: O(1)
+
+Space Complexity: O(2N)
+
+
+
+
+
+
+
+
+Code_optimised:
+
+
+class MinStack {
+  stack < long long > st;
+  long long mini;
+  public:
+    /** initialize your data structure here. */
+    MinStack() {
+      while (st.empty() == false) st.pop();
+      mini = INT_MAX;
+    }
+
+  void push(int value) {
+    long long val = Long.valuevalue;
+    if (st.empty()) {
+      mini = val;
+      st.push(val);
+    } else {
+      if (val < mini) {
+        st.push(2 *val*1LL - mini);
+        mini = val;
+      } else {
+        st.push(val);
+      }
+    }
+  }
+
+  void pop() {
+    if (st.empty()) return;
+    long long el = st.top();
+    st.pop();
+
+    if (el < mini) {
+      mini = 2 * mini - el;
+    }
+  }
+
+  int top() {
+    if (st.empty()) return -1;
+
+    long long el = st.top();
+    if (el < mini) return mini;
+    return el;
+  }
+
+  int getMin() {
+    return mini;
+  }
+};
+
+Time and space complexity:
+Time Complexity: O(1)
+
+Space Complexity: O(N)

@@ -1,0 +1,173 @@
+Ques:https://leetcode.com/problems/lfu-cache/description/
+
+sol:https://www.youtube.com/watch?v=0PSB9y8ehbk
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+    int key, value, cnt;
+    Node *next, *prev;
+    Node(int _key, int _value) {
+        key = _key;
+        value = _value;
+        cnt = 1;
+    }
+};
+
+struct List {
+    int size;
+    Node *head, *tail;
+    List() {
+        head = new Node(0, 0);
+        tail = new Node(0, 0);
+        head->next = tail;
+        tail->prev = head;
+        size = 0;
+    }
+    
+    void addFront(Node *node) {
+        Node* temp = head->next;
+        node->next = temp;
+        node->prev = head;
+        head->next = node;
+        temp->prev = node;
+        size++;
+    }
+    
+    void removeNode(Node* delnode) {
+        Node* delprev = delnode->prev;
+        Node* delnext = delnode->next;
+        delprev->next = delnext;
+        delnext->prev = delprev;
+        size--;
+    }
+};
+
+class LFUCache {
+    map<int, Node*> keyNode;
+    map<int, List*> freqListMap;
+    int maxSizeCache;
+    int minFreq;
+    int curSize;
+
+public:
+    LFUCache(int capacity) {
+        maxSizeCache = capacity;
+        minFreq = 0;
+        curSize = 0;
+    }
+    
+    void updateFreqListMap(Node *node) {
+        keyNode.erase(node->key);
+        freqListMap[node->cnt]->removeNode(node);
+        
+        if (node->cnt == minFreq && freqListMap[node->cnt]->size == 0) {
+            minFreq++;
+        }
+        
+        List* nextHigherFreqList = new List();
+        if (freqListMap.find(node->cnt + 1) != freqListMap.end()) {
+            nextHigherFreqList = freqListMap[node->cnt + 1];
+        }
+        
+        node->cnt += 1;
+        nextHigherFreqList->addFront(node);
+        freqListMap[node->cnt] = nextHigherFreqList;
+        keyNode[node->key] = node;
+    }
+    
+    int get(int key) {
+        if (keyNode.find(key) != keyNode.end()) {
+            Node* node = keyNode[key];
+            int val = node->value;
+            updateFreqListMap(node);
+            return val;
+        }
+        return -1;
+    }
+    
+    void put(int key, int value) {
+        if (maxSizeCache == 0) {
+            return;
+        }
+        
+        if (keyNode.find(key) != keyNode.end()) {
+            Node* node = keyNode[key];
+            node->value = value;
+            updateFreqListMap(node);
+        } else {
+            if (curSize == maxSizeCache) {
+                List* list = freqListMap[minFreq];
+                keyNode.erase(list->tail->prev->key);
+                freqListMap[minFreq]->removeNode(list->tail->prev);
+                curSize--;
+            }
+            
+            curSize++;
+            minFreq = 1;
+            
+            List* listFreq = new List();
+            if (freqListMap.find(minFreq) != freqListMap.end()) {
+                listFreq = freqListMap[minFreq];
+            }
+            
+            Node* node = new Node(key, value);
+            listFreq->addFront(node);
+            keyNode[key] = node;
+            freqListMap[minFreq] = listFreq;
+        }
+    }
+};
+
+// Driver Code
+int main() {
+    LFUCache* cache = new LFUCache(2);
+    
+    cache->put(1, 10);
+    cache->put(2, 20);
+    cout << cache->get(1) << endl; // Output: 10
+    cache->put(3, 30); // Removes key 2 (LFU)
+    cout << cache->get(2) << endl; // Output: -1 (not found)
+    cache->put(4, 40); // Removes key 1 (LFU)
+    cout << cache->get(1) << endl; // Output: -1 (not found)
+    cout << cache->get(3) << endl; // Output: 30
+    cout << cache->get(4) << endl; // Output: 40
+    
+    delete cache;
+    return 0;
+}
+
+
+
+Time and sapce complexity
+
+Time Complexity Analysis:
+Get Operation (get(int key)):
+
+Searching in unordered_map: O(1)
+Removing node from DLL and inserting at head: O(1)
+Updating frequency: O(1)
+Total: O(1)
+Put Operation (put(int key, int value)):
+
+Searching in unordered_map: O(1)
+If the key exists, remove it from DLL: O(1)
+If cache is full, remove LFU element from DLL and unordered_map: O(1)
+Insert new node at head of DLL: O(1)
+Update unordered_map: O(1)
+Total: O(1)
+👉 Overall time complexity: O(1) for both get() and put() operations.
+
+Space Complexity Analysis:
+We store at most cap nodes in a Doubly Linked List (DLL): O(cap)
+We maintain an unordered_map with at most cap entries: O(cap)
+We use a frequency list mapping to track frequency usage: O(cap)
+👉 Total space complexity: O(cap)
+
+Summary:
+Operation	Time Complexity	Space Complexity
+get(key)	O(1)	O(cap)
+put(key, value)	O(1)	O(cap)

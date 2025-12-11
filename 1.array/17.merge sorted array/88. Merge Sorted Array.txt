@@ -1,26 +1,62 @@
+Ques:https://leetcode.com/problems/merge-sorted-array/submissions/1623648664/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
 class Solution {
 public:
     void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
-        if(n == 0)return;
-        int len1 = nums1.size();
-        int end_idx = len1-1;
+        if(n == 0) return;  // Nothing to merge
+
+        int end_idx = nums1.size() - 1;  // Index where we'll place the next element
+
         while(n > 0 && m > 0){
-            if(nums2[n-1] >= nums1[m-1]){
-                nums1[end_idx] = nums2[n-1];
+            if(nums2[n - 1] >= nums1[m - 1]){
+                nums1[end_idx--] = nums2[n - 1];
                 n--;
-            }else{
-                nums1[end_idx] = nums1[m-1];
+            } else {
+                nums1[end_idx--] = nums1[m - 1];
                 m--;
             }
-            end_idx--;
         }
-        while (n > 0) {
-            nums1[end_idx] = nums2[n-1];
+
+        // If nums2 has remaining elements
+        while(n > 0){
+            nums1[end_idx--] = nums2[n - 1];
             n--;
-            end_idx--;
         }
     }
 };
 
-time :O(n+m)
-space : O(1)
+int main() {
+    vector<int> nums1 = {1, 2, 3, 0, 0, 0};  // nums1 has size 6, with 3 actual numbers
+    vector<int> nums2 = {2, 5, 6};
+    int m = 3;  // Number of actual elements in nums1
+    int n = 3;  // Number of elements in nums2
+
+    Solution sol;
+    sol.merge(nums1, m, nums2, n);
+
+    cout << "Merged array: ";
+    for (int num : nums1) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+
+
+Output:
+
+Merged array: 1 2 2 3 5 6
+
+
+Time and space complexity:
+
+Time & Space Complexity:
+Metric	Complexity
+Time Complexity	O(m + n) 🚀
+Space Complexity	O(1) ✅ (In-place, no extra arrays used)

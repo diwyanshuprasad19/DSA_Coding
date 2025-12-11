@@ -1,51 +1,81 @@
-134.https://leetcode.com/problems/gas-station/description/
-See here only 1 unique solution will exist 
-Hence solution is:
+Ques: https://leetcode.com/problems/gas-station/description/
+
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// LeetCode Equivalent Solution
 class Solution {
 public:
     int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
-        int n=gas.size();
-        int total_gas=0,total_cost=0;
-        int curr_gas=0, starting_point=0;
-        for(int i=0;i<n;i++)
-        {
-            //these two variable are to check if no case is possible
-            total_gas+=gas[i];
-            total_cost+=cost[i];
-            //for checking the total present gas at index i
-            curr_gas+=gas[i]-cost[i];
-            if(curr_gas<0)
-            {
-               //there is a breakdown....so we will start from next point or index
-                starting_point=i+1;
-                //reset our fuel 
-                curr_gas=0;
+        int n = gas.size();
+        int total_gas = 0, total_cost = 0;
+        int curr_gas = 0, starting_point = 0;
+        //first run a loop such that total gas at 
+        //stating is greater than or equal to total spent gas
+        for (int i = 0; i < n; i++) {
+            // Track total fuel available and required
+            total_gas += gas[i];
+            total_cost += cost[i];
+
+            // Current fuel balance
+            curr_gas += gas[i] - cost[i];
+
+            // If fuel runs out, reset starting point
+            if (curr_gas < 0) {
+                starting_point = i + 1;
+                curr_gas = 0; // Reset fuel
             }
         }
-        return (total_gas<total_cost)?-1:starting_point;     
+
+        return (total_gas < total_cost) ? -1 : starting_point;     
     }
 };
 
-Tc:O(n)
-Sc:O(1)
+// GFG Equivalent Solution (Using Petrol Pump Struct)
+struct petrolPump {
+    int petrol;
+    int distance;
+};
 
-    int tour(petrolPump p[],int n)
-    {
-       int start=0,fueltank=0,fuelshortage=0;
-       for(int i=0;i<n;i++)
-       {
-           fueltank+=p[i].petrol-p[i].distance;
-           if(fueltank<0)
-           {
-               start=i+1;
-               fuelshortage+=fueltank;
-               fueltank=0;
-           }
-       }
-       
-       //if true can also return start point
-       if(fueltank+fuelshortage>=0)
-       return start;
-       
-       return -1;
+int tour(petrolPump p[], int n) {
+    int start = 0, fuel_tank = 0, fuel_shortage = 0;
+
+    for (int i = 0; i < n; i++) {
+        fuel_tank += p[i].petrol - p[i].distance;
+
+        if (fuel_tank < 0) {
+            start = i + 1;
+            fuel_shortage += fuel_tank;
+            fuel_tank = 0; // Reset fuel
+        }
     }
+
+    return (fuel_tank + fuel_shortage >= 0) ? start : -1;
+}
+
+// Driver Code
+int main() {
+    vector<int> gas = {4, 6, 7, 4};  
+    vector<int> cost = {6, 5, 3, 5}; 
+
+    Solution obj;
+    cout << "LeetCode Solution Starting Index: " << obj.canCompleteCircuit(gas, cost) << endl;
+
+    petrolPump p[] = {{4, 6}, {6, 5}, {7, 3}, {4, 5}};
+    int n = sizeof(p) / sizeof(p[0]);
+
+    cout << "GFG Solution Starting Index: " << tour(p, n) << endl;
+    return 0;
+}
+
+
+Time and space:
+
+Time & Space Complexity Analysis:
+Time Complexity:
+O(N) (since we traverse the array at most twice)
+Space Complexity:
+O(1) (only a few extra variables are used)

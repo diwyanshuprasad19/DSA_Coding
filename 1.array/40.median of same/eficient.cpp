@@ -1,3 +1,7 @@
+Ques:https://leetcode.com/problems/median-of-two-sorted-arrays/description/
+
+Sol:https://www.youtube.com/watch?v=4SZJkPCsyZU
+
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -10,8 +14,8 @@ using namespace std;
 
 int getMedian(int arr1[],int arr2[],int n )
 {
-	int m1=-1;
-	int m2=-1;
+	int m1=-1; //second larges
+	int m2=-1; // first largest
 	int i=0;
 	int j=0;
 	for(int k=0;k<=n;k++)

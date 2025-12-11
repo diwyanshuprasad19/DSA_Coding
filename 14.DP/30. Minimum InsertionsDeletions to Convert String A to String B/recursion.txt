@@ -1,25 +1,67 @@
-#include<bits/stdc++.h>
-int solve(int i,int j,string s1,string s2)
-{
-    if(i<0)return j+1;
-    if(j<0)return i+1;
-    if(s1[i]==s2[j]) 
-        return 0+solve(i-1,j-1,s1,s2);
-    int insert=1+solve(i,j-1,s1,s2);
-    int del=1+solve(i-1,j,s1,s2);
-    int replace=1+solve(i-1,j-1,s1,s2);
-    return min(insert,min(del,replace));
+
+Ques: https://www.geeksforgeeks.org/dsa/minimum-number-deletions-insertions-transform-one-string-another/
+
+Sol:https://www.youtube.com/watch?v=yMnH0jrir0Q
+
+Code:
+
+#include <iostream>
+using namespace std;
+
+int lcs(string &s1, string &s2, int m, int n) {
+    if (m == 0 || n == 0)
+        return 0;
+
+    if (s1[m - 1] == s2[n - 1])
+        return 1 + lcs(s1, s2, m - 1, n - 1);
+    else
+        return max(lcs(s1, s2, m, n - 1), lcs(s1, s2, m - 1, n));
 }
-int editDistance(string str1, string str2)
-{
-    int n=str1.length();
-    int m=str2.length();
-    int count=solve(n-1,m-1,str1,str2);
-    return count;
+
+int minOperations(string s1, string s2) {
+    int m = s1.size();
+    int n = s2.size();
+
+    int len = lcs(s1, s2, m, n);
+    int minDeletions = m - len;
+    int minInsertions = n - len;
+
+    return minDeletions + minInsertions;
+}
+
+int main() {
+    string s1 = "AGGTAB";
+    string s2 = "GXTXAYB";
+    int res = minOperations(s1, s2);
+    cout << "Minimum Insertions and Deletions: " << res << endl;
+    return 0;
 }
 
 
-lcs best example:https://www.youtube.com/watch?v=yMnH0jrir0Q
-leetcode 583
-https://leetcode.com/problems/delete-operation-for-two-strings/
-goos example
+
+ Sample Input / Output:
+Input:
+cpp
+Copy
+Edit
+s1 = "AGGTAB"
+s2 = "GXTXAYB"
+Output:
+Copy
+Edit
+5
+Explanation:
+LCS = "GTAB" of length 4
+
+Deletions = 6 - 4 = 2
+
+Insertions = 7 - 4 = 3
+
+Total = 2 + 3 = 5
+
+✅ Time and Space Complexity (Recursion)
+Metric	Value
+Time Complexity	O(2^(m+n)) (Exponential)
+Space Complexity	O(m+n) (stack space)
+
+

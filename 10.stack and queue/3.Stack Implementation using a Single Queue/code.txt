@@ -1,0 +1,229 @@
+Ques:
+
+Code1:
+2 queue
+
+#include <iostream>
+#include <queue>
+using namespace std;
+
+class StackUsingTwoQueues {
+    queue<int> q1, q2; // Two queues
+
+public:
+    void push(int x) {
+        q2.push(x); // Push to q2
+
+        // Move all elements from q1 to q2
+        while (!q1.empty()) {
+            q2.push(q1.front());
+            q1.pop();
+        }
+
+        // Swap q1 and q2
+        swap(q1, q2);
+    }
+
+    int pop() {
+        if (q1.empty()) {
+            cout << "Stack Underflow\n";
+            return -1;
+        }
+        int topElement = q1.front();
+        q1.pop();
+        return topElement;
+    }
+
+    int top() {
+        if (q1.empty()) {
+            cout << "Stack is empty\n";
+            return -1;
+        }
+        return q1.front();
+    }
+
+    int size() {
+        return q1.size();
+    }
+};
+
+int main() {
+    StackUsingTwoQueues s;
+    s.push(1);
+    s.push(2);
+    s.push(3);
+
+    cout << "Top: " << s.top() << endl;   // Expected: 3
+    cout << "Popped: " << s.pop() << endl; // Expected: 3
+    cout << "Size: " << s.size() << endl; // Expected: 2
+
+    return 0;
+}
+
+
+Time and space:
+Time Complexity Analysis
+Push (push(x)) → 
+𝑂
+(
+𝑁
+)
+O(N) (Since all elements are transferred to another queue)
+Pop (pop()) → 
+𝑂
+(
+1
+)
+O(1) (Directly remove from the front)
+Top (top()) → 
+𝑂
+(
+1
+)
+O(1) (Directly access the front)
+Size (size()) → 
+𝑂
+(
+1
+)
+O(1) (Return queue size)
+Space Complexity
+Space Complexity: 
+𝑂
+(
+𝑁
+)
+O(N) (Uses two queues of size 
+𝑁
+N)
+
+
+
+
+Code2:
+
+#include <iostream>
+#include <queue>
+using namespace std;
+
+class StackUsingOneQueue {
+    queue<int> q;
+
+public:
+    void push(int x) {
+        int n = q.size();
+        q.push(x);
+        
+        // Rotate the queue to make the last inserted element the front
+        for (int i = 0; i < n; i++) {
+            q.push(q.front());
+            q.pop();
+        }
+    }
+
+    int pop() {
+        if (q.empty()) {
+            cout << "Stack Underflow\n";
+            return -1;
+        }
+        int topElement = q.front();
+        q.pop();
+        return topElement;
+    }
+
+    int top() {
+        if (q.empty()) {
+            cout << "Stack is empty\n";
+            return -1;
+        }
+        return q.front();
+    }
+
+    int size() {
+        return q.size();
+    }
+};
+
+int main() {
+    StackUsingOneQueue s;
+    s.push(1);
+    s.push(2);
+    s.push(3);
+
+    cout << "Top: " << s.top() << endl;   // Expected: 3
+    cout << "Popped: " << s.pop() << endl; // Expected: 3
+    cout << "Size: " << s.size() << endl; // Expected: 2
+
+    return 0;
+}
+
+
+
+Time and space compleixty:
+
+Time Complexity Analysis
+Push (push(x)) → 
+𝑂
+(
+𝑁
+)
+O(N) (Rearranges the queue to maintain order)
+Pop (pop()) → 
+𝑂
+(
+1
+)
+O(1) (Directly remove from the front)
+Top (top()) → 
+𝑂
+(
+1
+)
+O(1) (Directly access the front)
+Size (size()) → 
+𝑂
+(
+1
+)
+O(1) (Return queue size)
+Space Complexity
+Space Complexity: 
+𝑂
+(
+𝑁
+)
+O(N) (Only one queue is used)
+Summary: Which Approach is Better?
+Approach	Push Complexity	Pop Complexity	Space Complexity
+Stack using Two Queues	
+𝑂
+(
+𝑁
+)
+O(N)	
+𝑂
+(
+1
+)
+O(1)	
+𝑂
+(
+𝑁
+)
+O(N)
+Stack using One Queue	
+𝑂
+(
+𝑁
+)
+O(N)	
+𝑂
+(
+1
+)
+O(1)	
+𝑂
+(
+𝑁
+)
+O(N)

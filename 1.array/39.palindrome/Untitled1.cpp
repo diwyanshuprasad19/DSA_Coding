@@ -1,4 +1,6 @@
-https://www.geeksforgeeks.org/problems/palindromic-array-1587115620/1
+Ques:https://www.youtube.com/watch?v=wiDLcGxhh80
+
+sol:https://www.youtube.com/watch?v=wiDLcGxhh80
 
 #include<bits/stdc++.h>
 using namespace std;
@@ -47,3 +49,51 @@ int main()
 	
 	return 0;
 }
+
+Sample Inputs and Outputs
+Sample Input 1:
+
+ini
+Copy
+Edit
+arr = {15, 4, 15}
+Sample Output 1:
+
+Copy
+Edit
+0
+Explanation: Already palindrome, no merges needed.
+
+Sample Input 2:
+
+ini
+Copy
+Edit
+arr = {1, 4, 5, 1}
+Sample Output 2:
+
+Copy
+Edit
+1
+Explanation:
+
+merge 4 + 5 → {1, 9, 1} → becomes palindrome.
+
+Sample Input 3:
+
+ini
+Copy
+Edit
+arr = {11, 14, 15, 99}
+Sample Output 3:
+
+Copy
+Edit
+3
+Explanation:
+
+
+Time and Space Complexity
+Metric	Complexity
+Time Complexity	O(n) → single pass with two pointers
+Space Complexity	O(1) → no extra space, in-place array updates

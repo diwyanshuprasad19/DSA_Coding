@@ -1,18 +1,51 @@
-#include<bits/stdc++.h>
-int solve(int index,int target,vector<int> &num,vector<vector<int>> &dp)
-{
-    if(target==0)return 1;
-    if(index==0)return num[index]==target;
-    if(dp[index][target]!=-1)return dp[index][target];
-    int notpick=solve(index-1,target,num,dp);
-    int pick=0;
-    if(num[index]<=target)
-        pick=solve(index-1,target-num[index],num,dp);
-    return dp[index][target]=pick+notpick;
+Ques: https://leetcode.com/problems/target-sum/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int index, int target, vector<int> &num, vector<vector<int>> &dp) {
+    if (target == 0) return 1;
+    if (index == 0) return num[0] == target;
+
+    if (dp[index][target] != -1)
+        return dp[index][target];
+
+    int notPick = solve(index - 1, target, num, dp);
+    int pick = 0;
+    if (num[index] <= target)
+        pick = solve(index - 1, target - num[index], num, dp);
+
+    return dp[index][target] = pick + notPick;
 }
-int findWays(vector<int> &num, int tar)
-{
-    vector<vector<int>> dp(num.size(),vector<int>(tar+1,-1));
-    int count=solve(num.size()-1,tar,num,dp);
-    return count;
+
+int findWays(vector<int> &num, int tar) {
+    int n = num.size();
+    vector<vector<int>> dp(n, vector<int>(tar + 1, -1));
+    return solve(n - 1, tar, num, dp);
 }
+
+int main() {
+    vector<int> num = {1, 2, 2, 3};
+    int tar = 4;
+    cout << findWays(num, tar) << endl;  // Output: 3
+    return 0;
+}
+
+ Sample Input & Output
+🔹 Input:
+cpp
+Copy
+Edit
+num = {1, 2, 2, 3}
+tar = 4
+🔹 Output:
+Copy
+Edit
+3
+
+📊 Time and Space Complexity
+Metric	Value
+⏱ Time Complexity	O(n * tar)
+💾 Space Complexity	O(n * tar) DP + O(n) recursion stack

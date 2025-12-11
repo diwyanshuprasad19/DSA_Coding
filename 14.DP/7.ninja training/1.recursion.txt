@@ -1,30 +1,82 @@
-#include<bits/stdc++.h>
-int solve(int index,int last, vector<vector<int>> &points)
+Ques:https://takeuforward.org/data-structure/dynamic-programming-ninjas-training-dp-7/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int index, int last, vector<vector<int>> &points)
 {
-    if(index==0)
+    if (index == 0)
     {
-        int maxi=INT_MIN;
-        for(int i=0;i<3;i++)
+        int maxi = INT_MIN;
+        for (int i = 0; i < 3; i++)
         {
-            if(i!=last)
-                maxi=max(maxi,points[0][i]);
+            if (i != last)
+                maxi = max(maxi, points[0][i]);
         }
         return maxi;
     }
-    int maxi=INT_MIN;
-    for(int i=0;i<3;i++)
+
+    int maxi = INT_MIN;
+    for (int i = 0; i < 3; i++)
     {
-        if(i!=last)
+        if (i != last)
         {
-            int p=points[index][i]+solve(index-1,i,points);
-            maxi=max(maxi,p);
+            int p = points[index][i] + solve(index - 1, i, points);
+            maxi = max(maxi, p);
         }
     }
+
     return maxi;
 }
 
 int ninjaTraining(int n, vector<vector<int>> &points)
 {
-   int m=solve(n-1,3,points);
+    int m = solve(n - 1, 3, points);
     return m;
 }
+
+int main()
+{
+    vector<vector<int>> points = {
+        {10, 50, 1},
+        {5, 100, 11},
+        {20, 5, 90}
+    };
+
+    int n = points.size();
+    int result = ninjaTraining(n, points);
+    cout << "Maximum Points: " << result << endl;
+    return 0;
+}
+
+
+
+🧪 Input
+cpp
+Copy
+Edit
+points = {
+    {10, 50, 1},
+    {5, 100, 11},
+    {20, 5, 90}
+}
+✅ Output
+yaml
+Copy
+Edit
+Maximum Points: 191
+⏱️ Time Complexity
+scss
+Copy
+Edit
+O(3^n)
+At each of n levels, you branch up to 3 times (excluding last activity).
+
+🗂️ Space Complexity
+scss
+Copy
+Edit
+O(n)
+Recursion stack depth is n.

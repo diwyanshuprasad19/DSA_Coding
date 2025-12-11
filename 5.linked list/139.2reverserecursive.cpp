@@ -1,3 +1,7 @@
+Ques:https://leetcode.com/problems/reverse-linked-list/description/
+
+Code:
+
 #include<bits/stdc++.h>
 using namespace std;
  

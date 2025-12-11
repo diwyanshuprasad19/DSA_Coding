@@ -1,16 +1,26 @@
+Ques:https://www.geeksforgeeks.org/selection-sort-algorithm-2/
+
+code:
+
 #include <iostream>
 #include <vector>
 using namespace std;
 
+// Function to perform Selection Sort in descending order
 void selectionSort(vector<int>& arr) {
     int n = arr.size();
+    
     for (int i = 0; i < n - 1; i++) {
         int maxIndex = i;
+
+        // Find the index of the maximum element in the unsorted part
         for (int j = i + 1; j < n; j++) {
             if (arr[j] > arr[maxIndex]) {
                 maxIndex = j;
             }
         }
+
+        // Swap the found maximum element with the first element of the unsorted part
         if (maxIndex != i) {
             swap(arr[i], arr[maxIndex]);
         }
@@ -19,14 +29,18 @@ void selectionSort(vector<int>& arr) {
 
 int main() {
     vector<int> arr = {64, 34, 25, 12, 22, 11, 90};
+
+    // Displaying original array
     cout << "Original array: ";
     for (int num : arr) {
         cout << num << " ";
     }
     cout << endl;
 
+    // Sorting the array in descending order using Selection Sort
     selectionSort(arr);
 
+    // Displaying sorted array
     cout << "Sorted array in descending order: ";
     for (int num : arr) {
         cout << num << " ";
@@ -36,9 +50,20 @@ int main() {
     return 0;
 }
 
-Time Complexity:
-Best Case: O(n^2)
-Average Case: O(n^2)
-Worst Case: O(n^2)
-Space Complexity:
-O(1)
+/*
+Time Complexity Analysis:
+1. Worst-case: O(N^2) - Two nested loops; The algorithm always scans the unsorted array to find the minimum or maximum.
+2. Best-case: O(N^2) - Even if the array is already sorte
+
+
+Time and space:
+
+/*
+Time Complexity Analysis:
+1. Worst-case: O(N^2) - Two nested loops; The algorithm always scans the unsorted array to find the minimum or maximum.
+2. Best-case: O(N^2) - Even if the array is already sorted, every element is compared.
+3. Average-case: O(N^2) - When the array is in random order.
+
+Space Complexity Analysis:
+1. Space Complexity: O(1) - Sorting is done in-place with constant memory usage.
+*/

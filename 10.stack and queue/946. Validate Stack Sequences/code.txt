@@ -1,0 +1,43 @@
+Ques:https://leetcode.com/problems/validate-stack-sequences/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    bool validateStackSequences(vector<int>& pushed, vector<int>& popped) {
+        int l = 0;
+        stack<int> st;
+
+        for (int i : pushed) {
+            st.push(i);
+            // Keep popping from stack if the top matches `popped[l]`
+            while (!st.empty() && st.top() == popped[l]) {
+                l++;
+                st.pop();
+            }
+        }
+        
+        return st.empty(); // If stack is empty, it's a valid sequence
+    }
+};
+
+// Driver Code
+int main() {
+    Solution obj;
+    vector<int> pushed = {1, 2, 3, 4, 5};
+    vector<int> popped = {4, 5, 3, 2, 1};
+
+    cout << "Is valid stack sequence? " << (obj.validateStackSequences(pushed, popped) ? "Yes" : "No") << endl;
+    return 0;
+}
+
+
+Time and space:
+
+Time & Space Complexity Analysis
+Complexity	Explanation
+Time Complexity: O(N)	Each element is pushed and popped at most once.
+Space Complexity: O(N)	Stack can hold up to N elements in the worst case.

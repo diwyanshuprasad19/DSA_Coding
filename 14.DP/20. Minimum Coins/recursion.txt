@@ -1,21 +1,50 @@
-#include<bits/stdc++.h>
-int solve(int index,vector<int> &num, int x)
-{
-    if(index==0)
-    {
-        if(x%num[index]==0)return x/num[index];
-        else
-            return 1e9;
+Ques:https://leetcode.com/problems/coin-change/description/
+
+Code:
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int solve(int index, vector<int>& num, int x) {
+    if (index == 0) {
+        if (x % num[0] == 0) return x / num[0];
+        return 1e9;  // can't make amount with this coin
     }
-    int nottake=0+solve(index-1,num,x);
-    int take=1e9;
-    if(num[index]<=x)
-        take=1+solve(index,num,x-num[index]);
-    return min(nottake,take);
+
+    int notTake = solve(index - 1, num, x);  // don't use this coin
+    int take = 1e9;
+    if (num[index] <= x)
+        take = 1 + solve(index, num, x - num[index]);  // use this coin
+
+    return min(take, notTake);
 }
-int minimumElements(vector<int> &num, int x)
-{
-    int count=solve(num.size()-1,num,x);
-    if(count>=1e9)return -1;  //as there might be large value.
-    return count;
+
+int minimumElements(vector<int>& num, int x) {
+    int count = solve(num.size() - 1, num, x);
+    return (count >= 1e9) ? -1 : count;
 }
+
+int main() {
+    vector<int> num = {1, 2, 3};
+    int x = 7;
+    cout << minimumElements(num, x) << endl;  // Output: 3 (2+2+3 or 1+1+1+1+1+1+1)
+    return 0;
+}
+
+Sample Input & 📤 Output
+Input:
+cpp
+Copy
+Edit
+num = {1, 2, 3}
+x = 7
+Output:
+Copy
+Edit
+3
+
+
+Time and Space Complexity
+Metric	Value
+⏱ Time Complexity	O(2^x * n) (exponential)
+💾 Space Complexity	O(x) (recursion stack in worst case)

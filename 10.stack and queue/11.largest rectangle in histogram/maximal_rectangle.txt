@@ -1,0 +1,77 @@
+Ques:https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2/
+
+Sol:https://www.youtube.com/watch?v=ttVu6G7Ayik
+
+Code:
+
+#include <iostream>
+#include <vector>
+#include <stack>
+using namespace std;
+
+class Solution {
+public:
+    // Function to find the largest rectangle in a histogram
+    int largestRectangleArea(vector<int>& heights) {
+        stack<int> st;
+        int maxArea = 0;
+        int n = heights.size();
+
+        for (int i = 0; i <= n; i++) {
+            while (!st.empty() && (i == n || heights[i] < heights[st.top()])) {
+                int height = heights[st.top()];
+                st.pop();
+                int width = st.empty() ? i : (i - st.top() - 1);
+                maxArea = max(maxArea, height * width);
+            }
+            st.push(i);
+        }
+        return maxArea;
+    }
+
+    // Function to find the maximal rectangle in a binary matrix
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if (matrix.empty()) return 0;
+
+        int rows = matrix.size(), cols = matrix[0].size();
+        vector<int> heights(cols, 0);
+        int maxRectangle = 0;
+
+        for (int i = 0; i < rows; i++) {
+            // Update heights array based on the binary matrix
+            for (int j = 0; j < cols; j++) {
+                heights[j] = (matrix[i][j] == '1') ? heights[j] + 1 : 0;
+            }
+
+            // Calculate the largest rectangle area in the histogram
+            maxRectangle = max(maxRectangle, largestRectangleArea(heights));
+        }
+        return maxRectangle;
+    }
+};
+
+// Driver code
+int main() {
+    Solution sol;
+    vector<vector<char>> matrix = {
+        {'1', '0', '1', '0', '0'},
+        {'1', '0', '1', '1', '1'},
+        {'1', '1', '1', '1', '1'},
+        {'1', '0', '0', '1', '0'}
+    };
+
+    cout << "Maximum Rectangle Area: " << sol.maximalRectangle(matrix) << endl;
+    return 0;
+}
+
+
+
+time and sapce compelxity:
+
+Time and Space Complexity
+Operation	Time Complexity
+Processing each row (Updating heights)	O(N)
+Computing the largest rectangle (Stack method)	O(N)
+Total (For all rows)	O(ROWS × COLS)
+🔹 Time Complexity: O(ROWS × COLS)
+🔹 Space Complexity: O(COLS) (Only storing heights and stack)

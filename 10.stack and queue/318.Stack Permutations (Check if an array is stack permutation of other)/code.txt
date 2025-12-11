@@ -1,19 +1,48 @@
-    int isStackPermutation(int N,vector<int> &A,vector<int> &B){
-        stack<int> s;
-        int j=0;
-        for(int i=0;i<N;i++)
-        {
-            s.push(A[i]);
-            //here b can have more element
-            while(s.size()>0 && s.top()==B[j])
-            {
-                s.pop();
-                j++;
-            }
+Ques:https://www.geeksforgeeks.org/stack-permutations-check-if-an-array-is-stack-permutation-of-other/
+
+Sol:https://www.youtube.com/watch?v=Rkx2ru2q5S0
+
+Code:
+
+#include <iostream>
+#include <vector>
+#include <stack>
+
+using namespace std;
+
+// Function to check if one sequence is a valid stack permutation of the other
+int isStackPermutation(int N, vector<int> &A, vector<int> &B) {
+    stack<int> s;
+    int j = 0;
+
+    for (int i = 0; i < N; i++) {
+        s.push(A[i]);
+
+        // Check and pop elements from the stack if they match the desired sequence
+        while (!s.empty() && s.top() == B[j]) {
+            s.pop();
+            j++;
         }
-        //here a can have more element
-        if(j==N && s.size()==0)
-        return true;
-        else
-        return false;
     }
+
+    // If all elements are matched and stack is empty, it is a valid stack permutation
+    return (j == N && s.empty()) ? 1 : 0;
+}
+
+// Driver Code
+int main() {
+    vector<int> A = {1, 2, 3, 4, 5};  // Input sequence
+    vector<int> B = {4, 5, 3, 2, 1};  // Output sequence (to be checked)
+
+    if (isStackPermutation(A.size(), A, B))
+        cout << "Yes, it is a valid stack permutation." << endl;
+    else
+        cout << "No, it is not a valid stack permutation." << endl;
+
+    return 0;
+}
+
+
+Time and space:
+Time Complexity: O(N)
+Auxiliary Space: O(N)
