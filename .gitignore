@@ -30,3 +30,4 @@ node_modules/
 *.JPG
 *.jpeg
 *.rtf
+.github/workflows/
