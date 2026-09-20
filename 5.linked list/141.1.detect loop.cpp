@@ -1,4 +1,5 @@
 Ques:https://leetcode.com/problems/linked-list-cycle/description/
+proof:https://stackoverflow.com/questions/3952805/proof-of-detecting-the-start-of-cycle-in-linked-list
 
 Code:
 
