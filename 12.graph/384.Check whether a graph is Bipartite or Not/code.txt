@@ -4,82 +4,90 @@ Sol:https://takeuforward.org/graph/bipartite-graph-bfs-implementation/
 
 vid: https://www.youtube.com/watch?v=-vu34sct1g8
 
+linear with no cycle are alwys bipartite
+
+odd lenght ccyle then not bipartitte-henc ebfs chekc usign that
+
+Both BFS and DFS can enforce this rule.
+
 Code:
-#include<bits/stdc++.h>
-using namespace std;
 
-class Solution {
-    // colors a component 
-    private: 
-    bool check(int start, int V, vector<int>adj[], int color[]) {
-        queue<int> q;
-	    q.push(start); 
-	    color[start] = 0; 
-	    while(!q.empty()) {
-	        int node = q.front();
-	        q.pop(); 
-	        
-	        for(auto it : adj[node]) {
-	            // if the adjacent node is yet not colored
-	            // you will give the opposite color of the node 
-	            if(color[it] == -1) {
-	                
-	                color[it] = !color[node]; 
-	                q.push(it); 
-	            }
-	            // is the adjacent guy having the same color 
-	            // someone did color it on some other path 
-	            else if(color[it] == color[node]) {
-	                return false; 
-	            }
-	        }
-	    }
-	    return true; 
-    }
-public:
-	bool isBipartite(int V, vector<int>adj[]){
-	    int color[V]; 
-	    for(int i = 0;i<V;i++) color[i] = -1; 
-	    
-	    for(int i = 0;i<V;i++) {
-	        // if not coloured
-	        if(color[i] == -1) {
-	            if(check(i, V, adj, color) == false) {
-	                return false; 
-	            }
-	        }
-	    }
-	    return true; 
-	}
+✅ Python Code — Check if Graph is Bipartite (BFS)
+from collections import deque
 
-};
+def check(start, adj, color):
+    q = deque()
+    q.append(start)
+    color[start] = 0
 
-void addEdge(vector <int> adj[], int u, int v) {
-    adj[u].push_back(v);
-    adj[v].push_back(u);
-}
+    while q:
+        node = q.popleft()
 
-int main(){
-	
-	// V = 4, E = 4
-	vector<int>adj[4];
-	
-	addEdge(adj, 0, 2);
-   	addEdge(adj, 0, 3);
-    	addEdge(adj, 2, 3);
-    	addEdge(adj, 3, 1);
+        for it in adj[node]:
+            # If the node is not colored
+            if color[it] == -1:
+                color[it] = 1 - color[node]
+                q.append(it)
+            # If adjacent node has same color
+            elif color[it] == color[node]:
+                return False
 
-	Solution obj;
-	bool ans = obj.isBipartite(4, adj);    
-	if(ans)cout << "1\n";
-	else cout << "0\n";  
-	
-	return 0;
-}
+    return True
 
 
+def isBipartite(V, adj):
+    color = [-1] * V
 
-Time Complexity: O(V + 2E), Where V = Vertices, 2E is for total degrees as we traverse all adjacent nodes.
+    for i in range(V):
+        if color[i] == -1:
+            if not check(i, adj, color):
+                return False
 
-Space Complexity: O(3V) ~ O(V), Space for queue data structure, colour array and an adjacency list.
+    return True
 
+▶️ Sample Input
+V = 4
+adj = [[] for _ in range(V)]
+
+edges = [
+    (0, 2),
+    (0, 3),
+    (2, 3),
+    (3, 1)
+]
+
+for u, v in edges:
+    adj[u].append(v)
+    adj[v].append(u)
+
+print(isBipartite(V, adj))
+
+❌ Sample Output
+False
+
+Why?
+
+Graph contains an odd-length cycle:
+
+0 → 2 → 3 → 0
+
+
+So it is not bipartite.
+
+⏱ Time Complexity
+O(V + E)
+
+
+Each vertex visited once
+
+Each edge checked twice (undirected)
+
+🧠 Space Complexity
+O(V)
+
+
+Color array
+
+Queue
+
+Adjacency list (input)

@@ -1,0 +1,357 @@
+Then separate each responsibility.
+
+Class	Responsibility	Why separate it?
+Game	Controls overall game flow	Should not manage board internals or bot algorithms
+Board	Maintains board state	Board logic should stay separate from game orchestration
+Cell	Represents one board position	Keeps cell state encapsulated
+Player	Stores player information	Player data shouldn't live inside Game
+Move	Represents one move	Needed for history, undo/redo
+WinningStrategy	Determines whether a move wins	Winning rules can change independently
+MoveStrategy	Determines how a move is chosen	Bot algorithms can change independently
+
+The thinking is:
+
+Requirement
+   ↓
+Identify responsibilities
+   ↓
+Ask: "Does this responsibility change for a different reason?"
+   ↓
+If yes → separate class
+
+For example, suppose you put everything inside Game:
+
+class Game:
+
+    def make_move(self):
+        ...
+
+    def validate_cell(self):
+        ...
+
+    def check_row(self):
+        ...
+
+    def check_column(self):
+        ...
+
+    def random_bot_move(self):
+        ...
+
+    def minimax_move(self):
+        ...
+
+    def undo(self):
+        ...
+
+Now Game has many reasons to change:
+
+Board representation changes
+        → Game changes
+
+Winning rule changes
+        → Game changes
+
+Bot algorithm changes
+        → Game changes
+
+Undo logic changes
+        → Game changes
+
+That's a violation of SRP.
+
+Instead:
+
+Game
+→ orchestrates
+
+Board
+→ stores board
+
+WinningStrategy
+→ checks winning
+
+MoveStrategy
+→ chooses moves
+
+Move
+→ represents an action
+
+Now each class has mainly one reason to change.
+
+Game
+
+Game answers:
+
+What happens next in the game?
+
+It manages:
+
+current player
+game status
+winner
+move history
+turn switching
+
+Conceptually:
+
+class Game:
+
+    def make_move(self, row, col):
+        validate game state
+        ask board to place piece
+        store move
+        check winner
+        switch player
+
+It should coordinate other objects, not do their internal work.
+
+Board
+
+Board answers:
+
+What does the board currently look like?
+
+It handles:
+
+NxN grid
+cell access
+placing piece
+removing piece
+checking whether board is full
+coordinate validation
+
+For example:
+
+class Board:
+
+    def place_piece(self, row, col, piece):
+        ...
+
+    def remove_piece(self, row, col):
+        ...
+
+    def is_full(self):
+        ...
+
+Game doesn't need to understand how the board stores its cells.
+
+Cell
+
+A cell represents:
+
+position
+piece occupying that position
+
+Example:
+
+class Cell:
+
+    def __init__(self, row, col):
+        self.row = row
+        self.col = col
+        self.piece = None
+
+You could technically use a simple matrix, but having Cell can make future extensions easier.
+
+For example:
+
+blocked cells
+special cells
+metadata
+Player
+
+Player answers:
+
+Who is playing?
+
+Stores things such as:
+
+name
+symbol
+type
+
+For example:
+
+class Player:
+
+    def __init__(self, name, symbol):
+        self.name = name
+        self.symbol = symbol
+
+Player shouldn't contain board/winner logic.
+
+Move
+
+Move represents:
+
+What action occurred?
+
+Example:
+
+Move(
+    player=player1,
+    row=1,
+    col=2
+)
+
+This becomes important because you require:
+
+move history
+undo
+redo later
+
+Without a Move abstraction, history becomes messy.
+
+WinningStrategy
+
+Requirement says:
+
+Winning rules may change.
+
+So winner detection should not live permanently inside Game.
+
+Define:
+
+class WinningStrategy:
+
+    def is_winner(self, board, move):
+        ...
+
+Then potentially:
+
+StandardWinningStrategy
+ConnectKWinningStrategy
+CustomWinningStrategy
+
+This is both:
+
+SRP
++
+OCP
+
+Because Game doesn't change when a new winning rule is added.
+
+MoveStrategy
+
+This comes directly from:
+
+Random Bot
+Minimax Bot
+
+The behavior that changes is:
+
+How should the next move be selected?
+
+So:
+
+class MoveStrategy:
+
+    def choose_move(self, board):
+        ...
+
+Implementations:
+
+class RandomMoveStrategy(MoveStrategy):
+    ...
+
+
+class MinimaxMoveStrategy(MoveStrategy):
+    ...
+
+Game doesn't care which algorithm is being used.
+
+That's Strategy Pattern + OCP + DIP.
+
+So the SOLID mapping becomes:
+
+SRP
+↓
+Separate:
+Game
+Board
+Player
+Move
+Cell
+
+
+OCP
+↓
+WinningStrategy
+MoveStrategy
+
+
+LSP
+↓
+RandomMoveStrategy and MinimaxMoveStrategy
+should both be usable as MoveStrategy
+
+
+ISP
+↓
+Keep interfaces small:
+MoveStrategy → choose_move()
+WinningStrategy → is_winner()
+
+
+DIP
+↓
+Game depends on abstractions like:
+WinningStrategy
+
+instead of concrete classes like:
+StandardWinningStrategy
+
+The most important interview rule is:
+
+Don't create classes because SOLID says “create more classes.” Create them because different responsibilities or changing behaviors should be isolated.
+
+For Tic-Tac-Toe, the clean mental model is:
+
+Game
+= orchestration
+
+Board
+= board state
+
+Cell
+= one position
+
+Player
+= player identity
+
+Move
+= one action/history
+
+WinningStrategy
+= how winning is determined
+
+MoveStrategy
+= how a move is chosen
+
+
+That is the easiest way to understand LLD code instead of memorizing it.
+
+Function	Why we need it	Where it is used
+Board.__init__()	Create NxN board	When Factory creates Board(size)
+Board.valid()	Check row/column bounds	Inside place() and remove()
+Board.place()	Put X/O on board	MoveCommand.execute() and Minimax simulation
+Board.remove()	Remove X/O	MoveCommand.undo() and Minimax backtracking
+Board.is_full()	Check draw condition	Game.make_move() and Minimax
+Board.empty_cells()	Find available positions	Random and Minimax strategies
+Board.show()	Display board	Client/test code
+WinningStrategy.is_winner()	Define winner-check contract	Implemented by StandardWinningStrategy
+StandardWinningStrategy.is_winner()	Check row/column/diagonals	Called by Game.make_move() and Minimax
+MoveStrategy.choose()	Define bot-move contract	Implemented by Random/Minimax
+RandomStrategy.choose()	Pick random empty position	Called by Game.bot_move()
+MinimaxStrategy.choose()	Find best bot move	Called by Game.bot_move()
+MinimaxStrategy._minimax()	Recursively evaluate future moves	Called internally by choose()
+MoveCommand.execute()	Execute one move	Called by Game.make_move()
+MoveCommand.undo()	Reverse one move	Called by Game.undo()
+Game.__init__()	Initialize full game state	Factory creates the Game
+Game.make_move()	Main game flow for one move	Human move / bot ultimately uses it
+Game.bot_move()	Ask bot strategy for position	Client calls when bot's turn
+Game.undo()	Undo latest move	Client calls for undo
+GameFactory.human_vs_human()	Build H-v-H configuration	Client creates a game
+GameFactory.human_vs_random()	Build H-v-RandomBot	Client creates a game
+GameFactory.human_vs_minimax()	Build H-v-MinimaxBot	Client creates a game

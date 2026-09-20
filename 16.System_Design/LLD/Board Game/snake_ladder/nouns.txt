@@ -1,0 +1,418 @@
+This is exactly how you should think in an SSE/SDE-2 LLD interview.
+
+1. Player
+
+A player only needs to maintain player-specific state.
+
+class Player:
+    def __init__(self, name):
+        self.name = name
+        self.position = 0
+
+Why does position belong here?
+
+Because position is a property of a player.
+
+Player A → position 35
+Player B → position 72
+
+So:
+
+Player
+ ├── name
+ └── position
+
+I would not put functions like:
+
+roll_dice()
+check_snake()
+check_winner()
+
+inside Player.
+
+Why? Because the player should not know how dice work, how the board works, or how winning rules work.
+
+2. Snake
+
+A snake represents one board entity.
+
+class Snake:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+
+Example:
+
+Snake:
+
+97
+ ↓
+32
+
+So:
+
+Snake(97, 32)
+
+Its responsibility is just:
+
+store snake start
+store snake end
+validate snake
+
+We can validate:
+
+class Snake:
+    def __init__(self, start, end):
+
+        if start <= end:
+            raise ValueError("Invalid snake")
+
+        self.start = start
+        self.end = end
+
+Why does validation belong here?
+
+Because:
+
+Snake knows what makes a valid Snake.
+
+The Game should not contain:
+
+if snake.start < snake.end:
+
+That responsibility belongs to Snake.
+
+3. Ladder
+
+Same idea.
+
+class Ladder:
+    def __init__(self, start, end):
+
+        if start >= end:
+            raise ValueError("Invalid ladder")
+
+        self.start = start
+        self.end = end
+
+Example:
+
+4
+↑
+25
+Ladder(4, 25)
+
+Responsibility:
+
+store ladder start
+store ladder end
+validate ladder
+
+Again:
+
+Ladder knows what a valid Ladder is.
+4. Dice
+
+Dice's responsibility is:
+
+Give a dice value.
+
+Nothing else.
+
+class Dice:
+    def roll(self):
+        return random.randint(1, 6)
+
+Why should roll() belong to Dice?
+
+Because dice rolling is dice behaviour.
+
+Bad:
+
+class Game:
+
+    def roll_dice(self):
+        return random.randint(1, 6)
+
+Now Game is responsible for:
+
+turn management
+movement
+winner
+dice
+board
+
+Too much.
+
+Better:
+
+value = dice.roll()
+
+So:
+
+Dice
+ └── roll()
+
+Later, Strategy Pattern can make this even better:
+
+DiceStrategy
+    ↑
+StandardDice
+    ↑
+FixedDice
+5. Board
+
+This is one of the most important classes.
+
+Board should know:
+
+board size
+snakes
+ladders
+what happens when a player lands on a cell
+
+For example:
+
+class Board:
+
+    def __init__(self, size, jumps):
+        self.size = size
+        self.jumps = jumps
+
+The important function is:
+
+resolve_position(position)
+
+Example:
+
+board.resolve_position(4)
+
+Board knows:
+
+4 has ladder
+4 → 25
+
+So it returns:
+
+25
+
+Why should this function belong to Board?
+
+Because:
+
+Knowing what exists at a particular cell is a Board responsibility.
+
+Game should not need to know:
+
+if position in snakes:
+    ...
+
+if position in ladders:
+    ...
+
+Instead:
+
+position = board.resolve_position(position)
+
+That keeps Game clean.
+
+6. BoardBuilder
+
+This is optional, but good for SSE-level design.
+
+Its responsibility:
+
+Construct a Board.
+
+Example:
+
+builder = BoardBuilder(100)
+
+builder.add_snake(99, 20)
+builder.add_snake(80, 40)
+
+builder.add_ladder(4, 25)
+builder.add_ladder(30, 70)
+
+board = builder.build()
+
+Functions:
+
+add_snake()
+add_ladder()
+build()
+
+Why are these functions inside BoardBuilder?
+
+Because they are related to constructing the board, not playing the game.
+
+Think:
+
+Board
+    = actual board being used
+
+BoardBuilder
+    = creates/configures that board
+
+This separation becomes useful when configuration becomes complicated.
+
+7. Game
+
+This is the orchestrator.
+
+Game should coordinate:
+
+Player
+Board
+Dice
+Turns
+Winning
+
+It should not implement every low-level rule itself.
+
+Example:
+
+class SnakeAndLadderGame:
+
+    def __init__(self, board, players, dice):
+        self.board = board
+        self.players = players
+        self.dice = dice
+
+The most important functions would be:
+
+start()
+play_turn()
+next_player()
+8. Why start() belongs to Game
+def start(self):
+    self.status = GameStatus.IN_PROGRESS
+
+Who owns the game lifecycle?
+
+Game
+
+Therefore:
+
+NOT_STARTED
+IN_PROGRESS
+FINISHED
+
+belongs to Game.
+
+Neither Board nor Player should decide whether the game has started.
+
+9. Why play_turn() belongs to Game
+
+This is the central orchestration.
+
+A turn means:
+
+Find current player
+      ↓
+Roll dice
+      ↓
+Calculate tentative position
+      ↓
+Ask Board to resolve snake/ladder
+      ↓
+Update player
+      ↓
+Check winner
+      ↓
+Change turn
+
+So:
+
+def play_turn(self):
+
+    player = self.get_current_player()
+
+    dice_value = self.dice.roll()
+
+    next_position = player.position + dice_value
+
+    if next_position <= self.board.size:
+
+        next_position = self.board.resolve_position(
+            next_position
+        )
+
+        player.position = next_position
+
+    if player.position == self.board.size:
+        self.winner = player
+
+Why play_turn() belongs to Game?
+
+Because it coordinates multiple domain objects.
+
+This is exactly what the Game class is supposed to do.
+
+10. Why next_player() belongs to Game
+
+Suppose:
+
+Alice
+Bob
+Charlie
+
+Turn sequence:
+
+Alice → Bob → Charlie → Alice
+
+That is a game-level rule.
+
+Therefore:
+
+def next_player(self):
+
+    self.current_player_index = (
+        self.current_player_index + 1
+    ) % len(self.players)
+
+belongs inside Game.
+
+Player itself should not know:
+
+Who comes after me?
+
+The Game knows the player ordering.
+
+11. GameStatus
+
+Use an enum:
+
+from enum import Enum
+
+class GameStatus(Enum):
+    NOT_STARTED = 1
+    IN_PROGRESS = 2
+    FINISHED = 3
+
+Why separate class?
+
+Because instead of writing:
+
+status = "started"
+status = "running"
+status = "done"
+
+which is error-prone, you have controlled values:
+
+GameStatus.NOT_STARTED
+GameStatus.IN_PROGRESS
+GameStatus.FINISHED
+12. Overall responsibility map
+
+This is the important thing to remember:
+
+Class	Responsibility	Important methods
+Player	Store player state	usually none/minimal
+Snake	Represent + validate snake	validation
+Ladder	Represent + validate ladder	validation
+Dice	Generate dice value	roll()
+Board	Manage cells/snakes/ladders	resolve_position()
+BoardBuilder	Construct Board	add_snake(), add_ladder(), build()
+Game	Coordinate gameplay	start(), play_turn(), next_player()
+GameStatus	Represent lifecycle	enum values

@@ -1,0 +1,107 @@
+Ques:https://leetcode.com/problems/snapshot-array/description/
+
+
+Desc:https://leetcode.tamnd.com/11xx/1146/?utm_source=chatgpt.com
+
+orignal solution cna be snapshot id:[list] - eberyotmea. new snapshot is called hecne saved but he issue here is that everytime saved them memry exceed will come.
+
+
+
+Example:
+
+from bisect import bisect_right
+
+arr = [1, 2, 2, 2, 5]
+
+Now:
+
+bisect_right(arr, 2)
+
+returns:
+
+4
+
+Why?
+
+Because if you insert another 2, it would go here:
+
+index:  0  1  2  3    4
+        ↓  ↓  ↓  ↓    ↓
+arr =  [1, 2, 2, 2,   5]
+                    ↑
+                  new 2
+
+So after insertion:
+
+[1, 2, 2, 2, 2, 5]
+
+The new 2 goes after all existing 2s.
+
+That is why it is called:
+
+bisect_RIGHT
+Compare with bisect_left
+
+For:
+
+arr = [1, 2, 2, 2, 5]
+bisect_left(arr, 2)
+
+returns:
+
+1
+
+because it inserts before all equal 2s.
+
+But:
+
+bisect_right(arr, 2)
+
+returns:
+
+4
+
+because it inserts after all equal 2s.
+
+
+
+
+
+Sol:
+
+from bisect import bisect_right
+
+class SnapshotArray:
+
+    def __init__(self, length: int):
+        self.data = [[(0, 0)] for _ in range(length)]
+        self.snap_id = 0
+
+    def set(self, index: int, val: int) -> None:
+        if self.data[index][-1][0] == self.snap_id:
+            self.data[index][-1] = (self.snap_id, val)
+        else:
+            self.data[index].append((self.snap_id, val))
+
+    def snap(self) -> int:
+        current = self.snap_id
+        self.snap_id += 1
+        return current
+
+    def get(self, index: int, snap_id: int) -> int:
+        arr = self.data[index]
+        i = bisect_right(arr, (snap_id, float('inf'))) - 1
+        return arr[i][1]
+
+TC:
+Operation	What it does	Time Complexity
+set(index, val)	Updates/appends the current value for that index	O(1) average
+snap()	Increments snapshot ID and returns previous ID	O(1)
+get(index, snap_id)	Uses binary search on that index's history	O(log k)
+
+SC:
+set()  → O(1)
+snap() → O(1)
+get()  → O(log k)
+
+Space → O(n + C)

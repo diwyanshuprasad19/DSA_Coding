@@ -1,0 +1,59 @@
+Ques:https://leetcode.com/problems/count-number-of-nice-subarrays/description/
+
+solv:https://leetcode.com/problems/count-number-of-nice-subarrays/solutions/5349310/prefix-sum-sliding-window-tutorial-count-vll6/
+
+Yes. Let’s list all 16 subarrays with indexes.
+
+nums = [2,2,2,1,2,2,1,2,2,2]
+k = 2
+
+Indexes:
+
+index:  0  1  2  3  4  5  6  7  8  9
+value:  2  2  2  1  2  2  1  2  2  2
+              ↑        ↑
+            odd      odd
+
+Odd numbers are at:
+
+index 3 and index 6
+
+To have exactly 2 odd numbers, every valid subarray must include both index 3 and index 6.
+
+So start can be:
+
+0, 1, 2, 3
+
+End can be:
+
+6, 7, 8, 9
+
+Total:
+
+4 starts × 4 ends = 16
+
+
+
+
+Sol:
+
+class Solution:
+    def numberOfSubarrays(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        ans=0
+        for i in range(n):
+            count=0
+            for j in range(i,n):
+                if nums[j]%2!=0:
+                    count+=1
+                if count ==k:
+                    ans+=1
+                if count>k:
+                    break
+        
+        return ans
+
+
+
+TC:O(n^2)
+SC:O(1)

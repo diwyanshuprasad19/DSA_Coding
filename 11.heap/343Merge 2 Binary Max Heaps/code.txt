@@ -2,61 +2,48 @@ Ques: https://www.geeksforgeeks.org/dsa/merge-two-binary-max-heaps/
 
 Code:
 
-  #include <bits/stdc++.h>
-using namespace std;
+# Python3 program to merge two Max heaps
 
-class Solution {
-public:
-    // Max Heapify function
-    void heapify(vector<int>& arr, int i, int n) {
-        int largest = i;
-        int left = 2 * i + 1;
-        int right = 2 * i + 2;
+# Standard heapify function to heapify a subtree
+# rooted under idx. It assumes that subtrees of node
+# are already heapified
+def heapify(arr,n,i):
+    parent = i
+    left = 2*i+1
+    right = 2*i+2
+    
+    if left<n and arr[left]>arr[parent]:
+        parent=left
+    if right<n and arr[right]>arr[parent]:
+        parent=right
+    
+    if parent!=i:
+        arr[parent],arr[i]=arr[i],arr[parent]
+        heapify(arr,n,parent)
 
-        if (left < n && arr[left] > arr[largest])
-            largest = left;
 
-        if (right < n && arr[right] > arr[largest])
-            largest = right;
+def buildheap(l,k):
+    for i in range((k-1)//2,-1,-1):
+        heapify(l,k,i)
 
-        if (largest != i) {
-            swap(arr[i], arr[largest]);
-            heapify(arr, largest, n);
-        }
-    }
 
-    vector<int> mergeHeaps(vector<int>& a, vector<int>& b, int n, int m) {
-        vector<int> merged;
+def mergeHeaps(a,b,n,m):
+    l = a+b
+    k=len(l)
+    buildheap(l,k)
+    return l
 
-        // Step 1: Combine both arrays
-        for (int i = 0; i < n; i++) merged.push_back(a[i]);
-        for (int i = 0; i < m; i++) merged.push_back(b[i]);
+# Sample Input
+a = [10, 5, 6, 2]
+b = [12, 7, 9]
 
-        int size = n + m;
+# Function call
+merged = mergeHeaps(a,b,len(a),len(b))
 
-        // Step 2: Heapify from last non-leaf to root
-        for (int i = size / 2 - 1; i >= 0; i--) {
-            heapify(merged, i, size);
-        }
+for x in merged:
+  	print(x, end = " ")
 
-        return merged;
-    }
-};
 
-// 🧪 Test driver
-int main() {
-    vector<int> heap1 = {9, 8, 7, 5};
-    vector<int> heap2 = {10, 6, 4, 2};
-
-    Solution obj;
-    vector<int> result = obj.mergeHeaps(heap1, heap2, heap1.size(), heap2.size());
-
-    cout << "Merged Max Heap: ";
-    for (int x : result) cout << x << " ";
-    cout << endl;
-
-    return 0;
-}
 
 Sample Input
 cpp

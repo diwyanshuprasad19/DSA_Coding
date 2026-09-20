@@ -1,0 +1,12 @@
+Ques:https://leetcode.com/problems/range-sum-query-mutable/description/
+
+
+Desc:https://leetcode.com/problems/range-sum-query-mutable/solutions/7688772/detailed-explanation-fenwick-tree-binary-fj8h/
+
+
+Code:
+
+
+
+TC:
+SC:

@@ -1,0 +1,797 @@
+Doc:htps://docs.google.com/document/d/1bQyvV3IMBV5hw9JylhFggYhUjoaQ5c30ghfXdjj_GJQ/edit?tab=t.0
+
+
+
+COde:
+
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from enum import Enum
+import random
+
+
+# =========================================================
+# 1. CUSTOM EXCEPTIONS
+# =========================================================
+
+class SnakeLadderException(Exception):
+    """Base exception for the game."""
+    pass
+
+
+class InvalidSnakeException(SnakeLadderException):
+    pass
+
+
+class InvalidLadderException(SnakeLadderException):
+    pass
+
+
+class InvalidBoardException(SnakeLadderException):
+    pass
+
+
+class InvalidPlayerException(SnakeLadderException):
+    pass
+
+
+class GameStateException(SnakeLadderException):
+    pass
+
+
+class BoardCycleException(SnakeLadderException):
+    pass
+
+
+# =========================================================
+# 2. GAME STATUS
+# =========================================================
+
+class GameStatus(Enum):
+    NOT_STARTED = "NOT_STARTED"
+    IN_PROGRESS = "IN_PROGRESS"
+    FINISHED = "FINISHED"
+
+
+# =========================================================
+# 3. PLAYER
+# =========================================================
+
+@dataclass
+class Player:
+    name: str
+    position: int = 0
+
+
+# =========================================================
+# 4. SNAKE
+# =========================================================
+
+@dataclass(frozen=True)
+class Snake:
+    start: int
+    end: int
+
+    def __post_init__(self):
+
+        if self.start <= self.end:
+            raise InvalidSnakeException(
+                "Snake start must be greater than end."
+            )
+
+
+# =========================================================
+# 5. LADDER
+# =========================================================
+
+@dataclass(frozen=True)
+class Ladder:
+    start: int
+    end: int
+
+    def __post_init__(self):
+
+        if self.start >= self.end:
+            raise InvalidLadderException(
+                "Ladder start must be smaller than end."
+            )
+
+
+# =========================================================
+# 6. DICE STRATEGY
+# Strategy Pattern
+# =========================================================
+
+class DiceStrategy(ABC):
+
+    @abstractmethod
+    def roll(self):
+        pass
+
+
+class StandardDice(DiceStrategy):
+
+    def __init__(self, sides=6, number_of_dice=1):
+
+        if sides <= 0:
+            raise SnakeLadderException(
+                "Dice sides must be positive."
+            )
+
+        if number_of_dice <= 0:
+            raise SnakeLadderException(
+                "Number of dice must be positive."
+            )
+
+        self.sides = sides
+        self.number_of_dice = number_of_dice
+
+
+    def roll(self):
+
+        total = 0
+
+        for _ in range(self.number_of_dice):
+            total += random.randint(
+                1,
+                self.sides
+            )
+
+        return total
+
+
+# =========================================================
+# 7. FIXED DICE
+# Useful for testing
+# =========================================================
+
+class FixedDice(DiceStrategy):
+
+    def __init__(self, values):
+        self.values = values
+        self.index = 0
+
+
+    def roll(self):
+
+        if self.index >= len(self.values):
+            raise SnakeLadderException(
+                "No more fixed dice values."
+            )
+
+        value = self.values[self.index]
+
+        self.index += 1
+
+        return value
+
+
+# =========================================================
+# 8. BOARD
+# =========================================================
+
+class Board:
+
+    def __init__(self, size, jumps):
+
+        if size <= 1:
+            raise InvalidBoardException(
+                "Board size must be greater than 1."
+            )
+
+        self.size = size
+
+        # start_position -> Snake/Ladder
+        self.jumps = jumps
+
+
+    def resolve_position(self, position):
+
+        visited = set()
+
+        while position in self.jumps:
+
+            # Detect loops like:
+            # 10 -> 20
+            # 20 -> 10
+
+            if position in visited:
+                raise BoardCycleException(
+                    "Cycle detected in board."
+                )
+
+            visited.add(position)
+
+            jump = self.jumps[position]
+
+            if isinstance(jump, Snake):
+
+                print(
+                    f"Snake: "
+                    f"{jump.start} -> {jump.end}"
+                )
+
+            elif isinstance(jump, Ladder):
+
+                print(
+                    f"Ladder: "
+                    f"{jump.start} -> {jump.end}"
+                )
+
+            position = jump.end
+
+        return position
+
+
+# =========================================================
+# 9. BOARD BUILDER
+# Builder Pattern
+# =========================================================
+
+class BoardBuilder:
+
+    def __init__(self, size=100):
+
+        if size <= 1:
+            raise InvalidBoardException(
+                "Board size must be greater than 1."
+            )
+
+        self.size = size
+
+        self.jumps = {}
+
+
+    # -----------------------------------------------------
+    # Add Snake
+    # -----------------------------------------------------
+
+    def add_snake(self, start, end):
+
+        self._validate_position(start)
+        self._validate_position(end)
+
+        if start in self.jumps:
+            raise InvalidBoardException(
+                f"Cell {start} already contains a jump."
+            )
+
+        self.jumps[start] = Snake(
+            start,
+            end
+        )
+
+        return self
+
+
+    # -----------------------------------------------------
+    # Add Ladder
+    # -----------------------------------------------------
+
+    def add_ladder(self, start, end):
+
+        self._validate_position(start)
+        self._validate_position(end)
+
+        if start in self.jumps:
+            raise InvalidBoardException(
+                f"Cell {start} already contains a jump."
+            )
+
+        self.jumps[start] = Ladder(
+            start,
+            end
+        )
+
+        return self
+
+
+    # -----------------------------------------------------
+    # Validate position
+    # -----------------------------------------------------
+
+    def _validate_position(self, position):
+
+        if position < 1 or position > self.size:
+
+            raise InvalidBoardException(
+                f"Position must be between "
+                f"1 and {self.size}."
+            )
+
+
+    # -----------------------------------------------------
+    # Build Board
+    # -----------------------------------------------------
+
+    def build(self):
+
+        board = Board(
+            self.size,
+            dict(self.jumps)
+        )
+
+        # Check for cycles
+        for start in self.jumps:
+            board.resolve_position(start)
+
+        return board
+
+
+# =========================================================
+# 10. TURN RESULT
+# =========================================================
+
+@dataclass
+class TurnResult:
+    player_name: str
+    dice_value: int
+    old_position: int
+    new_position: int
+    won: bool
+
+
+# =========================================================
+# 11. GAME
+# =========================================================
+
+class SnakeAndLadderGame:
+
+    def __init__(
+        self,
+        board,
+        players,
+        dice
+    ):
+
+        if len(players) < 2:
+            raise InvalidPlayerException(
+                "At least 2 players are required."
+            )
+
+        self.board = board
+        self.players = players
+        self.dice = dice
+
+        self.current_player_index = 0
+
+        self.status = GameStatus.NOT_STARTED
+
+        self.winner = None
+
+
+    # -----------------------------------------------------
+    # Start Game
+    # -----------------------------------------------------
+
+    def start(self):
+
+        if self.status != GameStatus.NOT_STARTED:
+
+            raise GameStateException(
+                "Game has already started."
+            )
+
+        self.status = GameStatus.IN_PROGRESS
+
+        print("Game started!")
+
+
+    # -----------------------------------------------------
+    # Current Player
+    # -----------------------------------------------------
+
+    def get_current_player(self):
+
+        return self.players[
+            self.current_player_index
+        ]
+
+
+    # -----------------------------------------------------
+    # Play One Turn
+    # -----------------------------------------------------
+
+    def play_turn(self):
+
+        if self.status == GameStatus.NOT_STARTED:
+
+            raise GameStateException(
+                "Game has not started."
+            )
+
+
+        if self.status == GameStatus.FINISHED:
+
+            raise GameStateException(
+                "Game has already finished."
+            )
+
+
+        # 1. Current player
+
+        player = self.get_current_player()
+
+
+        # 2. Roll dice
+
+        dice_value = self.dice.roll()
+
+
+        old_position = player.position
+
+
+        print(
+            f"\n{player.name} rolled "
+            f"{dice_value}"
+        )
+
+
+        # 3. Calculate new position
+
+        next_position = (
+            player.position + dice_value
+        )
+
+
+        # 4. Overshoot
+
+        if next_position > self.board.size:
+
+            print(
+                "Cannot move beyond board."
+            )
+
+        else:
+
+            # 5. Resolve snake / ladder
+
+            final_position = (
+                self.board.resolve_position(
+                    next_position
+                )
+            )
+
+            player.position = final_position
+
+
+        print(
+            f"{old_position} -> "
+            f"{player.position}"
+        )
+
+
+        # 6. Winner
+
+        won = (
+            player.position == self.board.size
+        )
+
+
+        if won:
+
+            self.winner = player
+
+            self.status = GameStatus.FINISHED
+
+            print(
+                f"{player.name} won!"
+            )
+
+
+        else:
+
+            # 7. Next player
+            self._move_to_next_player()
+
+
+        return TurnResult(
+            player_name=player.name,
+            dice_value=dice_value,
+            old_position=old_position,
+            new_position=player.position,
+            won=won
+        )
+
+
+    # -----------------------------------------------------
+    # Next Player
+    # -----------------------------------------------------
+
+    def _move_to_next_player(self):
+
+        self.current_player_index = (
+            self.current_player_index + 1
+        ) % len(self.players)
+
+Create the board
+board = (
+    BoardBuilder(100)
+
+    .add_ladder(4, 25)
+    .add_ladder(20, 40)
+    .add_ladder(45, 70)
+
+    .add_snake(50, 15)
+    .add_snake(80, 35)
+    .add_snake(99, 10)
+
+    .build()
+)
+
+Players:
+
+players = [
+    Player("Alice"),
+    Player("Bob")
+]
+
+Dice:
+
+dice = StandardDice()
+
+Game:
+
+game = SnakeAndLadderGame(
+    board,
+    players,
+    dice
+)
+
+game.start()
+
+while game.status != GameStatus.FINISHED:
+    game.play_turn()
+
+
+Class / Function	Time	Auxiliary Space	Why
+Player(...)	O(1)	O(1)	Stores name and position
+Snake.__post_init__()	O(1)	O(1)	One comparison
+Ladder.__post_init__()	O(1)	O(1)	One comparison
+StandardDice.__init__()	O(1)	O(1)	Stores configuration
+StandardDice.roll()	O(D)	O(1)	Rolls D dice
+FixedDice.__init__()	O(1)*	O(1)*	Stores reference to provided list
+FixedDice.roll()	O(1)	O(1)	Direct list indexing
+Board.__init__()	O(1)	O(1)	Stores references
+Board.resolve_position()	O(K)	O(K)	Follows chained jumps and stores visited cells
+BoardBuilder.__init__()	O(1)	O(1)	Creates empty dictionary
+add_snake()	O(1) avg	O(1)	Dictionary insertion
+add_ladder()	O(1) avg	O(1)	Dictionary insertion
+_validate_position()	O(1)	O(1)	Boundary comparisons
+build()	O(J²) worst case	O(J)	Validates all jumps and detects cycles
+SnakeAndLadderGame.__init__()	O(1)	O(1)	Stores references
+start()	O(1)	O(1)	Changes status
+get_current_player()	O(1)	O(1)	List indexing
+play_turn()	O(D + K)	O(K)	Dice roll + jump resolution
+_move_to_next_player()	O(1)	O(1)	Arithmetic/modulo
+Creating TurnResult	O(1)	O(1)	Stores fixed number of values
+
+
+__post_init__() is a special method used with Python @dataclass.
+
+Example:
+
+from dataclasses import dataclass
+
+@dataclass
+class Snake:
+    start: int
+    end: int
+
+    def __post_init__(self):
+        if self.start <= self.end:
+            raise InvalidSnakeException(
+                "Snake start must be greater than end."
+            )
+
+Because of @dataclass, Python automatically creates the __init__() for you. Conceptually, it behaves like:
+
+def __init__(self, start, end):
+    self.start = start
+    self.end = end
+
+    self.__post_init__()
+
+So when you write:
+
+snake = Snake(90, 20)
+
+the flow is:
+
+Snake(90, 20)
+    ↓
+auto-generated __init__()
+    ↓
+self.start = 90
+self.end = 20
+    ↓
+__post_init__()
+    ↓
+validation
+
+Why not just use __init__()? You can. If you are not using @dataclass, write:
+
+class Snake:
+
+    def __init__(self, start, end):
+
+        if start <= end:
+            raise InvalidSnakeException(
+                "Snake start must be greater than end."
+            )
+
+        self.start = start
+        self.end = end
+
+But with:
+
+@dataclass
+
+Python already generates __init__(), so __post_init__() is the convenient place for extra validation after fields are assigned.
+
+
+
+
+jumps means the snakes and ladders present on the board.
+
+So here:
+
+def __init__(self, size, jumps):
+size = board size, for example 100
+jumps = mapping of a snake/ladder start position → that Snake/Ladder object
+
+Example:
+
+jumps = {
+    14: Snake(14, 7),
+    28: Ladder(28, 84),
+    91: Snake(91, 53)
+}
+
+Then:
+
+self.jumps = jumps
+
+stores that mapping inside the Board.
+
+
+Example:
+
+def resolve_position(self, position):
+
+Suppose:
+
+position = 4
+4 has ladder -> 25
+25 has snake -> 10
+10 has no jump
+
+Then this function returns:
+
+10
+
+The first line:
+
+visited = set()
+
+stores positions already seen.
+
+Why? To prevent an infinite loop.
+
+Example bad board:
+
+10 -> 20
+20 -> 10
+
+Without visited, the code would keep doing:
+
+10 -> 20 -> 10 -> 20 -> 10 ...
+
+forever.
+
+Then:
+
+while position in self.jumps:
+
+means:
+
+
+
+
+pass in the exception class does not mean the message is ignored.
+
+When you write:
+
+class GameStateException(SnakeLadderException):
+    pass
+
+you are saying:
+
+Create a new exception type called GameStateException, but don't add any extra behavior. Just inherit everything from the parent.
+
+And the parent:
+
+class SnakeLadderException(Exception):
+    pass
+
+inherits from Python's built-in Exception.
+
+So this:
+
+raise GameStateException(
+    "Game has already started."
+)
+
+works because GameStateException ultimately inherits the built-in Exception.__init__().
+
+Conceptually the inheritance is:
+
+Exception
+   ↑
+SnakeLadderException
+   ↑
+GameStateException
+
+So when you do:
+
+GameStateException("Game has already started.")
+
+Python basically uses the inherited constructor from Exception and stores that message inside the exception object.
+
+Then raise means:
+
+Stop normal execution here and throw this error.
+
+Example:
+
+def start(self):
+
+    if self.status != GameStatus.NOT_STARTED:
+        raise GameStateException(
+            "Game has already started."
+        )
+
+    self.status = GameStatus.IN_PROGRESS
+
+Suppose:
+
+game.start()
+game.start()
+
+First call:
+
+status = NOT_STARTED
+↓
+valid
+↓
+status becomes IN_PROGRESS
+
+Second call:
+
+status = IN_PROGRESS
+↓
+condition is True
+↓
+raise GameStateException(...)
+
+Program gets:
+
+GameStateException: Game has already started.
+
+You can catch it:
+
+try:
+    game.start()
+
+except GameStateException as e:
+    print(e)
+
+Output:
+
+Game has already started.
+
+The important distinction is:
+
+
+
+

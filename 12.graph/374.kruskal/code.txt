@@ -4,121 +4,120 @@ Sol:https://takeuforward.org/data-structure/kruskals-algorithm-minimum-spanning-
 
 
 Code:
-#include <bits/stdc++.h>
-using namespace std;
+
+Python – Disjoint Set (Union by Rank)
+class DisjointSet:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+
+    def find(self, node):
+        # Path compression
+        if node != self.parent[node]:
+            self.parent[node] = self.find(self.parent[node])
+        return self.parent[node]
+
+    def union_by_rank(self, u, v):
+        pu = self.find(u)
+        pv = self.find(v)
+
+        if pu == pv:
+            return False
+
+        if self.rank[pu] < self.rank[pv]:
+            self.parent[pu] = pv
+        elif self.rank[pv] < self.rank[pu]:
+            self.parent[pv] = pu
+        else:
+            self.parent[pv] = pu
+            self.rank[pu] += 1
+
+        return True
+
+✅ Kruskal’s Algorithm (MST)
+def spanning_tree(V, adj):
+    edges = []
+
+    # Step 1: Extract edges from adjacency list
+    for u in range(V):
+        for v, wt in adj[u]:
+            edges.append((wt, u, v))
+
+    # Step 2: Sort edges by weight
+    edges.sort()
+
+    ds = DisjointSet(V)
+    mst_weight = 0
+
+    # Step 3: Pick edges greedily
+    for wt, u, v in edges:
+        if ds.union_by_rank(u, v):
+            mst_weight += wt
+
+    return mst_weight
+
+🧪 Sample Input (Same as your C++)
+V = 5
+edges = [
+    [0, 1, 2],
+    [0, 2, 1],
+    [1, 2, 1],
+    [2, 3, 2],
+    [3, 4, 1],
+    [4, 2, 2]
+]
+
+adj = [[] for _ in range(V)]
+for u, v, wt in edges:
+    adj[u].append((v, wt))
+    adj[v].append((u, wt))
+
+print("The sum of all the edge weights:", spanning_tree(V, adj))
+
+📤 Sample Output
+The sum of all the edge weights: 5
+
+🧠 How MST = 5
+
+Chosen edges:
+
+(0–2) → 1
+
+(1–2) → 1
+
+(3–4) → 1
+
+(2–3) → 2
+
+👉 Total = 5
+
+⏱️ Time Complexity (Union by Rank)
+O(N + E) + O(E log E) + O(E × α(N))
+
+Breakdown:
+
+O(N + E) → Extract edges
+
+O(E log E) → Sort edges
+
+O(E × α(N)) →
+
+find() + union_by_rank()
+
+α(N) ≤ 4 (inverse Ackermann, constant)
+
+👉 Overall: O(E log E)
+
+💾 Space Complexity
+O(N) + O(E)
+
+edges[] → O(E)
+
+parent[] → O(N)
+
+rank[] → O(N)
 
 
-class DisjointSet {
-    vector<int> rank, parent, size;
-public:
-    DisjointSet(int n) {
-        rank.resize(n + 1, 0);
-        parent.resize(n + 1);
-        size.resize(n + 1);
-        for (int i = 0; i <= n; i++) {
-            parent[i] = i;
-            size[i] = 1;
-        }
-    }
-
-    int findUPar(int node) {
-        if (node == parent[node])
-            return node;
-        return parent[node] = findUPar(parent[node]);
-    }
-
-    void unionByRank(int u, int v) {
-        int ulp_u = findUPar(u);
-        int ulp_v = findUPar(v);
-        if (ulp_u == ulp_v) return;
-        if (rank[ulp_u] < rank[ulp_v]) {
-            parent[ulp_u] = ulp_v;
-        }
-        else if (rank[ulp_v] < rank[ulp_u]) {
-            parent[ulp_v] = ulp_u;
-        }
-        else {
-            parent[ulp_v] = ulp_u;
-            rank[ulp_u]++;
-        }
-    }
-
-    void unionBySize(int u, int v) {
-        int ulp_u = findUPar(u);
-        int ulp_v = findUPar(v);
-        if (ulp_u == ulp_v) return;
-        if (size[ulp_u] < size[ulp_v]) {
-            parent[ulp_u] = ulp_v;
-            size[ulp_v] += size[ulp_u];
-        }
-        else {
-            parent[ulp_v] = ulp_u;
-            size[ulp_u] += size[ulp_v];
-        }
-    }
-};
-class Solution
-{
-public:
-    //Function to find sum of weights of edges of the Minimum Spanning Tree.
-    int spanningTree(int V, vector<vector<int>> adj[])
-    {
-        // 1 - 2 wt = 5
-        /// 1 - > (2, 5)
-        // 2 -> (1, 5)
-
-        // 5, 1, 2
-        // 5, 2, 1
-        vector<pair<int, pair<int, int>>> edges;
-        for (int i = 0; i < V; i++) {
-            for (auto it : adj[i]) {
-                int adjNode = it[0];
-                int wt = it[1];
-                int node = i;
-
-                edges.push_back({wt, {node, adjNode}});
-            }
-        }
-        DisjointSet ds(V);
-        sort(edges.begin(), edges.end());
-        int mstWt = 0;
-        for (auto it : edges) {
-            int wt = it.first;
-            int u = it.second.first;
-            int v = it.second.second;
-
-            if (ds.findUPar(u) != ds.findUPar(v)) {
-                mstWt += wt;
-                ds.unionBySize(u, v);
-            }
-        }
-
-        return mstWt;
-    }
-};
-
-int main() {
-
-    int V = 5;
-    //vertex start,vertex end and weight
-    vector<vector<int>> edges = {{0, 1, 2}, {0, 2, 1}, {1, 2, 1}, {2, 3, 2}, {3, 4, 1}, {4, 2, 2}};
-    vector<vector<int>> adj[V];
-    for (auto it : edges) {
-        vector<int> tmp(2);
-        tmp[0] = it[1];
-        tmp[1] = it[2];
-        adj[it[0]].push_back(tmp);
-
-        tmp[0] = it[0];
-        tmp[1] = it[2];
-        adj[it[1]].push_back(tmp);
-    }
-
-    Solution obj;
-    int mstWt = obj.spanningTree(V, adj);
-    cout << "The sum of all the edge weights: " << mstWt << endl;
-    return 0;
-}
 
 at 11 th minuted above exlained time and sapce ocmpelxity
 

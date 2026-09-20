@@ -1,0 +1,94 @@
+Ques:https://leetcode.com/problems/minimum-operations-to-reduce-x-to-zero/description/
+
+
+
+
+Tried:
+import sys
+class Solution:
+    def minOperations(self, nums: List[int], x: int) -> int:
+        ans=sys.maxsize
+        sum=0
+        for i in range(len(nums)):
+            sum+=nums[i]
+            if nums[i]==x:
+                return 1
+        
+        pretix=0
+        last=0
+        for i in range(len(nums)):
+            pretix+=nums[i]
+            # left side
+            if last == x:
+                ans=min(ans,i-1)
+            # right side
+            elif sum-pretix==x:
+                ans=min(ans,len(nums)-i-1)
+            # middle
+            elif (sum-nums[i])==x:
+                ans=min(ans,len(nums)-i+1)
+            
+            last=pretix
+        if ans == sys.maxsize:
+            return -1
+        
+        return ans
+
+
+
+check-10,1,1,1,1,1
+middle-[3,2,20,1,1,3]
+
+        
+Sol:
+import sys
+from typing import List
+
+class Solution:
+    def minOperations(self, nums: List[int], x: int) -> int:
+        n = len(nums)
+        ans = sys.maxsize
+
+        # prefix sum map
+        # key = sum from left
+        # value = number of operations from left
+        prefix = {0: 0}
+
+        curr = 0
+        for i in range(n):
+            curr += nums[i]
+
+            # if left side alone becomes x
+            if curr == x:
+                ans = min(ans, i + 1)
+
+            # store prefix sum with operations count
+            prefix[curr] = i + 1
+
+        # now check right side
+        curr = 0
+        for j in range(n - 1, -1, -1):
+            curr += nums[j]
+            right_ops = n - j
+
+            # if right side alone becomes x
+            if curr == x:
+                ans = min(ans, right_ops)
+
+            remaining = x - curr
+
+            # need this much from left side
+            if remaining in prefix:
+                left_ops = prefix[remaining]
+
+                # important: left and right should not overlap
+                if left_ops + right_ops <= n:
+                    ans = min(ans, left_ops + right_ops)
+
+        if ans == sys.maxsize:
+            return -1
+
+        return ans
+
+TC:O(1)
+Sc:O(1)

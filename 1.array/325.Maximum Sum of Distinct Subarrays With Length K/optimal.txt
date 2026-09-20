@@ -1,0 +1,19 @@
+Ques:https://github.com/doocs/leetcode/blob/main/solution/0300-0399/0325.Maximum%20Size%20Subarray%20Sum%20Equals%20k/README_EN.md
+
+
+Sol:
+class Solution:
+    def maxSubArrayLen(self, nums: List[int], k: int) -> int:
+        d = {0: -1}
+        ans = s = 0
+        for i, x in enumerate(nums):
+            s += x
+            if s - k in d:
+                ans = max(ans, i - d[s - k])
+            if s not in d:
+                d[s] = i
+        return ans
+
+
+TC:O(n)
+SC:O(n)

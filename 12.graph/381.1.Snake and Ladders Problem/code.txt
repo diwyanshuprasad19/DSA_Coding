@@ -1,0 +1,81 @@
+Ques:https://www.geeksforgeeks.org/dsa/snake-ladder-problem-2/
+
+Code:
+
+Python Equivalent (Exact Logic)
+from collections import deque
+
+def min_throw(N, arr):
+    moves = [-1] * 35
+    vis = [False] * 35
+
+    # Fill snakes and ladders
+    for i in range(0, 2 * N, 2):
+        moves[arr[i]] = arr[i + 1]
+
+    q = deque()
+    q.append((1, 0))  # (cell, throws)
+    vis[1] = True
+
+    while q:
+        cell, turn = q.popleft()
+
+        if cell == 30:
+            return turn
+
+        for i in range(cell + 1, min(cell + 6, 30) + 1):
+            if not vis[i]:
+                vis[i] = True
+                if moves[i] != -1:
+                    q.append((moves[i], turn + 1))
+                else:
+                    q.append((i, turn + 1))
+
+    return -1
+
+🧪 Sample Input
+N = 8
+arr = [
+    3, 22, 5, 8, 11, 26, 20, 29,   # ladders
+    27, 1, 21, 9, 17, 4, 19, 7     # snakes
+]
+
+print(min_throw(N, arr))
+
+📤 Sample Output
+3
+
+🧩 Explanation with Example
+
+Starting at cell 1:
+
+Throw 1 → reach ladder → jump forward
+
+BFS ensures we always explore paths with minimum throws first
+
+Once cell 30 is reached → answer found
+
+⏱️ Time Complexity
+O(30 × 6) ≈ O(1)
+
+
+More formally:
+
+O(V + E)
+
+
+Where:
+
+V = 30 cells
+
+E ≤ 6 × 30
+
+💾 Space Complexity
+O(30)
+
+
+vis[] array
+
+moves[] array
+
+BFS queue

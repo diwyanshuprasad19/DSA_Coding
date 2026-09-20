@@ -1,0 +1,32 @@
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+**/service-account*.json
+**/*-key.json
+
+# Local / build artifacts — do not push
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.platform-ops/
+node_modules/
+*.exe
+*.out
+*.o
+*.log
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+*.sqbpro
+*.docx
+~$*
+*.xlsx
+*.PNG
+*.JPG
+*.jpeg
+*.rtf

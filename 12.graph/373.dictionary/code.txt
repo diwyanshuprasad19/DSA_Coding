@@ -1,0 +1,88 @@
+Ques:https://www.geeksforgeeks.org/problems/alien-dictionary/1
+
+Code:
+
+Python Equivalent (DFS Topological Sort)
+def findOrder(dict_words, N, K):
+    # Step 1: Build graph
+    graph = [[] for _ in range(K)]
+
+    for i in range(N - 1):
+        w1 = dict_words[i]
+        w2 = dict_words[i + 1]
+
+        for j in range(min(len(w1), len(w2))):
+            if w1[j] != w2[j]:
+                u = ord(w1[j]) - ord('a')
+                v = ord(w2[j]) - ord('a')
+                graph[u].append(v)
+                break
+
+    visited = [0] * K
+    ans = []
+
+    # Step 2: DFS
+    def dfs(node):
+        visited[node] = 1
+        for nei in graph[node]:
+            if visited[nei] == 0:
+                dfs(nei)
+        ans.append(chr(node + ord('a')))
+
+    # Step 3: Run DFS for all characters
+    for i in range(K):
+        if visited[i] == 0:
+            dfs(i)
+
+    # Reverse for correct topological order
+    return ''.join(ans[::-1])
+
+🧪 Sample Input
+dict_words = ["baa", "abcd", "abca", "cab", "cad"]
+N = 5
+K = 4
+
+print(findOrder(dict_words, N, K))
+
+📤 Sample Output
+bdac
+
+
+✅ Other valid orders may exist — any valid topological order is accepted.
+
+🔍 How It Works
+
+Compare adjacent words
+
+First mismatched character gives ordering rule
+👉 w1[j] → w2[j]
+
+Build graph of characters
+
+Perform DFS-based topological sort
+
+Reverse DFS result
+
+⏱️ Time Complexity
+O(N × L + K + E)
+
+Where:
+
+N = number of words
+
+L = average word length
+
+K = number of unique characters
+
+E = number of precedence edges
+
+👉 Simplified: O(N × L)
+
+💾 Space Complexity
+O(K + E)
+
+Graph storage
+
+Visited array
+
+DFS recursion stack

@@ -1,0 +1,254 @@
+Ques:https://leetcode.com/problems/count-number-of-nice-subarrays/
+
+
+
+***********************
+Example
+nums = [2, 1, 2, 2, 3, 2, 5, 2, 2, 7, 2]
+k = 3
+
+We need subarrays having exactly 3 odd numbers.
+
+First convert:
+
+Odd  -> 1
+Even -> 0
+
+So:
+
+Original:   [2, 1, 2, 2, 3, 2, 5, 2, 2, 7, 2]
+Converted:  [0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0]
+
+Now the question becomes:
+
+Count subarrays whose sum is exactly 3.
+
+Because sum 3 means exactly 3 odd numbers.
+
+Code logic
+prefix_count[0] = 1
+s = 0
+ans = 0
+
+for num in nums:
+    s += num
+    if s >= k:
+        ans += prefix_count[s - k]
+    prefix_count[s] += 1
+
+Meaning:
+
+s = odd count till current index
+
+s - k = previous odd count needed
+
+If previous odd count exists, then subarray between previous index and current index has exactly k odds.
+Dry run table
+i	original	converted	prefix odd count s	need s-k	prefix_count[need]	ans after adding
+start	-	-	0	-	-	0
+0	2	0	0	-3	not checked	0
+1	1	1	1	-2	not checked	0
+2	2	0	1	-2	not checked	0
+3	2	0	1	-2	not checked	0
+4	3	1	2	-1	not checked	0
+5	2	0	2	-1	not checked	0
+6	5	1	3	0	2	2
+7	2	0	3	0	2	4
+8	2	0	3	0	2	6
+9	7	1	4	1	3	9
+10	2	0	4	1	3	12
+
+Final answer:
+
+12
+Now understand why answer becomes 12
+
+Odd numbers are at indexes:
+
+index 1 -> 1
+index 4 -> 3
+index 6 -> 5
+index 9 -> 7
+
+We need exactly 3 odd numbers.
+
+So possible groups of 3 odd numbers are:
+
+Group 1: odd indexes 1, 4, 6
+Group 2: odd indexes 4, 6, 9
+***********************
+
+Sol1:
+
+class Solution:
+    def numberOfSubarrays(self, nums: List[int], k: int) -> int:
+        for i in range(len(nums)):
+            nums[i] %= 2
+        
+        prefix_count = [0] * (len(nums) + 1)
+        prefix_count[0] = 1
+        s = 0
+        ans = 0
+        
+        for num in nums:
+            s += num
+            if s >= k:
+                ans += prefix_count[s - k]
+            prefix_count[s] += 1
+        
+        return ans
+        
+***********************
+2. Sliding Window Explanation
+
+Sliding window code:
+
+class Solution:
+    def numberOfSubarrays(self, nums: List[int], k: int) -> int:
+        return self.atMost(nums, k) - self.atMost(nums, k - 1)
+    
+    def atMost(self, nums: List[int], k: int) -> int:
+        s, ans = 0, 0
+        j = 0
+
+        for i in range(len(nums)):
+            s += nums[i] % 2
+
+            while s > k:
+                s -= nums[j] % 2
+                j += 1
+
+            ans += (i - j + 1)
+
+        return ans
+
+Main formula:
+
+exactly k = atMost(k) - atMost(k - 1)
+
+For this example:
+
+exactly 3 odds = atMost(3 odds) - atMost(2 odds)
+
+Why?
+
+atMost(3) contains subarrays with 0, 1, 2, 3 odds
+atMost(2) contains subarrays with 0, 1, 2 odds
+
+Subtract them, only exactly 3 odds remain.
+atMost(3) Table
+
+This counts all subarrays having at most 3 odd numbers.
+
+i	nums[i]	odd?	s after add	j after shrinking	valid subarrays ending at i = i-j+1	ans
+0	2	0	0	0	1	1
+1	1	1	1	0	2	3
+2	2	0	1	0	3	6
+3	2	0	1	0	4	10
+4	3	1	2	0	5	15
+5	2	0	2	0	6	21
+6	5	1	3	0	7	28
+7	2	0	3	0	8	36
+8	2	0	3	0	9	45
+9	7	1	4 → shrink	2	8	53
+10	2	0	3	2	9	62
+
+So:
+
+atMost(3) = 62
+
+At index 9, odd count becomes 4, so we shrink from left until one odd is removed.
+
+Before shrinking:
+
+window = index 0 to 9
+odds = 4
+
+Move j:
+
+j = 0 -> nums[0] = 2 even, s still 4
+j = 1 -> nums[1] = 1 odd, s becomes 3
+j becomes 2
+
+Now window is valid again.
+
+atMost(2) Table
+
+This counts all subarrays having at most 2 odd numbers.
+
+i	nums[i]	odd?	s after add	j after shrinking	valid subarrays ending at i = i-j+1	ans
+0	2	0	0	0	1	1
+1	1	1	1	0	2	3
+2	2	0	1	0	3	6
+3	2	0	1	0	4	10
+4	3	1	2	0	5	15
+5	2	0	2	0	6	21
+6	5	1	3 → shrink	2	5	26
+7	2	0	2	2	6	32
+8	2	0	2	2	7	39
+9	7	1	3 → shrink	5	5	44
+10	2	0	2	5	6	50
+
+So:
+
+atMost(2) = 50
+Final Sliding Window Answer
+exactly 3 = atMost(3) - atMost(2)
+exactly 3 = 62 - 50
+exactly 3 = 12
+
+Same answer as prefix sum.
+
+Why ans += i - j + 1?
+
+After shrinking, window [j ... i] is valid.
+
+That means all subarrays ending at i and starting from j to i are valid.
+
+Example from atMost(3) at index 6:
+
+j = 0
+i = 6
+window = [2,1,2,2,3,2,5]
+
+Valid subarrays ending at index 6:
+
+6 to 6
+5 to 6
+4 to 6
+3 to 6
+2 to 6
+1 to 6
+0 to 6
+
+Total:
+
+7 = i - j + 1
+
+So we add 7.
+***********************
+Sol2:
+class Solution:
+    def solv(self,nums,k):
+        count=0
+        ans=0
+        j=0
+        for i in range(len(nums)):
+            count+=nums[i]%2
+
+            while count>k:
+                count-=nums[j]%2
+                j+=1
+
+
+            ans+=(i-j+1)
+        
+        return ans
+        
+    def numberOfSubarrays(self, nums: List[int], k: int) -> int:
+        return self.solv(nums,k)-self.solv(nums,k-1)
+
+        
+
+TC:O(n)
+SC:O(1)

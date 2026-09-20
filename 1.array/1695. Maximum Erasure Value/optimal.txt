@@ -1,0 +1,125 @@
+Ques:https://leetcode.com/problems/maximum-erasure-value/description/
+
+description1:
+Python set internally uses a hash table.
+
+Think of it like an array where Python directly jumps to the position using a hash value.
+
+s = set()
+s.add(10)
+
+Internally:
+
+value = 10
+hash(10) → some number
+index = hash(10) % table_size
+store 10 at that index
+
+That is why search/add/remove are usually O(1).
+
+1. How add() works
+s.add(10)
+
+Step-by-step:
+
+Step	What happens
+1	Python calculates hash(10)
+2	It converts hash into table index
+3	It checks if that index is empty
+4	If empty, stores 10 there
+5	If same value already exists, it does nothing
+6	If collision happens, it searches next available position
+
+Example:
+
+set table size = 8
+
+hash(10) % 8 = 2
+
+So Python stores 10 around index 2.
+
+Index:  0   1   2   3   4   5   6   7
+Value:  -   -   10  -   -   -   -   -
+2. How in works
+10 in s
+
+Python again does:
+
+hash(10) % table_size
+
+It directly goes to that index and checks.
+
+Go to index 2 → found 10
+
+So lookup is usually:
+
+O(1)
+
+It does not scan the whole set like a list.
+
+3. How remove() works
+s.remove(10)
+
+Step-by-step:
+
+Step	What happens
+1	Python calculates hash(10)
+2	Goes to expected index
+3	Checks if value exists
+4	If found, marks that slot as deleted
+5	If not found, remove() gives error
+
+Important:
+
+s.remove(10)    # error if 10 not present
+s.discard(10)   # no error if 10 not present
+4. Collision means what?
+
+Sometimes two different values can get same index.
+
+Example:
+
+hash(10) % 8 = 2
+hash(18) % 8 = 2
+
+Both want index 2.
+
+Index 2 already has 10
+
+So Python finds another nearby empty place.
+
+Index:  0   1   2   3   4   5   6   7
+Value:  -   -   10  18  -   -   -   -
+
+This is called a hash collision.
+
+Because collision can happen, worst-case time can become:
+
+
+
+Sol1:
+class Solution:
+    def maximumUniqueSubarray(self, nums: List[int]) -> int:
+        res = 0
+        cur_sum = 0
+        start = 0
+        seen = set()
+
+        for end in range(len(nums)):
+            while nums[end] in seen:
+                seen.remove(nums[start])
+                cur_sum -= nums[start]
+                start += 1
+
+            cur_sum += nums[end]
+            seen.add(nums[end])
+
+            res = max(res, cur_sum)
+
+        return res
+        
+
+
+
+TC:O(n)
+SC:O(unique)

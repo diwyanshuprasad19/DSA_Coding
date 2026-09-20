@@ -2,69 +2,60 @@ Ques:https://takeuforward.org/data-structure/dynamic-programming-frog-jump-with-
 
 Code: 
 
-#include <bits/stdc++.h>
-using namespace std;
+import sys
 
-// Helper function with memoization
-int frogJumpHelper(int idx, vector<int>& heights, int k, vector<int>& dp) {
-    if (idx == 0) return 0;
+def frog_jump_helper(idx, heights, k, dp):
+    if idx == 0:
+        return 0
 
-    if (dp[idx] != -1) return dp[idx];
+    if dp[idx] != -1:
+        return dp[idx]
 
-    int minCost = INT_MAX;
+    min_cost = sys.maxsize
 
-    for (int j = 1; j <= k; j++) {
-        if (idx - j >= 0) {
-            int jump = frogJumpHelper(idx - j, heights, k, dp) + abs(heights[idx] - heights[idx - j]);
-            minCost = min(minCost, jump);
-        }
-    }
+    for j in range(1, k + 1):
+        if idx - j >= 0:
+            jump = (
+                frog_jump_helper(idx - j, heights, k, dp)
+                + abs(heights[idx] - heights[idx - j])
+            )
+            min_cost = min(min_cost, jump)
 
-    return dp[idx] = minCost;
-}
+    dp[idx] = min_cost
+    return dp[idx]
 
-int frogJump(int n, int k, vector<int>& heights) {
-    vector<int> dp(n, -1);
-    return frogJumpHelper(n - 1, heights, k, dp);
-}
 
-int main() {
-    vector<int> heights = {10, 30, 40, 50, 20};
-    int n = heights.size();
-    int k = 3;
+def frog_jump(n, k, heights):
+    dp = [-1] * n
+    return frog_jump_helper(n - 1, heights, k, dp)
 
-    int result = frogJump(n, k, heights);
-    cout << "Minimum energy required: " << result << endl;
 
-    return 0;
-}
-
-🧪 Sample Input/Output
-Input:
-
-cpp
-Copy
-Edit
-heights = {10, 30, 40, 50, 20}
+# -------------------------------
+# Driver Code (same as C++)
+# -------------------------------
+heights = [10, 30, 40, 50, 20]
+n = len(heights)
 k = 3
-Output:
 
-swift
-Copy
-Edit
+result = frog_jump(n, k, heights)
+print("Minimum energy required:", result)
+
+🧪 Sample Input
+heights = [10, 30, 40, 50, 20]
+k = 3
+✅ Sample Output
 Minimum energy required: 30
-Explanation:
+🧠 Explanation (same logic)
+One optimal path:
 
-One optimal path is:
+0 → 1 → 4
+|10 - 30| = 20
+|30 - 20| = 10
+Total = 30
+The frog can jump up to k steps at a time, and the cost is the absolute height difference.
 
-0 → 1 (|10 - 30| = 20)
-
-1 → 4 (|30 - 20| = 10)
-
-Total = 20 + 10 = 30
-
- Time and Space Complexity
+⏱️ Time & Space Complexity
 Metric	Value
-Time Complexity	O(n * k)
-Space Complexity	O(n) (memo + stack)
-
+Time Complexity	O(n × k)
+Space Complexity	O(n)
+Reason	DP array + recursion stack

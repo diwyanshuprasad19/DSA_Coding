@@ -2,86 +2,79 @@
 Ques:https://www.geeksforgeeks.org/convert-min-heap-to-max-heap/
 
 Code:
+Python Code (Min Heap → Max Heap)
+def max_heapify(arr, i, n):
+    largest = i
+    left = 2 * i + 1
+    right = 2 * i + 2
 
-// C program to convert min Heap to max Heap
+    if left < n and arr[left] > arr[largest]:
+        largest = left
 
-#include <stdio.h>
+    if right < n and arr[right] > arr[largest]:
+        largest = right
 
-void swap(int* a, int* b) {
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
-
-// To heapify a subtree with root at given index
-void MaxHeapify(int arr[], int i, int N) {
-    int l = 2 * i + 1;
-    int r = 2 * i + 2;
-    int largest = i;
-
-    if (l < N && arr[l] > arr[i])
-        largest = l;
-    if (r < N && arr[r] > arr[largest])
-        largest = r;
-    if (largest != i) {
-        swap(&arr[i], &arr[largest]);
-        MaxHeapify(arr, largest, N);
-    }
-}
-
-// This function basically builds max heap
-void convertMaxHeap(int arr[], int N) {
-    // Start from bottom-most and right-most
-    // internal node and heapify all internal
-    // nodes in bottom-up way
-    for (int i = (N - 2) / 2; i >= 0; --i)
-        MaxHeapify(arr, i, N);
-}
-
-// A utility function to print a given array of given size
-void printArray(int* arr, int size) {
-    for (int i = 0; i < size; ++i)
-        printf("%d ", arr[i]);
-}
-
-// Driver's code
-int main() {
-    // Array representing Min Heap
-    int arr[] = { 3, 5, 9, 6, 8, 20, 10, 12, 18, 9 };
-    int N = sizeof(arr) / sizeof(arr[0]);
-
-    printf("Min Heap array : ");
-    printArray(arr, N);
-
-    // Function call
-    convertMaxHeap(arr, N);
-
-    printf("\nMax Heap array : ");
-    printArray(arr, N);
-
-    return 0;
-}
+    if largest != i:
+        arr[i], arr[largest] = arr[largest], arr[i]
+        max_heapify(arr, largest, n)
 
 
-Time and space comeplxity:
+def convert_min_heap_to_max_heap(arr):
+    n = len(arr)
 
-MaxHeapify Function
-Purpose: Recursively fixes the heap property by ensuring that each subtree is a Max Heap.
-Time Complexity:
-In the worst case, it recurses down to the leaf nodes.
-The maximum depth of a binary heap (complete binary tree) is O(log n).
-At each level, a single heapify operation takes O(log n) time.
-Total Complexity per call: O(log n).
-2️⃣ convertMaxHeap Function
-Purpose: Converts the entire Min Heap into a Max Heap.
-Time Complexity:
-We iterate over all internal nodes (non-leaf nodes).
-There are n/2 internal nodes in a complete binary tree.
-Each MaxHeapify call takes O(log n) time.
-Total iterations: O(n/2) = O(n).
-Total time complexity: O(n log n).
-Overall Complexity
-Operation	Time Complexity	Space Complexity
-MaxHeapify() (per node)	O(log n)	O(1)
-convertMaxHeap()	O(n log n)	O(1)
-Total Complexity	O(n log n)	O(1)
+    # Start from last non-leaf node and heapify
+    for i in range((n - 2) // 2, -1, -1):
+        max_heapify(arr, i, n)
+
+
+def print_array(arr):
+    print(" ".join(map(str, arr)))
+
+🧪 Sample Input
+arr = [3, 5, 9, 6, 8, 20, 10, 12, 18, 9]
+
+print("Min Heap array:")
+print_array(arr)
+
+convert_min_heap_to_max_heap(arr)
+
+print("Max Heap array:")
+print_array(arr)
+
+📤 Sample Output
+Min Heap array:
+3 5 9 6 8 20 10 12 18 9
+
+Max Heap array:
+20 18 10 12 9 9 3 6 5 8
+
+
+✔ Output may vary slightly but Max Heap property is guaranteed
+✔ Parent ≥ children for every node
+
+⏱ Time Complexity
+Build Max Heap
+
+Heapifying one node: O(log n)
+
+Number of internal nodes: n / 2
+
+🔑 Total Time Complexity
+O(n)
+
+
+Building a heap bottom-up is linear time (important interview fact!)
+
+💾 Space Complexity
+
+No extra data structures used
+
+Recursive stack depth = heap height
+
+O(log n)
+
+📊 Final Complexity Summary
+Operation	Time	Space
+Heapify	O(log n)	O(log n)
+Build Max Heap	O(n)	O(1) / O(log n)
+Overall	O(n)	O(log n)

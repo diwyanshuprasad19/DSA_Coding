@@ -1,0 +1,166 @@
+Ques:https://leetcode.com/problems/insert-delete-getrandom-o1/description/
+
+
+Description:https://leetcode.com/problems/insert-delete-getrandom-o1/solutions/4572728/beats-9984-users-cjavapythonjavascript-e-u83e/
+
+
+Sol1:
+
+import random
+
+class RandomizedSet:
+
+    def __init__(self):
+        self.lst = []
+        self.idx_map = {}
+
+    def search(self, val):
+        return val in self.idx_map
+
+    def insert(self, val):
+        if self.search(val):
+            return False
+
+        self.lst.append(val)
+        self.idx_map[val] = len(self.lst) - 1
+        return True
+
+    def remove(self, val):
+        if not self.search(val):
+            return False
+
+        idx = self.idx_map[val]
+        self.lst[idx] = self.lst[-1]
+        self.idx_map[self.lst[-1]] = idx
+        self.lst.pop()
+        del self.idx_map[val]
+        return True
+
+    def getRandom(self):
+        return random.choice(self.lst)
+
+
+lst = [10, 20, 30, 40]
+idx_map = {
+    10: 0,
+    20: 1,
+    30: 2,
+    40: 3
+}
+
+Now we want to remove:
+
+val = 20
+Line 1
+idx = self.idx_map[val]
+
+Meaning: find the index of 20.
+
+idx = self.idx_map[20]
+idx = 1
+
+Because 20 is at index 1.
+
+Line 2
+self.lst[idx] = self.lst[-1]
+
+Meaning: put last element at index 1.
+
+Last element is 40.
+
+So:
+
+lst[1] = 40
+
+Now list becomes:
+
+lst = [10, 40, 30, 40]
+
+We copied 40 to the place where 20 was.
+
+Line 3
+self.idx_map[self.lst[-1]] = idx
+
+Meaning: update the index of last element.
+
+Last element is 40.
+
+Now 40 has moved to index 1.
+
+So:
+
+idx_map[40] = 1
+
+Now map becomes:
+
+idx_map = {
+    10: 0,
+    20: 1,
+    30: 2,
+    40: 1
+}
+
+20 is still there temporarily. We delete it later.
+
+Line 4
+self.lst.pop()
+
+Meaning: remove the last element.
+
+Before pop:
+
+lst = [10, 40, 30, 40]
+
+After pop:
+
+lst = [10, 40, 30]
+
+Now duplicate 40 is gone.
+
+Line 5
+del self.idx_map[val]
+
+Meaning: delete 20 from dictionary.
+
+del idx_map[20]
+
+Final map:
+
+idx_map = {
+    10: 0,
+    30: 2,
+    40: 1
+}
+
+Final list:
+
+lst = [10, 40, 30]
+
+
+
+All operations:
+
+Operation	What it does	Time Complexity
+search(val)	Checks if value exists in dictionary	O(1)
+insert(val)	Adds value to list and dictionary	O(1)
+remove(val)	Swaps with last element, pops, deletes from dict	O(1)
+getRandom()	Picks random item from list	O(1)
+Space Complexity
+self.lst = []
+self.idx_map = {}
+
+Both store the values.
+
+So for n values:
+
+Space Complexity = O(n)
+Final answer
+Time Complexity:
+insert()    = O(1)
+remove()    = O(1)
+getRandom() = O(1)
+search()    = O(1)
+
+Space Complexity = O(n)
+
+Why space is O(n)?

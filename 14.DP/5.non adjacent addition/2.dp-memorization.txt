@@ -2,59 +2,57 @@ Ques:https://leetcode.com/problems/house-robber/description/
 
 Code:
 
-#include <bits/stdc++.h>
-using namespace std;
+✅ Python Equivalent (Top-Down DP / Memoization)
+def solve(index, nums, dp):
+    if index == 0:
+        return nums[index]
+    if index < 0:
+        return 0
+    if dp[index] != -1:
+        return dp[index]
 
-int solve(int index, vector<int> n, vector<int> &dp)
-{
-    if (index == 0) return n[index];
-    if (index < 0) return 0;
-    if (dp[index] != -1) return dp[index];
+    pick = nums[index] + solve(index - 2, nums, dp)
+    not_pick = solve(index - 1, nums, dp)
 
-    int pick = n[index] + solve(index - 2, n, dp);
-    int notpick = 0 + solve(index - 1, n, dp);
-
-    return dp[index] = max(pick, notpick);
-}
-
-int maximumNonAdjacentSum(vector<int> &nums){
-    int k = nums.size();
-    vector<int> dp(k, -1);
-    int n = solve(k - 1, nums, dp);
-    return n;
-}
-
-int main()
-{
-    vector<int> v{1, 2, 3, 4};
-    int result = maximumNonAdjacentSum(v);
-    cout << result;
-    return 0;
-}
+    dp[index] = max(pick, not_pick)
+    return dp[index]
 
 
-🧪 Input
-cpp
-Copy
-Edit
-v = {1, 2, 3, 4}
-✅ Output
-Copy
-Edit
+def maximum_non_adjacent_sum(nums):
+    k = len(nums)
+    dp = [-1] * k
+    return solve(k - 1, nums, dp)
+
+
+# -------------------------------
+# Driver code (same as C++)
+# -------------------------------
+v = [1, 2, 3, 4]
+result = maximum_non_adjacent_sum(v)
+print(result)
+
+🧪 Sample Input
+v = [1, 2, 3, 4]
+
+✅ Sample Output
 6
-⏱️ Time Complexity
-scss
-Copy
-Edit
-O(n)
-Each index is solved once and stored in dp.
 
-🗂️ Space Complexity
-scss
-Copy
-Edit
-O(n)`
-dp[n] for memoization
+🧠 Explanation
 
-O(n) recursion stack in the worst case
+At each index:
 
+pick → take current element + solve(index-2)
+
+not pick → skip current element + solve(index-1)
+
+Memoization ensures each index is computed once.
+
+Optimal choice:
+
+2 + 4 = 6
+
+⏱️ Time & Space Complexity
+Metric	Value
+Time Complexity	O(n)
+Space Complexity	O(n)
+Details	dp[n] for memoization + recursion stack

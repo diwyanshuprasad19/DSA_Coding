@@ -1,0 +1,66 @@
+Functional requirements
+The game should support 2 players: White and Black.
+The game should use a standard 8×8 chess board.
+Each player should start with 16 pieces:
+1 King
+1 Queen
+2 Rooks
+2 Bishops
+2 Knights
+8 Pawns
+White should make the first move, then turns should alternate.
+Each chess piece should follow its own movement rules.
+A player should not be allowed to move an opponent’s piece.
+A piece should not be allowed to move onto a square occupied by its own piece.
+Capturing an opponent’s piece should be supported.
+Rook, Bishop, and Queen should not be allowed to jump over pieces.
+Knight should be allowed to jump over pieces.
+The system should detect check.
+A player should not be allowed to make a move that leaves their own King in check.
+The system should detect checkmate.
+The system should detect stalemate.
+Pawn promotion should be supported.
+The system should maintain move history.
+Once the game reaches checkmate or stalemate, no further moves should be allowed.
+
+For a more complete version, we can additionally support:
+
+Castling
+En passant
+Draw by repetition
+50-move rule
+Resignation
+Undo/redo
+Chess clock
+
+For an interview, I would explicitly say:
+
+“I’ll implement the core chess rules first and keep castling, en passant, advanced draw rules, and timers as extensions.”
+
+Non-functional requirements
+The design should be extensible, so new rules do not require rewriting the whole game.
+Each class should have a single responsibility.
+Piece movement logic should be independently testable.
+Multiple chess games should be able to run independently.
+Invalid moves should fail safely without corrupting board state.
+The design should allow future support for UI, bots, undo/redo, and online multiplayer.
+Core entities derived from these requirements
+ChessGame
+Board
+Player
+Position
+Move
+
+Piece
+ ├── King
+ ├── Queen
+ ├── Rook
+ ├── Bishop
+ ├── Knight
+ └── Pawn
+
+GameStatus
+
+Then in an interview, after requirements, your next step should be:
+
+Requirements → Entities → Relationships → APIs → Patterns → Code.

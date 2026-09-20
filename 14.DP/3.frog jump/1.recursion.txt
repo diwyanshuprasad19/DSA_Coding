@@ -2,57 +2,46 @@ Ques:https://leetcode.com/problems/min-cost-climbing-stairs/description/
 
 Code:
 
-#include <iostream>
-#include <vector>
-#include <cmath>
-#include <climits>
-using namespace std;
+def minCostClimbingStairs(cost):
+    n = len(cost)
 
-// Top-down DP (memoization)
-int frogJump(int n, vector<int> &heights, vector<int> &dp) {
-    if (n == 0) return 0;
-    if (dp[n] != -1) return dp[n];
+    def solve(i):
+        if i < 0:
+            return 0
+        if i == 0 or i == 1:
+            return cost[i]
 
-    int left = frogJump(n - 1, heights, dp) + abs(heights[n] - heights[n - 1]);
-    int right = INT_MAX;
-    if (n > 1)
-        right = frogJump(n - 2, heights, dp) + abs(heights[n] - heights[n - 2]);
+        return cost[i] + min(
+            solve(i - 1),
+            solve(i - 2)
+        )
 
-    return dp[n] = min(left, right);
-}
+    return min(solve(n - 1), solve(n - 2))
 
-int main() {
-    vector<int> heights = {10, 20, 30, 10};
-    int n = heights.size();
-    vector<int> dp(n, -1);  // Initialize DP table
+Sample Input 1
+cost = [10, 15, 20]
+print(minCostClimbingStairs(cost))
 
-    int minCost = frogJump(n - 1, heights, dp);
-    cout << "Minimum energy required: " << minCost << endl;
+✅ Output
+15
+Explanation
+Start at index 1
 
-    return 0;
-}
+Pay 15
+
+Jump two steps → reach top
+
+🧪 Sample Input 2
+cost = [1,100,1,1,1,100,1,1,100,1]
+print(minCostClimbingStairs(cost))
+✅ Output
+6
+Explanation (path)
+0 → 2 → 4 → 6 → 7 → 9 → top
+Costs paid: 1 + 1 + 1 + 1 + 1 + 1 = 6
 
 
-Time & Space Complexity
-Approach	Time Complexity	Space Complexity
-Recursive	Exponential O(2^n)	O(n) (stack)
-
-
-Input and output:
-
-✅ Sample Input
-cpp
-Copy
-Edit
-heights = {10, 20, 30, 10}
-✅ Sample Output
-swift
-Copy
-Edit
-Minimum energy required: 20
-✅ Explanation:
-0 → 1 (|10 - 20| = 10)
-
-1 → 3 (|20 - 10| = 10)
-
-Total = 10 + 10 = 20
+⏱️ Time & Space Complexity (Pure Recursion)
+Metric	Value
+Time Complexity	O(2ⁿ)
+Space Complexity	O(n) (recursion stack)

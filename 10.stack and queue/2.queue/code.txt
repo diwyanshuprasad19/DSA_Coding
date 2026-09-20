@@ -1,104 +1,84 @@
-Ques:
+✅ Circular Queue (Optimal Implementation)
+class CircularQueue:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.arr = [0] * capacity
+        self.front = 0
+        self.size = 0
+        self.rear = -1
 
-Code:
+    def push(self, x):
+        if self.size == self.capacity:
+            print("Queue is full")
+            return
+        
+        # Circular increment
+        self.rear = (self.rear + 1) % self.capacity
+        self.arr[self.rear] = x
+        self.size += 1
 
-#include <iostream>
-using namespace std;
+    def pop(self):
+        if self.size == 0:
+            print("Queue is empty")
+            return -1
+        
+        value = self.arr[self.front]
+        
+        # Circular increment
+        self.front = (self.front + 1) % self.capacity
+        self.size -= 1
+        
+        return value
 
-class Queue {
-    int front, rear, size, capacity, *arr;
+    def Front(self):
+        if self.size == 0:
+            print("Queue is empty")
+            return -1
+        return self.arr[self.front]
 
-public:
-    Queue(int cap) {
-        capacity = cap;
-        arr = new int[capacity];
-        front = 0;
-        size = 0;
-        rear = -1;
-    }
+    def Size(self):
+        return self.size
+📥 Sample Input
+push(5)
+push(10)
+push(15)
+pop()
+Front()
+Size()
+📤 Sample Output
+Popped: 5
+Front element: 10
+Queue size: 2
+🧠 How Circular Works
 
-    void push(int x) {
-        if (size == capacity) {
-            cout << "Queue is full" << endl;
-            return;
-        }
-        rear++;
-        arr[rear] = x;
-        size++;
-    }
+Instead of shifting elements:
 
-    int pop() {
-        if (size == 0) {
-            cout << "Queue is empty" << endl;
-            return -1;
-        }
-        int x = arr[front];
-        for (int i = 0; i < size - 1; i++) {
-            arr[i] = arr[i + 1]; // Shift elements left
-        }
-        rear--;
-        size--;
-        return x;
-    }
+rear = (rear + 1) % capacity
+front = (front + 1) % capacity
 
-    int Front() {
-        if (size == 0) {
-            cout << "Queue is empty" << endl;
-            return -1;
-        }
-        return arr[front];
-    }
+When index reaches end → it wraps to 0.
 
-    int Size() {
-        return size;
-    }
-};
+Example:
 
-int main() {
-    Queue q(10);  // Queue with capacity of 10 elements
-    q.push(5);
-    q.push(10);
-    q.push(15);
+capacity = 5
 
-    cout << "Popped: " << q.pop() << endl;       // Expected output: 5
-    cout << "Front element: " << q.Front() << endl; // Expected output: 10
-    cout << "Queue size: " << q.Size() << endl;     // Expected output: 2
+Index: 0 1 2 3 4
+After reaching 4,
+Next index = (4 + 1) % 5 = 0
 
-    return 0;
-}
+So we reuse empty spaces.
 
+⏱ Time Complexity
+Operation	Complexity
+push()	O(1)
+pop()	O(1)
+Front()	O(1)
+Size()	O(1)
 
-Time and space:
+✔ No shifting
+✔ Constant time operations
 
-Time Complexity Analysis
-Push Operation (push(x)): 
-𝑂
-(
-1
-)
-O(1) → Inserts at the rear in constant time.
-Pop Operation (pop()): 
-𝑂
-(
-𝑁
-)
-O(N) → Needs to shift elements after removal.
-Front Operation (Front()): 
-𝑂
-(
-1
-)
-O(1) → Retrieves front element without modifying the queue.
-Size Operation (Size()): 
-𝑂
-(
-1
-)
-O(1) → Returns the number of elements.
-Space Complexity Analysis
-Space Complexity: 
-𝑂
-(
-𝑁
-)
-O(N) → The queue stores up to N elements.
+📦 Space Complexity
+O(N)
+
+We allocate fixed array of size N.

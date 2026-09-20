@@ -1,0 +1,20 @@
+Ques:https://leetcode.com/problems/subarray-sums-divisible-by-k/description/
+
+sol:
+
+class Solution:
+    def subarraysDivByK(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        count=0
+        for i in range(n):
+            arr=0
+            for j in range(i,n):
+                arr+=nums[j]
+                if arr%k == 0:
+                    count+=1
+        
+        return count
+        
+
+TC:O(n^2)
+SC:O(1)

@@ -2,100 +2,66 @@ Ques: https://leetcode.com/problems/unique-paths/description/
 
 Code:
 
-#include <bits/stdc++.h>
-using namespace std;
+Python Version (Pure Recursion – Same Logic)
+def solve(i, j):
+    if i == 0 and j == 0:
+        return 1
+    if i < 0 or j < 0:
+        return 0
 
-int solve(int i, int j)
-{
-    if (i == 0 && j == 0) return 1;
-    if (i < 0 || j < 0) return 0;
-
-    int up = solve(i - 1, j);
-    int left = solve(i, j - 1);
-    return up + left;
-}
-
-int uniquePaths(int m, int n) {
-    return solve(m - 1, n - 1);
-}
-
-int main()
-{
-    int m = 3, n = 7;
-    int result = uniquePaths(m, n);
-    cout << "Unique Paths: " << result << endl;
-    return 0;
-}
+    up = solve(i - 1, j)
+    left = solve(i, j - 1)
+    return up + left
 
 
-🧪 Input
-cpp
-Copy
-Edit
-m = 3, n = 7
-✅ Output
-sql
-Copy
-Edit
+def unique_paths(m, n):
+    return solve(m - 1, n - 1)
+
+
+if __name__ == "__main__":
+    m, n = 3, 7
+    result = unique_paths(m, n)
+    print("Unique Paths:", result)
+
+🧪 Sample Input
+m = 3
+n = 7
+
+✅ Sample Output
 Unique Paths: 28
+
+🧠 Key Idea (Same as C++)
+
+We start from (m-1, n-1) and try to reach (0, 0)
+
+From any cell (i, j) we can:
+
+Move up → (i-1, j)
+
+Move left → (i, j-1)
+
+Total paths = paths from up + left
+
+solve(i, j) = solve(i-1, j) + solve(i, j-1)
+
 ⏱️ Time Complexity
-scss
-Copy
-Edit
-O(2^(m+n))
-Due to exponential branching (each call splits into 2).
+O(2^(m + n))
 
-✅ The Key Idea
-In the pure recursive approach, we’re trying to go from the bottom-right cell (m-1, n-1) to the top-left (0, 0) by moving either up or left.
+Why?
 
-At each cell (i, j), the function does:
+Each call branches into two recursive calls
 
-cpp
-Copy
-Edit
-solve(i-1, j) + solve(i, j-1)
-This means:
+Maximum recursion depth ≈ m + n
 
-It branches into two recursive calls.
+Similar to naive Fibonacci recursion
 
-One goes up, and one goes left.
-
-🔁 Recursive Tree
-The recursive call tree branches like this:
-
-markdown
-Copy
-Edit
-                            solve(m-1, n-1)
-                          /                  \
-                solve(m-2, n-1)         solve(m-1, n-2)
-                /        \                 /        \
-          solve(...)  solve(...)    solve(...)  solve(...)
-This grows exponentially — similar to computing Fibonacci recursively.
-
-Each move either decreases i or j → So, the maximum depth is m + n
-And each call spawns 2 more calls → Like a binary tree.
-
-📌 So, Total Recursive Calls:
-scss
-Copy
-Edit
-≈ 2^(m + n)
-Because:
-
-At most m downward moves and n rightward moves are needed → total m + n steps.
-
-At each step, we make 2 choices (up or left) without memoization.
-
-This leads to exponential growth.
-
-
-
+No memoization, so many overlapping subproblems are recomputed
 
 🗂️ Space Complexity
-scss
-Copy
-Edit
 O(m + n)
-Due to recursion call stack (maximum depth = m + n).
 
+Why?
+
+Due to recursion call stack
+
+Maximum depth = total moves = m + n

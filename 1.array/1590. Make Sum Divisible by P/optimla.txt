@@ -1,0 +1,181 @@
+Ques:https://leetcode.com/problems/make-sum-divisible-by-p/description/
+
+description:
+https://leetcode.com/problems/make-sum-divisible-by-p/solutions/5862793/fastest-way-to-make-sum-divisible-by-p-i-czuw/
+
+
+
+Example
+nums = [8, 3, 2, 5, 7, 1, 4, 6, 2, 9]
+p = 7
+
+Total sum:
+
+8 + 3 + 2 + 5 + 7 + 1 + 4 + 6 + 2 + 9 = 47
+
+Now:
+
+47 % 7 = 5
+
+So we need to remove the smallest subarray whose sum gives remainder 5.
+
+removedSubarraySum % 7 = 5
+Prefix mod dry run
+
+Initial:
+
+prefixMod = {0: -1}
+prefixSum = 0
+minLength = 10
+rem = 5
+
+Formula:
+
+targetMod = (currentMod - rem + p) % p
+
+Meaning:
+
+Find previous prefix remainder that can create removable subarray remainder 5.
+i	num	prefixSum	currentMod	targetMod	Found?	Length	minLength	prefixMod after
+0	8	8	1	3	No	-	10	{0:-1, 1:0}
+1	3	11	4	6	No	-	10	{0:-1, 1:0, 4:1}
+2	2	13	6	1	Yes at 0	2-0=2	2	{0:-1, 1:0, 4:1, 6:2}
+3	5	18	4	6	Yes at 2	3-2=1	1	{0:-1, 1:0, 4:3, 6:2}
+4	7	25	4	6	Yes at 2	4-2=2	1	{0:-1, 1:0, 4:4, 6:2}
+5	1	26	5	0	Yes at -1	5-(-1)=6	1	{0:-1, 1:0, 4:4, 6:2, 5:5}
+6	4	30	2	4	Yes at 4	6-4=2	1	{0:-1, 1:0, 4:4, 6:2, 5:5, 2:6}
+7	6	36	1	3	No	-	1	{0:-1, 1:7, 4:4, 6:2, 5:5, 2:6}
+8	2	38	3	5	Yes at 5	8-5=3	1	{0:-1, 1:7, 4:4, 6:2, 5:5, 2:6, 3:8}
+9	9	47	5	0	Yes at -1	9-(-1)=10	1	{0:-1, 1:7, 4:4, 6:2, 5:9, 2:6, 3:8}
+
+
+
+
+********************
+Yes, use this reframed version with your number example:
+
+totalSum % p gives the extra remainder that is making the total sum not divisible by p.
+
+Example:
+
+nums = [8, 3, 2, 5, 7, 1, 4, 6, 2, 9]
+p = 7
+
+totalSum = 47
+
+47 % 7 = 5
+
+So remainder 5 is extra. That means we need to remove a subarray whose sum % 7 is also 5.
+
+Because if we remove that extra remainder, the remaining sum will become divisible by 7.
+
+Now the prefix part:
+
+While moving through the array, we calculate currentMod.
+
+currentMod means:
+prefix sum till current index % p
+
+Example at first value:
+
+num = 8
+
+prefixSum = 8
+currentMod = 8 % 7 = 1
+
+Now we need to remove remainder 5.
+
+So we calculate:
+
+targetMod = (currentMod - rem + p) % p
+
+targetMod = (1 - 5 + 7) % 7
+targetMod = 3
+
+Meaning of 3:
+
+3 means we need some previous prefix sum whose remainder was 3.
+
+If previous remainder 3 exists, then the subarray between that previous index and current index will have sum % 7 = 5.
+
+Why?
+
+(currentMod - targetMod) % 7
+= (1 - 3) % 7
+= -2 % 7
+= 5
+
+So targetMod = 3 means:
+
+Find previous prefix remainder 3.
+If found, the middle subarray has removable remainder 5.
+
+so if 8 was ther 3+5 then we woudl ahve foudn it right
+
+************************
+
+
+
+
+*************************
+Yes, take:
+
+nums = [2, 2, 2, 9]
+p = 9
+
+First calculate total:
+
+totalSum = 2 + 2 + 2 + 9 = 15
+rem = 15 % 9 = 6
+
+So we need to remove a subarray whose sum % 9 = 6.
+
+That subarray is [2,2,2], because:
+
+2 + 2 + 2 = 6
+6 % 9 = 6
+
+After removing it:
+
+15 - 6 = 9
+9 % 9 = 0
+
+Now table:
+
+i	num	prefixSum	currentMod prefixSum % 9	targetMod (currentMod - rem + p) % p	target found?	length	minLength	hashmap after update
+start	-	0	0	-	-	-	4	{0: -1}
+0	2	2	2	(2 - 6 + 9) % 9 = 5	No	-	4	{0:-1, 2:0}
+1	2	4	4	(4 - 6 + 9) % 9 = 7	No	-	4	{0:-1, 2:0, 4:1}
+2	2	6	6	(6 - 6 + 9) % 9 = 0	Yes, at -1	2 - (-1) = 3	3	{0:-1, 2:0, 4:1, 6:2}
+3	9	15	6	(6 - 6 + 9) % 9 = 0	Yes, at -1	3 - (-1) = 4	3	{0:-1, 2:0, 4:1, 6:3}
+
+*************************
+
+Sol:
+class Solution:
+    def minSubarray(self, nums: List[int], p: int) -> int:
+        totalSum = sum(nums)
+        rem = totalSum % p
+
+        if rem == 0:
+            return 0
+
+        prefixMod = {0: -1}
+        prefixSum = 0
+        minLength = len(nums)
+
+        for i, num in enumerate(nums):
+            prefixSum += num
+            currentMod = prefixSum % p
+            targetMod = (currentMod - rem + p) % p
+
+            if targetMod in prefixMod:
+                minLength = min(minLength, i - prefixMod[targetMod])
+
+            prefixMod[currentMod] = i
+
+        return minLength if minLength < len(nums) else -1
+
+
+TC:O(n)
+SC:O(1)

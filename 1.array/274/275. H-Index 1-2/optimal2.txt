@@ -1,0 +1,39 @@
+Ques:https://leetcode.com/problems/h-index-ii/description/
+
+Desc:https://leetcode.com/problems/h-index-ii/solutions/8232901/equilibrium-analysis-finding-the-h-index-jmzu/
+
+SOl:
+
+class Solution:
+    def hIndex(self, citations: List[int]) -> int:
+        n = len(citations)
+        low, high = 0, n - 1
+        
+        # The Dual Perspective: 
+        # We are finding the boundary where the 'citation density' 
+        # meets the 'paper count' constraint.
+        while low <= high:
+            mid = low + (high - low) // 2
+            
+            # h represents the number of papers from mid to n-1
+            h = n - mid
+            
+            if citations[mid] == h:
+                # Perfect fixed point found (Intersection)
+                return h
+            elif citations[mid] < h:
+                # Too few citations; we need to move to the 
+                # right flank of the distribution.
+                low = mid + 1
+            else:
+                # We have enough citations, but could we find 
+                # a larger h (a smaller index)?
+                high = mid - 1
+        
+        # The resulting h-index is the count of papers remaining 
+        # after we converge at the inflection point.
+        return n - low        
+
+
+TC:O(logn)
+SC:O(n)

@@ -1,0 +1,1128 @@
+Docs:https://docs.google.com/document/d/1ZP-XfBogmTJn5YL-Nt1PzV46GQ3AV6hO4T7LUEhoxMI/edit?tab=t.0
+
+Yes — this is the level of code I would target in the actual 1-hour SDE-2 interview: around 200–250 lines, with the three patterns visible and Minimax included but not over-engineered.
+
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from enum import Enum
+import random
+
+
+# ============================================================
+# Exceptions
+# ============================================================
+
+class GameError(Exception): pass
+class InvalidMove(GameError): pass
+class InvalidConfig(GameError): pass
+class UndoError(GameError): pass
+
+
+# ============================================================
+# Enums + Models
+# ============================================================
+
+class GameStatus(Enum):
+    IN_PROGRESS = "IN_PROGRESS"
+    WON = "WON"
+    DRAW = "DRAW"
+
+
+@dataclass
+class Player:
+    name: str
+    symbol: str
+    strategy: object = None
+
+    @property
+    def is_bot(self):
+        return self.strategy is not None
+
+
+@dataclass(frozen=True)
+class Move:
+    player: Player
+    row: int
+    col: int
+
+
+# ============================================================
+# Board
+# ============================================================
+
+class Board:
+
+    def __init__(self, size=3):                  # O(N²), O(N²)
+        if size < 3:
+            raise InvalidConfig("Board size must be >= 3")
+
+        self._size = size
+        self._grid = [[None] * size for _ in range(size)]
+        self._empty = size * size
+
+    @property
+    def size(self):
+        return self._size
+
+    @property
+    def grid(self):
+        return self._grid
+
+    def valid(self, r, c):                       # O(1), O(1)
+        return 0 <= r < self._size and 0 <= c < self._size
+
+    def place(self, r, c, symbol):               # O(1), O(1)
+        if not self.valid(r, c):
+            raise InvalidMove("Position outside board")
+
+        if self._grid[r][c] is not None:
+            raise InvalidMove("Cell already occupied")
+
+        self._grid[r][c] = symbol
+        self._empty -= 1
+
+    def remove(self, r, c):                      # O(1), O(1)
+        if not self.valid(r, c) or self._grid[r][c] is None:
+            raise InvalidMove("Cannot remove")
+
+        self._grid[r][c] = None
+        self._empty += 1
+
+    def is_full(self):                           # O(1), O(1)
+        return self._empty == 0
+
+    def empty_cells(self):                       # O(N²), O(N²)
+        return [
+            (r, c)
+            for r in range(self._size)
+            for c in range(self._size)
+            if self._grid[r][c] is None
+        ]
+
+    def show(self):                              # O(N²)
+        for row in self._grid:
+            print(" | ".join(x or " " for x in row))
+
+
+# ============================================================
+# Strategy Pattern #1
+# Winning Strategy
+# ============================================================
+
+class WinningStrategy(ABC):
+
+    @abstractmethod
+    def is_winner(self, board, move):
+        pass
+
+
+class StandardWinningStrategy(WinningStrategy):
+
+    def is_winner(self, board, move):            # O(N), O(1)
+        n = board.size
+        g = board.grid
+        r, c = move.row, move.col
+        s = move.player.symbol
+
+        if all(g[r][j] == s for j in range(n)):
+            return True
+
+        if all(g[i][c] == s for i in range(n)):
+            return True
+
+        if r == c and all(g[i][i] == s for i in range(n)):
+            return True
+
+        if r + c == n - 1 and all(
+            g[i][n - 1 - i] == s for i in range(n)
+        ):
+            return True
+
+        return False
+
+
+# ============================================================
+# Strategy Pattern #2
+# Bot Move Strategy
+# ============================================================
+
+class MoveStrategy(ABC):
+
+    @abstractmethod
+    def choose(self, board, player, opponent):
+        pass
+
+
+class RandomStrategy(MoveStrategy):
+
+    def choose(self, board, player, opponent):    # O(N²), O(N²)
+        cells = board.empty_cells()
+
+        if not cells:
+            raise InvalidMove("No moves available")
+
+        return random.choice(cells)
+
+
+class MinimaxStrategy(MoveStrategy):
+
+    def __init__(self, winning_strategy):
+        self.win = winning_strategy
+
+    def choose(self, board, bot, opponent):       # ~O(E!)
+        best_score = float("-inf")
+        best_move = None
+
+        for r, c in board.empty_cells():
+
+            board.place(r, c, bot.symbol)
+            move = Move(bot, r, c)
+
+            if self.win.is_winner(board, move):
+                score = 10
+            else:
+                score = self._minimax(
+                    board, bot, opponent, False, 1
+                )
+
+            board.remove(r, c)
+
+            if score > best_score:
+                best_score = score
+                best_move = (r, c)
+
+        return best_move
+
+    def _minimax(self, board, bot, opponent, maximizing, depth):
+
+        if board.is_full():
+            return 0
+
+        current = bot if maximizing else opponent
+        best = float("-inf") if maximizing else float("inf")
+
+        for r, c in board.empty_cells():
+
+            board.place(r, c, current.symbol)
+            move = Move(current, r, c)
+
+            if self.win.is_winner(board, move):
+                score = 10 - depth if current == bot else depth - 10
+
+            elif board.is_full():
+                score = 0
+
+            else:
+                score = self._minimax(
+                    board,
+                    bot,
+                    opponent,
+                    not maximizing,
+                    depth + 1
+                )
+
+            board.remove(r, c)
+
+            best = (
+                max(best, score)
+                if maximizing
+                else min(best, score)
+            )
+
+        return best
+
+
+# ============================================================
+# Command Pattern
+# ============================================================
+
+class MoveCommand:
+
+    def __init__(self, board, move):
+        self.board = board
+        self.move = move
+        self.executed = False
+
+    def execute(self):                           # O(1)
+        if self.executed:
+            raise InvalidMove("Command already executed")
+
+        self.board.place(
+            self.move.row,
+            self.move.col,
+            self.move.player.symbol
+        )
+
+        self.executed = True
+
+    def undo(self):                              # O(1)
+        if not self.executed:
+            raise InvalidMove("Command not executed")
+
+        self.board.remove(
+            self.move.row,
+            self.move.col
+        )
+
+        self.executed = False
+
+
+# ============================================================
+# Game
+# ============================================================
+
+class Game:
+
+    def __init__(self, board, players, winning_strategy):
+
+        if len(players) != 2:
+            raise InvalidConfig("Exactly 2 players required")
+
+        if players[0].symbol == players[1].symbol:
+            raise InvalidConfig("Symbols must be unique")
+
+        self._board = board
+        self._players = players
+        self._win = winning_strategy
+
+        self._turn = 0
+        self._status = GameStatus.IN_PROGRESS
+        self._winner = None
+
+        # In-memory move history
+        self._history = []
+
+    @property
+    def board(self):
+        return self._board
+
+    @property
+    def status(self):
+        return self._status
+
+    @property
+    def winner(self):
+        return self._winner
+
+    @property
+    def current_player(self):
+        return self._players[self._turn]
+
+    @property
+    def history(self):
+        return self._history.copy()
+
+    def make_move(self, r, c):                   # O(N)
+
+        if self._status != GameStatus.IN_PROGRESS:
+            raise InvalidMove("Game already finished")
+
+        player = self.current_player
+        move = Move(player, r, c)
+
+        command = MoveCommand(
+            self._board,
+            move
+        )
+
+        command.execute()
+        self._history.append(command)
+
+        if self._win.is_winner(self._board, move):
+
+            self._status = GameStatus.WON
+            self._winner = player
+
+        elif self._board.is_full():
+
+            self._status = GameStatus.DRAW
+
+        else:
+
+            self._turn = 1 - self._turn
+
+        return move
+
+    def bot_move(self):
+
+        player = self.current_player
+
+        if not player.is_bot:
+            raise InvalidMove("Current player is human")
+
+        opponent = self._players[1 - self._turn]
+
+        r, c = player.strategy.choose(
+            self._board,
+            player,
+            opponent
+        )
+
+        return self.make_move(r, c)
+
+    def undo(self):                              # O(1)
+
+        if not self._history:
+            raise UndoError("Nothing to undo")
+
+        command = self._history.pop()
+        command.undo()
+
+        undone_player = command.move.player
+
+        self._turn = (
+            0
+            if undone_player == self._players[0]
+            else 1
+        )
+
+        self._status = GameStatus.IN_PROGRESS
+        self._winner = None
+
+        return command.move
+
+
+# ============================================================
+# Factory Pattern
+# ============================================================
+
+class GameFactory:
+
+    @staticmethod
+    def human_vs_human(name1="P1", name2="P2", size=3):
+
+        return Game(
+            Board(size),
+            [
+                Player(name1, "X"),
+                Player(name2, "O")
+            ],
+            StandardWinningStrategy()
+        )
+
+    @staticmethod
+    def human_vs_random(name="Human", size=3):
+
+        return Game(
+            Board(size),
+            [
+                Player(name, "X"),
+                Player("RandomBot", "O", RandomStrategy())
+            ],
+            StandardWinningStrategy()
+        )
+
+    @staticmethod
+    def human_vs_minimax(name="Human", size=3):
+
+        win = StandardWinningStrategy()
+
+        return Game(
+            Board(size),
+            [
+                Player(name, "X"),
+                Player(
+                    "MinimaxBot",
+                    "O",
+                    MinimaxStrategy(win)
+                )
+            ],
+            win
+        )
+
+
+# ============================================================
+# Example
+# ============================================================
+
+game = GameFactory.human_vs_human("Alice", "Bob")
+
+game.make_move(0, 0)
+game.make_move(1, 0)
+game.make_move(0, 1)
+game.make_move(1, 1)
+game.make_move(0, 2)
+
+print(game.status)           # WON
+print(game.winner.name)      # Alice
+
+game.undo()
+
+print(game.status)           # IN_PROGRESS
+print(game.winner)           # None
+
+For the interview, this gives you the complete story:
+
+Strategy
+├── WinningStrategy
+│   └── StandardWinningStrategy
+│
+└── MoveStrategy
+    ├── RandomStrategy
+    └── MinimaxStrategy
+
+
+Command
+└── MoveCommand
+    ├── execute()
+    └── undo()
+
+
+Factory
+└── GameFactory
+    ├── human_vs_human()
+    ├── human_vs_random()
+    └── human_vs_minimax()
+
+And remember just these complexities:
+
+Operation	Complexity
+Board creation	O(N²) time/space
+Place/remove	O(1)
+Win check	O(N)
+Normal move	O(N)
+Undo	O(1)
+Random bot	O(N²)
+Minimax	roughly O(E!)
+History	O(N²)
+
+
+Exception. is default class provided by python
+
+
+frozen=True means the dataclass becomes immutable after creation.
+
+Example:
+
+@dataclass(frozen=True)
+class Move:
+    player: Player
+    row: int
+    col: int
+
+Now:
+
+move = Move(player, 1, 2)
+
+You can read:
+
+move.row
+move.col
+
+but you cannot change:
+
+move.row = 0
+
+Python will raise an error.
+
+
+
+Without @property, you would write:
+
+def get_size(self):
+    return self._size
+
+and use:
+
+board.get_size()
+
+With @property:
+
+@property
+def size(self):
+    return self._size
+
+you can simply write:
+
+board.size
+
+instead of:
+
+board.get_size()
+
+So here:
+
+self._size = 3
+
+is the internal variable, and:
+
+@property
+def size(self):
+    return self._size
+
+provides controlled read access.
+
+You can think of it as:
+
+_size
+→ internal/private-ish variable
+
+size
+→ public getter
+
+Example:
+
+board = Board(3)
+
+print(board.size)
+# 3
+
+A major advantage is that later you can add logic without changing how callers use it:
+
+@property
+def size(self):
+    print("Reading board size")
+    return self._size
+
+Caller still uses:
+
+board.size
+
+For interviews, a simple explanation is:
+
+@property is Python's cleaner way of implementing getters while keeping attribute access simple.
+
+
+
+This show() function just prints the current Tic-Tac-Toe board in a readable format.
+
+def show(self):
+    for row in self._grid:
+        print(" | ".join(x or " " for x in row))
+
+Suppose:
+
+self._grid = [
+    ["X", "O", None],
+    [None, "X", None],
+    ["O", None, "X"]
+]
+Step 1: for row in self._grid
+
+First iteration:
+
+row = ["X", "O", None]
+
+Second:
+
+row = [None, "X", None]
+
+Third:
+
+row = ["O", None, "X"]
+Step 2: x or " "
+
+This converts empty cells (None) into a space.
+
+For:
+
+["X", "O", None]
+
+it produces conceptually:
+
+"X"
+"O"
+" "
+
+Because:
+
+"X" or " "    # "X"
+"O" or " "    # "O"
+None or " "   # " "
+Step 3: " | ".join(...)
+
+join() puts " | " between each value.
+
+So:
+
+["X", "O", " "]
+
+becomes:
+
+X | O |  
+
+Therefore the whole board prints:
+
+X | O |  
+  | X |  
+O |   | X
+
+So simply remember:
+
+show()
+↓
+go through every row
+↓
+replace None with blank space
+↓
+join cells using " | "
+↓
+print board
+
+
+
+all() is a built-in Python function.
+
+It returns True only when every value inside it is truthy/True.
+Example:
+
+all([True, True, True])
+# True
+
+But:
+
+all([True, False, True])
+# False
+
+
+random.choice(cells) means:
+
+Pick one random item from the list cells.
+
+Example:
+
+cells = [
+    (0, 1),
+    (1, 2),
+    (2, 0)
+]
+
+Then:
+
+random.choice(cells)
+
+could return:
+
+(1, 2)
+
+or:
+
+(0, 1)
+
+or:
+
+(2, 0)
+
+In Tic-Tac-Toe, cells contains all currently empty positions.
+
+
+
+
+Assume:
+
+Bot = X
+Opponent = O
+
+Current board:
+
+X | O | X
+---------
+O | X |
+---------
+  |   | O
+
+Empty cells are:
+
+[(1, 2), (2, 0), (2, 1)]
+
+The bot must choose the best move.
+
+choose() means: “Which move should the bot actually play?”
+def choose(self, board, bot, opponent):
+
+Start with:
+
+best_score = float("-inf")
+best_move = None
+
+Meaning:
+
+best_score = -infinity
+best_move = nothing yet
+
+Now:
+
+for r, c in board.empty_cells():
+
+The bot tests every empty cell one by one.
+
+First maybe:
+
+r = 1
+c = 2
+
+Then:
+
+board.place(r, c, bot.symbol)
+
+temporarily places X.
+
+Board becomes:
+
+X | O | X
+---------
+O | X | X
+---------
+  |   | O
+
+Then:
+
+move = Move(bot, r, c)
+
+means:
+
+Bot X moved at (1,2)
+
+Now:
+
+if self.win.is_winner(board, move):
+
+asks:
+
+Did X immediately win after this temporary move?
+
+Suppose no.
+
+Then:
+
+score = self._minimax(
+    board, bot, opponent, False, 1
+)
+
+This means:
+
+Now simulate what the opponent would do next.
+
+False means:
+
+not bot's maximizing turn
+→ opponent's turn
+
+and 1 means:
+
+depth = 1
+→ one simulated move deep
+
+After calculating the future:
+
+board.remove(r, c)
+
+removes the temporary X.
+
+This is important.
+
+We are only testing the move.
+
+So:
+
+place
+↓
+simulate future
+↓
+remove
+
+Then:
+
+if score > best_score:
+    best_score = score
+    best_move = (r, c)
+
+Suppose this move got:
+
+score = 0
+
+Then:
+
+best_score = 0
+best_move = (1,2)
+
+Now the bot tests (2,0).
+
+Temporary board:
+
+X | O | X
+---------
+O | X |
+---------
+X |   | O
+
+Now anti-diagonal is:
+
+X
+  X
+    X
+
+So:
+
+self.win.is_winner(...)
+
+returns True.
+
+Then:
+
+score = 10
+
+So:
+
+10 > 0
+
+Therefore:
+
+best_score = 10
+best_move = (2,0)
+
+Finally:
+
+return best_move
+
+returns:
+
+(2, 0)
+
+So the bot actually chooses (2,0).
+
+Now look at _minimax().
+
+def _minimax(
+    self,
+    board,
+    bot,
+    opponent,
+    maximizing,
+    depth
+):
+
+This method means:
+
+“From this simulated board, if both players play intelligently, how good is this future for the bot?”
+
+First:
+
+if board.is_full():
+    return 0
+
+If no cells remain and nobody won:
+
+Draw
+→ score 0
+
+Then:
+
+current = bot if maximizing else opponent
+
+This means:
+
+maximizing = True
+→ current = bot
+
+maximizing = False
+→ current = opponent
+
+Why?
+
+Because:
+
+Bot tries to maximize score.
+Opponent tries to minimize bot's score.
+
+Then:
+
+best = float("-inf") if maximizing else float("inf")
+
+If bot's turn:
+
+best = -∞
+
+because bot wants the largest score.
+
+If opponent's turn:
+
+best = +∞
+
+because opponent wants the smallest score.
+
+Now:
+
+for r, c in board.empty_cells():
+
+Again, test all future positions.
+
+Suppose it's opponent's turn.
+
+Then:
+
+board.place(r, c, current.symbol)
+
+temporarily places O.
+
+Then:
+
+move = Move(current, r, c)
+
+represents that simulated opponent move.
+
+Now:
+
+if self.win.is_winner(board, move):
+
+checks whether that simulated move produced a win.
+
+If bot won:
+
+score = 10 - depth
+
+Example:
+
+depth = 2
+
+score = 10 - 2 = 8
+
+If bot wins sooner:
+
+depth 1 → 9
+depth 4 → 6
+
+So bot prefers quicker wins.
+
+If opponent won:
+
+score = depth - 10
+
+Example:
+
+depth = 2
+
+score = 2 - 10 = -8
+
+Negative means bad for bot.
+
+If board becomes full:
+
+score = 0
+
+draw.
+
+Otherwise:
+
+score = self._minimax(
+    board,
+    bot,
+    opponent,
+    not maximizing,
+    depth + 1
+)
+
+This goes one level deeper.
+
+If currently:
+
+maximizing = False
+
+then:
+
+not maximizing
+
+becomes:
+
+True
+
+So turns alternate:
+
+Opponent
+↓
+Bot
+↓
+Opponent
+↓
+Bot
+
+Then:
+
+board.remove(r, c)
+
+undoes the simulated move.
+
+Again:
+
+try
+↓
+evaluate
+↓
+undo
+
+Finally:
+
+best = (
+    max(best, score)
+    if maximizing
+    else min(best, score)
+)
+
+If bot's turn:
+
+max(best, score)
+
+Suppose possibilities are:
+
+-10
+0
+8
+
+bot chooses:
+
+8
+
+If opponent's turn:
+
+min(best, score)
+
+same possibilities:
+
+-10
+0
+8
+
+opponent chooses:
+
+-10
+
+because we assume the opponent also plays optimally.
+
+Then:
+
+return best
+
+returns the best achievable score from that board state.
+
+So the entire thing is:
+
+choose()
+↓
+Try every possible BOT move
+↓
+For each move call _minimax()
+↓
+_minimax() simulates future BOT/OPPONENT turns
+↓
+Bot chooses maximum score
+Opponent chooses minimum score
+↓
+Return best move
+
+And remember the scoring simply as:
+
+Bot win       → positive
+Draw          → 0
+Opponent win  → negative
+
+The most important two lines conceptually are:
+
+board.place(...)
+
+and later:
+
+board.remove(...)
+
+
+
+

@@ -2,47 +2,90 @@ Ques:https://leetcode.com/problems/smallest-range-covering-elements-from-k-lists
 
 
 Code:
-class Solution {
-public:
-    vector<int> smallestRange(vector<vector<int>>& nums) {
-        // Min-Heap: stores (value, list index, element index)
-        priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> minHeap;
-        int curMax = numeric_limits<int>::min();
 
-        // Initialize the heap with the first element of each list
-        for (int i = 0; i < nums.size(); i++) {
-            minHeap.push({nums[i][0], i, 0});
-            curMax = max(curMax, nums[i][0]);
-        }
+import heapq
+import math
 
-        // Track the smallest range
-        vector<int> smallRange = {0, numeric_limits<int>::max()};
+def smallest_range(nums):
+    # Min-heap: (value, list_index, element_index)
+    min_heap = []
+    cur_max = -math.inf
 
-        while (!minHeap.empty()) {
-            // Get the minimum element from the heap
-            vector<int> curr = minHeap.top();
-            minHeap.pop();
-            int curMin = curr[0], listIdx = curr[1], elemIdx = curr[2];
+    # Step 1: Initialize heap with first element of each list
+    for i in range(len(nums)):
+        heapq.heappush(min_heap, (nums[i][0], i, 0))
+        cur_max = max(cur_max, nums[i][0])
 
-            // Update the smallest range if a better one is found
-            if (curMax - curMin < smallRange[1] - smallRange[0]) {
-                smallRange[0] = curMin;
-                smallRange[1] = curMax;
-            }
+    # Smallest range [start, end]
+    small_range = [0, math.inf]
 
-            // Move to the next element in the same list
-            if (elemIdx + 1 < nums[listIdx].size()) {
-                int nextVal = nums[listIdx][elemIdx + 1];
-                minHeap.push({nextVal, listIdx, elemIdx + 1});
-                curMax = max(curMax, nextVal);
-            } else {
-                // If any list is exhausted, stop
-                break;
-            }
-        }
-        return smallRange;
-    }
-};
+    # Step 2: Process heap
+    while min_heap:
+        cur_min, list_idx, elem_idx = heapq.heappop(min_heap)
+
+        # Update range if smaller
+        if cur_max - cur_min < small_range[1] - small_range[0]:
+            small_range = [cur_min, cur_max]
+
+        # Move to next element in the same list
+        if elem_idx + 1 < len(nums[list_idx]):
+            next_val = nums[list_idx][elem_idx + 1]
+            heapq.heappush(min_heap, (next_val, list_idx, elem_idx + 1))
+            cur_max = max(cur_max, next_val)
+        else:
+            # One list exhausted → cannot cover all lists anymore
+            break
+
+    return small_range
+
+🧪 Sample Input & Output
+Example 1
+nums = [
+    [4, 10, 15, 24, 26],
+    [0, 9, 12, 20],
+    [5, 18, 22, 30]
+]
+
+print(smallest_range(nums))
+
+✅ Output
+[20, 24]
+
+Explanation
+
+Range [20, 24] includes:
+
+24 from list 1
+
+20 from list 2
+
+22 from list 3
+
+This is the smallest possible range covering at least one element from each list.
 
 
-Time and sapce compelxity:
+⏱ Time Complexity
+
+Let:
+
+K = number of lists
+
+N = total number of elements across all lists
+
+Breakdown:
+
+Initial heap build → O(K)
+
+Each element pushed & popped once → O(N log K)
+
+✅ Final Time Complexity
+O(N log K)
+
+📦 Space Complexity
+
+Heap stores at most K elements → O(K)
+
+Constant extra variables
+
+✅ Final Space Complexity
+O(K)

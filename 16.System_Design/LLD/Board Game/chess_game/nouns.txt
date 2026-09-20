@@ -1,0 +1,111 @@
+For Chess, these are the main nouns and why they become entities/classes:
+
+Noun	Entity/Class?	Why
+ChessGame	Yes	Controls the complete game: turns, status, moves
+Board	Yes	Holds the 8×8 board and pieces
+Player	Yes	Represents White/Black player
+Piece	Yes	Common abstraction for all chess pieces
+King	Yes	Has its own movement behavior
+Queen	Yes	Has its own movement behavior
+Rook	Yes	Has its own movement behavior
+Bishop	Yes	Has its own movement behavior
+Knight	Yes	Has its own movement behavior
+Pawn	Yes	Has special movement/promotion rules
+Position	Yes	Represents a board coordinate like (6, 4)
+Move	Yes	Represents one move from source to destination
+GameStatus	Yes, usually Enum	Represents IN_PROGRESS, CHECK, CHECKMATE, STALEMATE
+Color	Yes, usually Enum	Represents WHITE or BLACK
+MoveHistory	Usually No separate class initially	Can simply be list[Move]
+Turn	No	Usually just an attribute like self.turn
+Check	No	Usually a game state/condition, not an object
+Checkmate	No	Usually part of GameStatus
+Capture	No	It's an action/result of a Move
+
+The important point is:
+
+Not every noun becomes a class.
+
+You ask: Does this noun have its own data + behavior + responsibility?
+
+For example:
+
+Player → class
+
+Because it has data:
+
+class Player:
+    name
+    color
+
+So it represents a real domain object.
+
+Board → class
+
+Because it has data and behavior:
+
+class Board:
+    pieces
+
+    def get_piece():
+        ...
+
+    def move_piece():
+        ...
+
+    def path_clear():
+        ...
+
+So Board clearly deserves its own class.
+
+Turn → not a class
+
+You don't need:
+
+class Turn:
+    ...
+
+because turn is simply state:
+
+self.turn = Color.WHITE
+Checkmate → not a separate class initially
+
+You can represent it using:
+
+class GameStatus(Enum):
+    IN_PROGRESS = 1
+    CHECK = 2
+    CHECKMATE = 3
+    STALEMATE = 4
+
+So the mental rule for interviews is:
+
+Read requirements
+      ↓
+Find nouns
+      ↓
+Ask:
+"Does it have its own state/responsibility?"
+      ↓
+YES → possible class/entity
+NO  → probably attribute / enum / action
+
+For Chess, the core nouns you should immediately pick are:
+
+Game
+Board
+Player
+Piece
+Position
+Move
+
+Then Piece naturally breaks into:
+
+Piece
+ ├── King
+ ├── Queen
+ ├── Rook
+ ├── Bishop
+ ├── Knight
+ └── Pawn
+
+This noun extraction approach is exactly a good way to start an LLD interview, but don't blindly convert every noun into a class.

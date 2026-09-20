@@ -1,0 +1,241 @@
+Ques:https://leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed/description/
+
+
+Desc:https://leetcode.com/problems/insert-delete-getrandom-o1-duplicates-allowed/solutions/7663374/randomized-collection-o1-insertdeleteget-tfpf/
+
+
+Yes, set.pop() removes an arbitrary/random-like element from the set.
+
+
+Because duplicates are allowed, dictionary stores:
+
+value -> set of indexes
+
+Example:
+
+all_keys = [10, 10, 20, 30]
+
+key_to_pos = {
+    10: {0, 1},
+    20: {2},
+    30: {3}
+}
+
+Now call:
+
+remove(10)
+Full dry run
+1. Check if value exists
+if val in self.key_to_pos:
+
+Here val = 10.
+
+10 exists in dictionary, so continue.
+
+2. Pick one position of 10
+pos = self.key_to_pos[val].pop()
+
+key_to_pos[10] is:
+
+{0, 1}
+
+.pop() removes one index from this set.
+
+Assume it removes index 1.
+
+pos = 1
+
+Now dictionary becomes:
+
+key_to_pos = {
+    10: {0},
+    20: {2},
+    30: {3}
+}
+
+Meaning: we are removing 10 from index 1.
+
+3. If no more 10, delete key
+if len(self.key_to_pos[val]) == 0:
+    del self.key_to_pos[val]
+
+Here key_to_pos[10] is still:
+
+{0}
+
+So we do not delete 10.
+
+Because one 10 is still present at index 0.
+
+4. Check if removed position is last index
+if pos == len(self.all_keys) - 1:
+    self.all_keys.pop()
+    return True
+
+Current list:
+
+all_keys = [10, 10, 20, 30]
+
+Last index is:
+
+len(all_keys) - 1 = 3
+
+But:
+
+pos = 1
+
+So pos is not last.
+
+We cannot directly pop index 1, because removing from middle is O(n).
+
+So we use swap-with-last trick.
+
+5. Store last index
+old_last_added_item_pos = len(self.all_keys) - 1
+
+Current last index is 3.
+
+old_last_added_item_pos = 3
+6. Remove last item from list
+last_added_item = self.all_keys.pop()
+
+Last item is 30.
+
+So:
+
+last_added_item = 30
+
+List becomes:
+
+all_keys = [10, 10, 20]
+7. Put last item at removed position
+self.all_keys[pos] = last_added_item
+
+pos = 1, last_added_item = 30.
+
+So:
+
+all_keys[1] = 30
+
+Now list becomes:
+
+all_keys = [10, 30, 20]
+
+So we removed one 10, and moved 30 into its place.
+
+8. Update old index of moved item
+self.key_to_pos[last_added_item].remove(old_last_added_item_pos)
+
+last_added_item = 30.
+
+Earlier 30 was at index 3.
+
+key_to_pos[30] = {3}
+
+Remove old index 3:
+
+key_to_pos[30].remove(3)
+
+Now:
+
+key_to_pos[30] = set()
+9. Add new index of moved item
+self.key_to_pos[last_added_item].add(pos)
+
+30 moved to index 1.
+
+So:
+
+key_to_pos[30].add(1)
+
+Now final dictionary:
+
+key_to_pos = {
+    10: {0},
+    20: {2},
+    30: {1}
+}
+
+Final list:
+
+all_keys = [10, 30, 20]
+Final result
+
+Before:
+
+all_keys = [10, 10, 20, 30]
+
+key_to_pos = {
+    10: {0, 1},
+    20: {2},
+    30: {3}
+}
+
+After remove(10):
+
+all_keys = [10, 30, 20]
+
+key_to_pos = {
+    10: {0},
+    20: {2},
+    30: {1}
+}
+
+One 10 removed successfully.
+
+
+Sol1:
+
+class RandomizedCollection:
+    def __init__(self):
+        self.key_to_pos = dict()
+        self.all_keys = list()
+
+
+    def insert(self, val: int) -> bool:
+        if val in self.key_to_pos:
+            self.key_to_pos[val].add(len(self.all_keys))
+            self.all_keys.append(val)
+            return False
+        else:
+            self.key_to_pos[val] = set([len(self.all_keys)])
+            self.all_keys.append(val)
+            return True
+
+    def remove(self, val: int) -> bool:
+        if val in self.key_to_pos:
+            pos = self.key_to_pos[val].pop()
+
+            if len(self.key_to_pos[val]) == 0:
+                del self.key_to_pos[val]
+
+            if pos == len(self.all_keys) - 1:
+                self.all_keys.pop()
+                return True                
+
+            if len(self.all_keys) == 1:
+                self.all_keys = list()
+                return True
+
+            old_last_added_item_pos = len(self.all_keys) - 1
+            last_added_item = self.all_keys.pop()
+            self.all_keys[pos] = last_added_item
+
+            self.key_to_pos[last_added_item].remove(old_last_added_item_pos)
+            self.key_to_pos[last_added_item].add(pos)
+            return True
+        return False
+        
+
+    def getRandom(self) -> int:
+        return random.choice(self.all_keys)
+
+
+For RandomizedCollection:
+
+Operation	Time Complexity	Space Complexity
+insert(val)	O(1) average	O(1) extra per insert
+remove(val)	O(1) average	O(1) extra
+getRandom()	O(1)	O(1)
+
+

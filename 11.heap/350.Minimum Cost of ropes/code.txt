@@ -1,28 +1,86 @@
 Ques:https://www.geeksforgeeks.org/connect-n-ropes-minimum-cost/
 
-Code:
-    long long minCost(long long arr[], long long n) {
-        
-      priority_queue<long long,vector<long long>,greater<long long>> pq;
-      for(long long i=0;i<n;i++)
-      pq.push(arr[i]);
-      long long ans=0;
-      //queue should have 2 element
-      while(pq.size()>1)
-      {
-          long long n1=pq.top();
-          pq.pop();
-          long long n2=pq.top();
-          pq.pop();
-          long long sum=n1+n2;
-          ans+=sum;
-          pq.push(sum);
-      }
-      return ans;
-    }
+🧪 Example
+
+Input
+
+arr = [4, 3, 2, 6]
 
 
-Time and sapc complexity
+Output
 
-Time Complexity: O(n log n), where n is the size of the array. Each insertion or deletion in the heap takes O(log n)
-Space Complexity: O(n), for storing all elements in the heap.
+29
+
+
+Explanation
+
+Step 1: Pick 2 and 3 → cost = 5
+        Heap becomes: [4, 5, 6]
+
+Step 2: Pick 4 and 5 → cost = 9
+        Total cost = 5 + 9 = 14
+        Heap becomes: [6, 9]
+
+Step 3: Pick 6 and 9 → cost = 15
+        Total cost = 14 + 15 = 29
+
+🐍 Python Implementation (Equivalent to Your C++ Code)
+import heapq
+
+def minCost(arr):
+    # Create min-heap
+    heapq.heapify(arr)
+    
+    total_cost = 0
+
+    # Continue until one rope remains
+    while len(arr) > 1:
+        first = heapq.heappop(arr)
+        second = heapq.heappop(arr)
+
+        cost = first + second
+        total_cost += cost
+
+        heapq.heappush(arr, cost)
+
+    return total_cost
+
+▶️ Sample Run
+arr = [4, 3, 2, 6]
+print(minCost(arr))
+
+
+Output
+
+29
+
+⏱ Time Complexity
+Heap Operations
+
+Heapify: O(n)
+
+Each pop/push: O(log n)
+
+Total operations: n − 1 merges
+
+✅ Final Time Complexity
+O(n log n)
+
+💾 Space Complexity
+
+Min-heap stores up to n elements
+
+✅ Final Space Complexity
+O(n)
+
+📌 Why Greedy + Min Heap?
+
+Always combining the two smallest ropes first ensures the minimum cost
+
+This is the Optimal Merge Pattern, used in:
+
+File merging
+
+Huffman Coding
+
+Rope connection problems

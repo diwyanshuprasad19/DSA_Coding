@@ -1,0 +1,23 @@
+Ques-https://leetcode.com/problems/continuous-subarray-sum/description/
+
+
+Sol-
+
+class Solution:
+    def checkSubarraySum(self, nums: List[int], k: int) -> bool:
+        n =len(nums)
+        for i in range(n):
+            arr = 0
+            for j in range(i,n):
+                arr+=nums[j]
+
+                if j-i>=1:
+                    if arr%k==0:
+                        return True
+        
+        return False
+
+
+TC:O(n^2)
+SC:O(1)
+

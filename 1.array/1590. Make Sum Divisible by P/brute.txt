@@ -1,0 +1,30 @@
+Ques:https://leetcode.com/problems/make-sum-divisible-by-p/description/
+
+Sol:
+
+import sys
+class Solution:
+    def minSubarray(self, nums: List[int], p: int) -> int:
+        sum=0
+        ans=sys.maxsize
+        for i in range(len(nums)):
+            sum+=nums[i]
+        
+        if sum%p==0:
+            return 0
+        
+        for i in range(len(nums)):
+            arr=0
+            count=0
+            for j in range(i,len(nums)):
+                count+=1
+                arr+=nums[j]
+                if (sum-arr)%p==0:
+                    ans=min(count,ans)
+        
+        return ans
+
+
+
+TC:O(n^2)
+SC:O(n)

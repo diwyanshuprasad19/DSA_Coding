@@ -1,205 +1,104 @@
-Ques:
+✅ Queue Using Single Stack (Python)
+class QueueUsingOneStack:
+    def __init__(self):
+        self.s = []
 
-Code1:
+    def push(self, x):
+        # Simply push
+        self.s.append(x)
 
-#include <iostream>
-#include <stack>
-using namespace std;
+    def pop(self):
+        if not self.s:
+            print("Queue Underflow")
+            return -1
 
-class QueueUsingTwoStacks {
-    stack<int> s1, s2;
+        # Remove top
+        top_element = self.s.pop()
 
-public:
-    void push(int x) {
-        s1.push(x);
-    }
+        # If stack becomes empty → this was the front
+        if not self.s:
+            return top_element
 
-    int pop() {
-        if (s2.empty()) {
-            if (s1.empty()) {
-                cout << "Queue Underflow\n";
-                return -1;
-            }
-            while (!s1.empty()) {
-                s2.push(s1.top());
-                s1.pop();
-            }
-        }
-        int frontElement = s2.top();
-        s2.pop();
-        return frontElement;
-    }
+        # Recursive call
+        front_element = self.pop()
 
-    int front() {
-        if (s2.empty()) {
-            if (s1.empty()) {
-                cout << "Queue is empty\n";
-                return -1;
-            }
-            while (!s1.empty()) {
-                s2.push(s1.top());
-                s1.pop();
-            }
-        }
-        return s2.top();
-    }
+        # Push back other elements
+        self.s.append(top_element)
 
-    int size() {
-        return s1.size() + s2.size();
-    }
-};
+        return front_element
 
-int main() {
-    QueueUsingTwoStacks q;
-    q.push(1);
-    q.push(2);
-    q.push(3);
+    def front(self):
+        if not self.s:
+            print("Queue is empty")
+            return -1
 
-    cout << "Front: " << q.front() << endl;  // Expected: 1
-    cout << "Popped: " << q.pop() << endl;   // Expected: 1
-    cout << "Size: " << q.size() << endl;    // Expected: 2
+        top_element = self.s.pop()
 
-    return 0;
-}
+        if not self.s:
+            # This is front
+            self.s.append(top_element)
+            return top_element
 
+        front_element = self.front()
 
+        self.s.append(top_element)
 
-Time and space :
+        return front_element
 
-Time Complexity Analysis
-Push (push(x)) → 
-𝑂
-(
-1
-)
-O(1) (Directly pushes to s1)
-Pop (pop()) → 
-𝑂
-(
-𝑁
-)
-O(N) (Moves elements from s1 to s2 when s2 is empty)
-Front (front()) → 
-𝑂
-(
-𝑁
-)
-O(N) (Moves elements when s2 is empty)
-Size (size()) → 
-𝑂
-(
-1
-)
-O(1) (Returns combined size of both stacks)
-Space Complexity
-Space Complexity: 
-𝑂
-(
-𝑁
-)
-O(N) (Uses two stacks of size 
-𝑁
-N)
+    def size(self):
+        return len(self.s)
+📥 Sample Input
+q = QueueUsingOneStack()
+q.push(1)
+q.push(2)
+q.push(3)
 
+print("Front:", q.front())
+print("Popped:", q.pop())
+print("Size:", q.size())
+📤 Sample Output
+Front: 1
+Popped: 1
+Size: 2
+🧠 How It Works (Important)
 
-Code2:
+Suppose stack looks like:
 
-#include <iostream>
-#include <stack>
-using namespace std;
+Top
+3
+2
+1   ← bottom (actual queue front)
 
-class QueueUsingOneStack {
-    stack<int> s;
+When calling pop():
 
-public:
-    void push(int x) {
-        s.push(x);
-    }
+Remove 3
 
-    int pop() {
-        if (s.empty()) {
-            cout << "Queue Underflow\n";
-            return -1;
-        }
+Remove 2
 
-        int topElement = s.top();
-        s.pop();
+Remove 1 (this is front)
 
-        if (s.empty()) return topElement; // Base case (front element)
+Rebuild stack → push back 2, 3
 
-        int frontElement = pop(); // Recursively remove until we reach front
-        s.push(topElement); // Push back other elements
-        return frontElement;
-    }
+Final stack:
 
-    int front() {
-        if (s.empty()) {
-            cout << "Queue is empty\n";
-            return -1;
-        }
+Top
+3
+2
 
-        int topElement = s.top();
-        s.pop();
+Queue behavior achieved ✅
 
-        if (s.empty()) {
-            s.push(topElement); // Restore stack
-            return topElement; // Base case (front element)
-        }
+⏱ Time Complexity
+Operation	Complexity
+push()	O(1)
+pop()	O(N)
+front()	O(N)
+size()	O(1)
+📦 Space Complexity
 
-        int frontElement = front();
-        s.push(topElement);
-        return frontElement;
-    }
+O(N)
 
-    int size() {
-        return s.size();
-    }
-};
+Because:
 
-int main() {
-    QueueUsingOneStack q;
-    q.push(1);
-    q.push(2);
-    q.push(3);
+Stack stores N elements
 
-    cout << "Front: " << q.front() << endl;  // Expected: 1
-    cout << "Popped: " << q.pop() << endl;   // Expected: 1
-    cout << "Size: " << q.size() << endl;    // Expected: 2
-
-    return 0;
-}
-
-
-Time and space:
-Time Complexity Analysis
-Push (push(x)) → 
-𝑂
-(
-1
-)
-O(1) (Simply pushes element)
-Pop (pop()) → 
-𝑂
-(
-𝑁
-)
-O(N) (Recursively removes elements)
-Front (front()) → 
-𝑂
-(
-𝑁
-)
-O(N) (Recursively finds the front element)
-Size (size()) → 
-𝑂
-(
-1
-)
-O(1) (Returns stack size)
-Space Complexity
-Space Complexity: 
-𝑂
-(
-𝑁
-)
-O(N) (Uses a single stack)
+Recursion call stack also goes up to N

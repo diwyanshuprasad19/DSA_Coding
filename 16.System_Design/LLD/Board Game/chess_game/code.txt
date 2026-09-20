@@ -1,0 +1,1583 @@
+Docs:https://docs.google.com/document/d/1WBXDyPWPUwamk_sHeQ59uERKEouRclcGNSq8F2LSqtU/edit?tab=t.0
+
+
+Code:
+
+from abc import ABC, abstractmethod
+from dataclasses import dataclass
+from enum import Enum
+
+
+# =========================================================
+# ENUMS
+# =========================================================
+
+class Color(Enum):
+    WHITE = "WHITE"
+    BLACK = "BLACK"
+
+    def opposite(self):
+        return Color.BLACK if self == Color.WHITE else Color.WHITE
+
+
+class GameStatus(Enum):
+    IN_PROGRESS = "IN_PROGRESS"
+    CHECK = "CHECK"
+    CHECKMATE = "CHECKMATE"
+    STALEMATE = "STALEMATE"
+
+
+# =========================================================
+# MODELS
+# =========================================================
+
+@dataclass(frozen=True)
+class Position:
+    row: int
+    col: int
+
+
+@dataclass
+class Player:
+    name: str
+    color: Color
+
+
+# =========================================================
+# PIECE
+# Polymorphism / Strategy-like movement
+# =========================================================
+
+class Piece(ABC):
+
+    def __init__(self, color):
+        self.color = color
+
+    def destination_valid(self, board, end):
+
+        target = board.get_piece(end)
+
+        return (
+            target is None
+            or target.color != self.color
+        )
+
+    @abstractmethod
+    def can_move(self, board, start, end):
+        pass
+
+
+# =========================================================
+# ROOK
+# =========================================================
+
+class Rook(Piece):
+
+    def can_move(self, board, start, end):
+
+        if start == end:
+            return False
+
+        straight = (
+            start.row == end.row
+            or start.col == end.col
+        )
+
+        return (
+            straight
+            and self.destination_valid(board, end)
+            and board.path_clear(start, end)
+        )
+
+
+# =========================================================
+# BISHOP
+# =========================================================
+
+class Bishop(Piece):
+
+    def can_move(self, board, start, end):
+
+        row_diff = abs(start.row - end.row)
+        col_diff = abs(start.col - end.col)
+
+        diagonal = (
+            row_diff == col_diff
+            and row_diff != 0
+        )
+
+        return (
+            diagonal
+            and self.destination_valid(board, end)
+            and board.path_clear(start, end)
+        )
+
+
+# =========================================================
+# QUEEN
+# =========================================================
+
+class Queen(Piece):
+
+    def can_move(self, board, start, end):
+
+        if start == end:
+            return False
+
+        row_diff = abs(start.row - end.row)
+        col_diff = abs(start.col - end.col)
+
+        straight = (
+            start.row == end.row
+            or start.col == end.col
+        )
+
+        diagonal = row_diff == col_diff
+
+        return (
+            (straight or diagonal)
+            and self.destination_valid(board, end)
+            and board.path_clear(start, end)
+        )
+
+
+# =========================================================
+# KNIGHT
+# =========================================================
+
+class Knight(Piece):
+
+    def can_move(self, board, start, end):
+
+        row_diff = abs(start.row - end.row)
+        col_diff = abs(start.col - end.col)
+
+        return (
+            (row_diff, col_diff)
+            in [(2, 1), (1, 2)]
+            and self.destination_valid(board, end)
+        )
+
+
+# =========================================================
+# KING
+# =========================================================
+
+class King(Piece):
+
+    def can_move(self, board, start, end):
+
+        row_diff = abs(start.row - end.row)
+        col_diff = abs(start.col - end.col)
+
+        return (
+            start != end
+            and row_diff <= 1
+            and col_diff <= 1
+            and self.destination_valid(board, end)
+        )
+
+
+# =========================================================
+# PAWN
+# =========================================================
+
+class Pawn(Piece):
+
+    def can_move(self, board, start, end):
+
+        direction = (
+            -1 if self.color == Color.WHITE else 1
+        )
+
+        start_row = (
+            6 if self.color == Color.WHITE else 1
+        )
+
+        row_diff = end.row - start.row
+        col_diff = end.col - start.col
+
+        target = board.get_piece(end)
+
+        # One step forward
+        if (
+            col_diff == 0
+            and row_diff == direction
+            and target is None
+        ):
+            return True
+
+        # Initial two-step
+        if (
+            col_diff == 0
+            and start.row == start_row
+            and row_diff == 2 * direction
+            and target is None
+        ):
+
+            middle = Position(
+                start.row + direction,
+                start.col
+            )
+
+            return board.get_piece(middle) is None
+
+        # Diagonal capture
+        if (
+            abs(col_diff) == 1
+            and row_diff == direction
+            and target is not None
+            and target.color != self.color
+        ):
+            return True
+
+        return False
+
+
+# =========================================================
+# BOARD
+# =========================================================
+
+class Board:
+
+    SIZE = 8
+
+    def __init__(self):
+        self.pieces = {}
+
+    def valid_position(self, position):
+
+        return (
+            0 <= position.row < 8
+            and 0 <= position.col < 8
+        )
+
+    def get_piece(self, position):
+        return self.pieces.get(position)
+
+    def put_piece(self, position, piece):
+        self.pieces[position] = piece
+
+    def move_piece(self, start, end):
+
+        piece = self.pieces.pop(start)
+
+        captured = self.pieces.pop(
+            end,
+            None
+        )
+
+        self.pieces[end] = piece
+
+        return captured
+
+    def path_clear(self, start, end):
+
+        row_step = (
+            0 if start.row == end.row
+            else 1 if end.row > start.row
+            else -1
+        )
+
+        col_step = (
+            0 if start.col == end.col
+            else 1 if end.col > start.col
+            else -1
+        )
+
+        row = start.row + row_step
+        col = start.col + col_step
+
+        while (row, col) != (end.row, end.col):
+
+            if self.get_piece(
+                Position(row, col)
+            ):
+                return False
+
+            row += row_step
+            col += col_step
+
+        return True
+
+
+# =========================================================
+# CHESS GAME
+# =========================================================
+
+class ChessGame:
+
+    def __init__(self, white, black):
+
+        self.board = Board()
+
+        self.white = white
+        self.black = black
+
+        self.turn = Color.WHITE
+
+        self.status = GameStatus.IN_PROGRESS
+
+        self.setup_board()
+
+    # =====================================================
+    # BOARD SETUP
+    # =====================================================
+
+    def setup_board(self):
+
+        # Black
+        self.board.put_piece(Position(0, 0), Rook(Color.BLACK))
+        self.board.put_piece(Position(0, 1), Knight(Color.BLACK))
+        self.board.put_piece(Position(0, 2), Bishop(Color.BLACK))
+        self.board.put_piece(Position(0, 3), Queen(Color.BLACK))
+        self.board.put_piece(Position(0, 4), King(Color.BLACK))
+        self.board.put_piece(Position(0, 5), Bishop(Color.BLACK))
+        self.board.put_piece(Position(0, 6), Knight(Color.BLACK))
+        self.board.put_piece(Position(0, 7), Rook(Color.BLACK))
+
+        # White
+        self.board.put_piece(Position(7, 0), Rook(Color.WHITE))
+        self.board.put_piece(Position(7, 1), Knight(Color.WHITE))
+        self.board.put_piece(Position(7, 2), Bishop(Color.WHITE))
+        self.board.put_piece(Position(7, 3), Queen(Color.WHITE))
+        self.board.put_piece(Position(7, 4), King(Color.WHITE))
+        self.board.put_piece(Position(7, 5), Bishop(Color.WHITE))
+        self.board.put_piece(Position(7, 6), Knight(Color.WHITE))
+        self.board.put_piece(Position(7, 7), Rook(Color.WHITE))
+
+        # Pawns
+        for col in range(8):
+
+            self.board.put_piece(
+                Position(1, col),
+                Pawn(Color.BLACK)
+            )
+
+            self.board.put_piece(
+                Position(6, col),
+                Pawn(Color.WHITE)
+            )
+
+    # =====================================================
+    # FIND KING
+    # =====================================================
+
+    def find_king(self, color):
+
+        for position, piece in self.board.pieces.items():
+
+            if (
+                isinstance(piece, King)
+                and piece.color == color
+            ):
+                return position
+
+        return None
+
+    # =====================================================
+    # CHECK DETECTION
+    #
+    # Is any enemy piece attacking my King?
+    # =====================================================
+
+    def is_in_check(self, color):
+
+        king_position = self.find_king(color)
+
+        for position, piece in self.board.pieces.items():
+
+            # Ignore own pieces
+            if piece.color == color:
+                continue
+
+            if piece.can_move(
+                self.board,
+                position,
+                king_position
+            ):
+                return True
+
+        return False
+
+    # =====================================================
+    # LEGAL MOVE
+    #
+    # 1. validate piece movement
+    # 2. temporarily execute
+    # 3. check own King
+    # 4. undo
+    # =====================================================
+
+    def is_legal_move(self, start, end, color):
+
+        if (
+            not self.board.valid_position(start)
+            or not self.board.valid_position(end)
+        ):
+            return False
+
+        piece = self.board.get_piece(start)
+
+        if piece is None:
+            return False
+
+        if piece.color != color:
+            return False
+
+        if not piece.can_move(
+            self.board,
+            start,
+            end
+        ):
+            return False
+
+        # ---------------------------------------------
+        # Temporarily make move
+        # ---------------------------------------------
+
+        captured = self.board.move_piece(
+            start,
+            end
+        )
+
+        # This also prevents King moving into check
+        safe = not self.is_in_check(color)
+
+        # ---------------------------------------------
+        # Undo move
+        # ---------------------------------------------
+
+        self.board.move_piece(
+            end,
+            start
+        )
+
+        if captured is not None:
+            self.board.put_piece(
+                end,
+                captured
+            )
+
+        return safe
+
+    # =====================================================
+    # DOES PLAYER HAVE ANY LEGAL MOVE?
+    # =====================================================
+
+    def has_legal_move(self, color):
+
+        pieces = list(
+            self.board.pieces.items()
+        )
+
+        for start, piece in pieces:
+
+            if piece.color != color:
+                continue
+
+            for row in range(8):
+                for col in range(8):
+
+                    end = Position(row, col)
+
+                    if self.is_legal_move(
+                        start,
+                        end,
+                        color
+                    ):
+                        return True
+
+        return False
+
+    # =====================================================
+    # CHECK / CHECKMATE / STALEMATE
+    # =====================================================
+
+    def update_status(self):
+
+        in_check = self.is_in_check(
+            self.turn
+        )
+
+        has_move = self.has_legal_move(
+            self.turn
+        )
+
+        if in_check and not has_move:
+
+            self.status = (
+                GameStatus.CHECKMATE
+            )
+
+        elif not in_check and not has_move:
+
+            self.status = (
+                GameStatus.STALEMATE
+            )
+
+        elif in_check:
+
+            self.status = (
+                GameStatus.CHECK
+            )
+
+        else:
+
+            self.status = (
+                GameStatus.IN_PROGRESS
+            )
+
+    # =====================================================
+    # MAIN MOVE API
+    # =====================================================
+
+    def make_move(self, start, end):
+
+        if self.status in {
+            GameStatus.CHECKMATE,
+            GameStatus.STALEMATE
+        }:
+            raise ValueError(
+                "Game already finished"
+            )
+
+        piece = self.board.get_piece(start)
+
+        if piece is None:
+            raise ValueError(
+                "No piece at source"
+            )
+
+        if piece.color != self.turn:
+            raise ValueError(
+                "Wrong player's turn"
+            )
+
+        if not self.is_legal_move(
+            start,
+            end,
+            self.turn
+        ):
+            raise ValueError(
+                "Illegal move"
+            )
+
+        # Actual move
+        self.board.move_piece(
+            start,
+            end
+        )
+
+        # Change turn
+        self.turn = self.turn.opposite()
+
+        # Check new player's state
+        self.update_status()
+
+
+# =========================================================
+# MAIN
+# =========================================================
+
+def main():
+
+    white = Player(
+        "Alice",
+        Color.WHITE
+    )
+
+    black = Player(
+        "Bob",
+        Color.BLACK
+    )
+
+    game = ChessGame(
+        white,
+        black
+    )
+
+    # White e2 -> e4
+    game.make_move(
+        Position(6, 4),
+        Position(4, 4)
+    )
+
+    print(
+        "Turn:",
+        game.turn.value
+    )
+
+    print(
+        "Status:",
+        game.status.value
+    )
+
+    # Black e7 -> e5
+    game.make_move(
+        Position(1, 4),
+        Position(3, 4)
+    )
+
+    print(
+        "Turn:",
+        game.turn.value
+    )
+
+    print(
+        "Status:",
+        game.status.value
+    )
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+For your current Chess code, use:
+
+N = board dimension, here 8
+P = number of pieces, maximum 32
+Method	Time Complexity	Space Complexity	Why
+Color.opposite()	O(1)	O(1)	Simple comparison
+destination_valid()	O(1)	O(1)	One dictionary lookup
+Rook.can_move()	O(N)	O(1)	May scan path
+Bishop.can_move()	O(N)	O(1)	May scan diagonal path
+Queen.can_move()	O(N)	O(1)	May scan path
+Knight.can_move()	O(1)	O(1)	Only checks coordinate difference
+King.can_move()	O(1)	O(1)	Only checks coordinate difference
+Pawn.can_move()	O(1)	O(1)	Constant checks/lookups
+Board.valid_position()	O(1)	O(1)	Coordinate comparison
+Board.get_piece()	O(1) avg.	O(1)	Dictionary lookup
+Board.put_piece()	O(1) avg.	O(1)	Dictionary insertion
+Board.move_piece()	O(1) avg.	O(1)	Dictionary pop/insert
+Board.path_clear()	O(N)	O(1)	Walks through squares in path
+setup_board()	O(P)	O(P)	Stores all pieces
+find_king()	O(P)	O(1)	Scans pieces
+is_in_check()	O(P × N)	O(1)	Tests enemy pieces against King
+is_legal_move()	O(P × N)	O(1)	Simulate move + is_in_check()
+has_legal_move()	O(P² × N × N²)	O(P)	Each piece × all board squares × legal-move check
+update_status()	O(P² × N³) approx.	O(P)	Dominated by has_legal_move()
+make_move()	O(P² × N³) approx.	O(P)	Dominated by update_status()
+
+For has_legal_move(), a simpler interview explanation is:
+
+P pieces
+× N² possible destination squares
+× O(P × N) legal-move check
+
+= O(P² × N³)
+
+For a normal chess board:
+
+N = 8
+P <= 32
+
+so everything is bounded by small constants.
+
+The easiest version to remember in the interview is:
+
+get / put / move       → O(1)
+
+King / Knight / Pawn   → O(1)
+
+Rook / Bishop / Queen  → O(N)
+
+find_king              → O(P)
+
+is_in_check            → O(PN)
+
+is_legal_move          → O(PN)
+
+has_legal_move         → O(P²N³)
+
+And overall board storage is O(P) space because at most the chess pieces are stored.
+
+
+
+This Piece class is the common parent class for every chess piece.
+
+class Piece(ABC):
+
+ABC means Abstract Base Class. You are saying:
+
+Every chess piece will share some common data/behavior, but Piece itself is not a real piece you should create directly.
+
+So you should create:
+
+Rook(Color.WHITE)
+Knight(Color.BLACK)
+
+not:
+
+Piece(Color.WHITE)
+
+because Piece has an abstract method.
+
+Now this part:
+
+def __init__(self, color):
+    self.color = color
+
+means every piece stores its color.
+
+Example:
+
+rook = Rook(Color.WHITE)
+
+then:
+
+rook.color
+
+is:
+
+Color.WHITE
+
+Now this function:
+
+def destination_valid(self, board, end):
+
+checks:
+
+Can this piece legally occupy the destination square based only on who is already there?
+
+This:
+
+target = board.get_piece(end)
+
+gets the piece currently present at the destination.
+
+Suppose:
+
+White Rook wants to move to (4, 4)
+
+There are 3 possibilities.
+
+If destination is empty:
+
+target is None
+
+then:
+
+return True
+
+The piece can move there.
+
+If destination contains an enemy piece:
+
+target.color != self.color
+
+then also:
+
+return True
+
+because chess allows capturing the opponent.
+
+If destination contains your own piece:
+
+target.color == self.color
+
+then both conditions are false, so:
+
+return False
+
+You cannot capture your own piece.
+
+
+
+
+
+This code checks whether a Rook's move is valid.
+
+class Rook(Piece):
+
+means Rook inherits from the common Piece class.
+
+Now:
+
+def can_move(self, board, start, end):
+
+means:
+
+Can this rook move from start position to end position on this board?
+
+First:
+
+if start == end:
+    return False
+
+A rook cannot "move" to the same square.
+
+Example:
+
+(4, 4) -> (4, 4) ❌
+
+Then:
+
+straight = (
+    start.row == end.row
+    or start.col == end.col
+)
+
+A rook can only move in a straight line:
+
+Horizontal:
+(4,1) -> (4,6) ✅
+same row
+
+Vertical:
+(2,3) -> (7,3) ✅
+same column
+
+But:
+
+(2,2) -> (5,5) ❌
+
+because both row and column changed. That's diagonal.
+
+So:
+
+start.row == end.row
+
+means horizontal move.
+
+And:
+
+start.col == end.col
+
+means vertical move.
+
+Then the final part:
+
+return (
+    straight
+    and self.destination_valid(board, end)
+    and board.path_clear(start, end)
+)
+
+means all 3 conditions must be true.
+
+1. straight
+straight
+
+Rook must move horizontally or vertically.
+
+2. destination_valid(...)
+self.destination_valid(board, end)
+
+Destination must be:
+
+empty square ✅
+
+OR
+
+enemy piece ✅
+
+but not own piece ❌
+3. board.path_clear(...)
+board.path_clear(start, end)
+
+There must be no piece blocking the rook between start and end.
+
+Example:
+
+R = Rook
+P = some piece
+
+R  _  _  _  destination
+
+✅ valid path.
+
+
+
+
+
+Bishop-
+
+This code checks whether the move is diagonal, mainly for a Bishop.
+
+row_diff = abs(start.row - end.row)
+col_diff = abs(start.col - end.col)
+
+It calculates how much the row changed and how much the column changed.
+
+Example:
+
+start = Position(2, 2)
+end   = Position(5, 5)
+
+Then:
+
+row_diff = abs(2 - 5)   # 3
+col_diff = abs(2 - 5)   # 3
+
+For a diagonal move:
+
+row difference == column difference
+
+So:
+
+diagonal = (
+    row_diff == col_diff
+    and row_diff != 0
+)
+
+means:
+
+The row and column must change by the same amount, and the piece must actually move.
+
+Example:
+
+(2,2) → (5,5)
+
+row_diff = 3
+col_diff = 3
+
+3 == 3 ✅
+
+Diagonal = True
+
+Another diagonal:
+
+(5,5) → (2,2)
+
+row_diff = abs(5 - 2) = 3
+col_diff = abs(5 - 2) = 3
+
+✅ diagonal
+
+But:
+
+(2,2) → (5,4)
+
+row_diff = 3
+col_diff = 2
+
+3 != 2
+
+❌ not diagonal
+
+The abs() is important because we don't care about direction.
+
+
+direction just tells the pawn which way is forward on our board.
+
+direction = -1 if self.color == Color.WHITE else 1
+
+So:
+
+White pawn → direction = -1
+Black pawn → direction = +1
+
+Because in our board coordinates, White moves like:
+
+row 6 → 5 → 4 → 3
+
+and Black moves like:
+
+row 1 → 2 → 3 → 4
+
+Now this:
+
+middle = Position(
+    start.row + direction,
+    start.col
+)
+
+means:
+
+Find the square exactly one step in front of the pawn.
+
+Example for a White pawn:
+
+start = Position(6, 4)
+direction = -1
+
+So:
+
+middle = Position(
+    6 + (-1),
+    4
+)
+
+becomes:
+
+middle = Position(5, 4)
+
+Why do we need middle?
+
+Because when a pawn moves 2 squares initially:
+
+(6,4) → (4,4)
+
+it passes through:
+
+(5,4)
+
+The pawn cannot jump over another piece.
+
+So we check:
+
+return board.get_piece(middle) is None
+
+board.get_piece(position) simply means:
+
+"Board, tell me which piece is currently at this position."
+
+Your Board has:
+
+def get_piece(self, position):
+    return self.pieces.get(position)
+
+So:
+
+board.get_piece(Position(5, 4))
+
+might return:
+
+None
+
+if that square is empty, or something like:
+
+Knight(Color.WHITE)
+
+if a piece is there.
+
+Therefore:
+
+return board.get_piece(middle) is None
+
+means:
+
+Return True only if the middle square is empty.
+
+
+
+
+
+path_clear() checks whether there is any piece blocking the path between start and end.
+
+It is mainly used by:
+
+Rook
+Bishop
+Queen
+
+because these pieces cannot jump over other pieces.
+
+The Knight does not need this.
+
+def path_clear(self, start, end):
+
+means:
+
+Starting from start, walk square-by-square toward end. If any square in between has a piece, return False.
+
+Now this part:
+
+row_step = (
+    0 if start.row == end.row
+    else 1 if end.row > start.row
+    else -1
+)
+
+decides how the row should change.
+
+There are only 3 possibilities:
+
+0   → row stays same
++1  → move downward
+-1  → move upward
+
+Example:
+
+start = (2,2)
+end   = (2,6)
+
+same row, so:
+
+row_step = 0
+
+For:
+
+start = (2,2)
+end   = (5,2)
+
+end row is bigger, so:
+
+row_step = 1
+
+For:
+
+start = (5,2)
+end   = (2,2)
+
+end row is smaller, so:
+
+row_step = -1
+
+Same idea for:
+
+col_step
+
+It tells us whether the column should:
+
+0   → stay same
++1  → move right
+-1  → move left
+
+Then:
+
+row = start.row + row_step
+col = start.col + col_step
+
+means:
+
+Start checking from the next square, not from the piece's own square.
+
+Example:
+
+Rook starts at (2,2)
+Rook wants to go to (2,6)
+
+Here:
+
+row_step = 0
+col_step = 1
+
+So first square checked is:
+
+(2,3)
+
+Then:
+
+while (row, col) != (end.row, end.col):
+
+means:
+
+Keep checking until we reach the destination.
+
+For (2,2) -> (2,6):
+
+Check:
+
+(2,3)
+(2,4)
+(2,5)
+
+Stop before (2,6)
+
+Why don't we check (2,6) here?
+
+Because the destination is already checked separately by:
+
+destination_valid(board, end)
+
+Now:
+
+if self.get_piece(
+    Position(row, col)
+):
+    return False
+
+means:
+
+Is there any piece on the current intermediate square?
+
+For example:
+
+R . . P . X
+
+If P is blocking the rook:
+
+self.get_piece(Position(row, col))
+
+returns that piece.
+
+Since a piece exists:
+
+return False
+
+means the path is blocked.
+
+Then:
+
+row += row_step
+col += col_step
+
+moves to the next square.
+
+Example for a rook:
+
+start = (2,2)
+end   = (2,6)
+
+row_step = 0
+col_step = 1
+
+Sequence:
+
+(2,3)
+(2,4)
+(2,5)
+
+If all are empty:
+
+return True
+
+So the whole function means:
+
+Start
+  ↓
+Move one square toward destination
+  ↓
+Is there a piece?
+  ↓
+YES → False
+NO  → continue
+  ↓
+Reached destination?
+  ↓
+YES → True
+
+A concrete example:
+
+Rook at (2,2)
+Destination (2,6)
+
+Board:
+
+(2,2) R
+(2,3) empty
+(2,4) empty
+(2,5) empty
+(2,6) destination
+
+→ path_clear() = True
+
+But:
+
+(2,2) R
+(2,3) empty
+(2,4) Pawn
+(2,5) empty
+(2,6) destination
+
+→ path_clear() = False
+
+
+
+
+
+
+
+This method checks:
+
+“Is this player's King currently being attacked by any opponent piece?”
+
+def is_in_check(self, color):
+
+Here color means whose King we are checking.
+
+For example:
+
+self.is_in_check(Color.WHITE)
+
+means:
+
+Is the White King under attack?
+
+First:
+
+king_position = self.find_king(color)
+
+This finds where that King is.
+
+Example:
+
+White King → Position(7, 4)
+
+Then:
+
+for position, piece in self.board.pieces.items():
+
+This loops through every piece on the board.
+
+Example:
+
+Position(0,0) → Black Rook
+Position(0,1) → Black Knight
+Position(6,4) → White Pawn
+...
+
+Then:
+
+if piece.color == color:
+    continue
+
+means:
+
+Ignore pieces belonging to the same player.
+
+If checking White King:
+
+White pieces → skip
+Black pieces → check them
+
+Then:
+
+if piece.can_move(
+    self.board,
+    position,
+    king_position
+):
+    return True
+
+This asks each enemy piece:
+
+“Could you legally move from your current position to the King’s position?”
+
+For example:
+
+Black Rook at (3,4)
+White King at (7,4)
+
+We call:
+
+black_rook.can_move(
+    board,
+    Position(3,4),
+    Position(7,4)
+)
+
+If there is a clear vertical path:
+
+(3,4) Black Rook
+(4,4) empty
+(5,4) empty
+(6,4) empty
+(7,4) White King
+
+then:
+
+can_move(...) == True
+
+Therefore:
+
+return True
+
+means:
+
+Yes, the White King is in check.
+
+
+
+is_legal_move() checks something stronger than piece.can_move().
+
+piece.can_move() asks:
+
+“Can this piece move like this according to its own movement rule?”
+
+But is_legal_move() asks:
+
+“Is this move actually legal in the full chess game, including King safety?”
+
+Walk through it.
+
+def is_legal_move(self, start, end, color):
+
+start = current square, end = destination, color = player trying to move.
+
+First:
+
+if (
+    not self.board.valid_position(start)
+    or not self.board.valid_position(end)
+):
+    return False
+
+This checks that both squares are inside the 8×8 board.
+
+Then:
+
+piece = self.board.get_piece(start)
+
+gets the piece at the starting square.
+
+If nothing is there:
+
+if piece is None:
+    return False
+
+Then:
+
+if piece.color != color:
+    return False
+
+means you cannot move the opponent's piece.
+
+Then:
+
+if not piece.can_move(
+    self.board,
+    start,
+    end
+):
+    return False
+
+checks the piece's basic movement.
+
+For example:
+
+Rook → straight?
+Bishop → diagonal?
+Knight → L-shape?
+Pawn → correct pawn movement?
+
+Now comes the most important part:
+
+captured = self.board.move_piece(
+    start,
+    end
+)
+
+This temporarily performs the move.
+
+Suppose:
+
+White King is protected by White Rook.
+
+Black Rook ---- White Rook ---- White King
+
+White tries to move its Rook away.
+
+The Rook's own movement may be perfectly valid, but moving it away might expose the White King.
+
+So we temporarily execute the move and then ask:
+
+safe = not self.is_in_check(color)
+
+If:
+
+self.is_in_check(color)
+
+returns:
+
+True
+
+then the King is attacked.
+
+Therefore:
+
+not True
+
+becomes:
+
+False
+
+so:
+
+safe = False
+
+meaning the move is illegal.
+
+
+
+This function checks:
+
+“Does this player have at least one legal move left?”
+
+That is needed to decide checkmate or stalemate.
+
+First:
+
+pieces = list(
+    self.board.pieces.items()
+)
+
+This gets all board entries like:
+
+Position(7,0) -> White Rook
+Position(7,1) -> White Knight
+Position(0,0) -> Black Rook
+...
+
+Then:
+
+for start, piece in pieces:
+
+means:
+
+Go through every piece on the board.
+
+Here:
+
+start = current position of piece
+piece = actual piece object
+
+Then:
+
+if piece.color != color:
+    continue
+
+means:
+
+Ignore opponent pieces.
+
+So if:
+
+color = Color.WHITE
+
+we only test White pieces.
+
+Then:
+
+for row in range(8):
+    for col in range(8):
+
+means:
+
+For this piece, try every square on the 8×8 board as a possible destination.
+
+That is:
+
+(0,0)
+(0,1)
+...
+(0,7)
+
+(1,0)
+...
+(7,7)
+
+Total:
+
+64 possible destination squares
+
+Then:
+
+end = Position(row, col)
+
+creates that destination.
+
+Then:
+
+if self.is_legal_move(
+    start,
+    end,
+    color
+):
+    return True
+
+means:
+
+If this piece can legally move to even one square, immediately return True.
+
+
+
+
+

@@ -1,0 +1,448 @@
+./coding_list.txt
+./3.string
+./3.string/67.permuataion string
+./3.string/85.Second Most Repeated String
+./3.string/78.not done
+./3.string/70.edit distance
+./3.string/94.Recursively remove all adjacent duplicates
+./3.string/63.count and say
+./3.string/88.Program to generate all possible valid IP addresses from given  string
+./3.string/.DS_Store
+./3.string/79.Count of number of given string in 2D character array
+./3.string/125.leetcode-valid palindrome
+./3.string/76.sequence of numeric
+./3.string/90.Rearrange characters in a string such that no two adjacent are same
+./3.string/77.Minimum number of bracket reversals needed to make an expression balanced
+./3.string/92.Given a sequence of words, print all anagrams together
+./3.string/99.Recursively print all sentences that can be formed from list of word lists
+./3.string/68.split
+./3.string/71.nextpermutation
+./3.string/82.Converting Roman Numerals to Decimal
+./3.string/69.word wrap
+./3.string/64.palindrome
+./3.string/74.rabin
+./3.string/73.wordbreak
+./3.string/string theory.docx
+./3.string/98.isomorphic
+./3.string/65.longest subsequence
+./3.string/83.Longest Common Prefix
+./3.string/139.word_break
+./3.string/86.Minimum number of swaps for bracket balancing
+./3.string/81.Boyer Moore Algorithm for Pattern Searching
+./3.string/61.rotation
+./3.string/84.Number of flips to make binary string alternate
+./3.string/66.subsequence
+./3.string/72.Balanced Parenthesis problem.[Imp]
+./3.string/62.valid shuffle
+./3.string/75.kmp
+./.DS_Store
+./12.graph
+./12.graph/362.search in maze
+./12.graph/378.flyodd warshall
+./12.graph/375.prim
+./12.graph/366.mak wired connection
+./12.graph/363.knight
+./12.graph/377.bellman ford
+./12.graph/374.kruskal
+./12.graph/382.1 Articulation Point in Graph
+./12.graph/.DS_Store
+./12.graph/372.find islands
+./12.graph/385.Detect Negative cycle in a graph
+./12.graph/361.cycle undirected
+./12.graph/357.graph it
+./12.graph/379.travelling saleman
+./12.graph/code.txt
+./12.graph/373.dictionary
+./12.graph/359.dfs
+./12.graph/381.2. Strongly Connected Components - Kosaraju_s Algorithm
+./12.graph/360.cycle directed
+./12.graph/364.flood fill
+./12.graph/disjoint set
+./12.graph/367.word ladder
+./12.graph/384.Check whether a graph is Bipartite or Not
+./12.graph/369.topological sort
+./12.graph/368.djakstra
+./12.graph/381.Find bridge in a graph
+./12.graph/365.clone
+./12.graph/358.bfs
+./12.graph/381.1.Snake and Ladders Problem
+./7.BST
+./7.BST/223..binary tree to bst
+./7.BST/217 and 218
+./7.BST/215 and 216
+./7.BST/231.Count BST Nodes that lie in a given range
+./7.BST/236.Flatten BST to sorted list
+./7.BST/235.Largest BST
+./7.BST/229.Count pairs from 2 BST whose sum is equal to given value X
+./7.BST/225.merge 2 bst
+./7.BST/220.populate inorder
+./7.BST/232.Replace every element with the least greater element on its right
+./7.BST/226 and 227
+./7.BST/230.Find median of BST
+./7.BST/219.bst or not
+./7.BST/234.Check whether BST contains Dead End
+./7.BST/224.bst to balanced bst
+./7.BST/222.bst from preorder
+./7.BST/221.lca of bst
+./15.bit manipulation
+./15.bit manipulation/common_operators.txt
+./15.bit manipulation/8.singlenumber
+./15.bit manipulation/3.2 non repeat
+./15.bit manipulation/5.count set bits
+./15.bit manipulation/6.Detect if two integers have opposite signs
+./15.bit manipulation/10.power set
+./15.bit manipulation/7.swap bits
+./15.bit manipulation/2.swap a and b
+./15.bit manipulation/1.missing number
+./15.bit manipulation/1.1count 1 bit
+./15.bit manipulation/11.without
+./15.bit manipulation/9.add 2 number
+./15.bit manipulation/4.odd 2 occurences
+./4.search and sorting
+./4.search and sorting/117.product array puzzle
+./4.search and sorting/128..job scheduling
+./4.search and sorting/116.0 sum subarray
+./4.search and sorting/122.kth smallest
+./4.search and sorting/130.Trailing Zeroes in Factorials
+./4.search and sorting/126.book allocation
+./4.search and sorting/.DS_Store
+./4.search and sorting/104.search in rotated
+./4.search and sorting/binary search
+./4.search and sorting/114.triplet  less than sum
+./4.search and sorting/123.pivot in sorted
+./4.search and sorting/1865. Finding Pairs With a Certain Sum
+./4.search and sorting/113.max sum no adjacent
+./4.search and sorting/108.repreatand miss
+./4.search and sorting/110.k diff
+./4.search and sorting/sorting
+./4.search and sorting/135.count inversion
+./4.search and sorting/125.aggressive cows
+./4.search and sorting/102.first and last
+./4.search and sorting/103.fixed
+./4.search and sorting/109.majority element
+./4.search and sorting/112.4 sum
+./4.search and sorting/111.find pair diff
+./4.search and sorting/119.minimum swap to sort array
+./11.heap
+./11.heap/343Merge 2 Binary Max Heaps
+./11.heap/.DS_Store
+./11.heap/342.Merge k Sorted Arrays
+./11.heap/352Convert min heap to max heap
+./11.heap/349.Check if a Binary Tree is Heap
+./11.heap/4. Return K largest Elements in array
+./11.heap/2.heapsort
+./11.heap/344.Kth largest sum continuous subarrays
+./11.heap/347.Smallest range in “K” Lists
+./11.heap/345.Leetcode- reorganize strings
+./11.heap/350.Minimum Cost of ropes
+./11.heap/351.Convert BST to Min Heap
+./11.heap/348.Median in a stream of Integers
+./11.heap/354.Minimum sum of two numbers formed from digits of an array
+./6.binary tree
+./6.binary tree/195.double linked list
+./6.binary tree/187.rightview
+./6.binary tree/181.diameter
+./6.binary tree/191.balanced
+./6.binary tree/182.mirror
+./6.binary tree/BFS_DFS
+./6.binary tree/203.sum of longest path
+./6.binary tree/200.leafnode same level
+./6.binary tree/188.0vetical transversal
+./6.binary tree/206.no adjacent max sum
+./6.binary tree/202.mirror nary tree
+./6.binary tree/205.max subtree
+./6.binary tree/201.duplicate subtree
+./6.binary tree/210.kth ancestor
+./6.binary tree/178.level order sum at k
+./6.binary tree/186.leftview
+./6.binary tree/208.lca
+./6.binary tree/0.0 insertion
+./6.binary tree/184.preorder
+./6.binary tree/207.k sum path
+./6.binary tree/types of tree.txt
+./6.binary tree/183.inorder
+./6.binary tree/185.postorder
+./6.binary tree/196.sum tree
+./6.binary tree/192.diagnol
+./6.binary tree/190.zigzag
+./6.binary tree/0.1 tree tranversal
+./6.binary tree/199.check sum or not
+./6.binary tree/209.distance beween 2 nodes
+./6.binary tree/198.swap bst
+./6.binary tree/189.bottom view
+./6.binary tree/193.boundary
+./6.binary tree/180.hieght
+./6.binary tree/204.graph tree or not
+./6.binary tree/179.reverse level order
+./6.binary tree/212.isomorphism
+./6.binary tree/188.topview
+./6.binary tree/211.duplicate all
+./6.binary tree/197.inorder preorder
+./6.binary tree/194.string bracket
+./2.matrix
+./2.matrix/0.extra
+./2.matrix/.DS_Store
+./2.matrix/52.rotate
+./2.matrix/49.print
+./2.matrix/46.search
+./2.matrix/54.common
+./2.matrix/50.max rectangle
+./2.matrix/45.spiral
+./2.matrix/53.kth smallest
+./2.matrix/47.median
+./2.matrix/48.max1
+./14.DP
+./14.DP/35. Best Time to Buy and Sell Stock
+./14.DP/26. Print Longest Common Subsequence
+./14.DP/50. Minimum Cost to Cut the Stick
+./14.DP/54. Partition Array for Maximum Sum
+./14.DP/42. Printing Longest Increasing Subsequence
+./14.DP/47. Number of Longest Increasing Subsequences
+./14.DP/19. 01 Knapsack
+./14.DP/15.partition sum equal sum
+./14.DP/3.frog jump
+./14.DP/31. Shortest Common Supersequence
+./14.DP/do dp from striver.txt
+./14.DP/38. Buy and Stock Sell IV
+./14.DP/34. Wildcard Matching
+./14.DP/12.minmax falling sum
+./14.DP/22. Coin Change 2
+./14.DP/46. Longest Bitonic Subsequence
+./14.DP/27. Longest Common Substring
+./14.DP/45. Longest String Chain
+./14.DP/9.grid unique
+./14.DP/8.grid unique pattern
+./14.DP/21. Target Sum
+./14.DP/33. Edit Distance
+./14.DP/11.traingle
+./14.DP/41. Longest Increasing Subsequence
+./14.DP/25. Longest Common Subsequence
+./14.DP/40. Buy and Sell Stocks With Transaction Fee
+./14.DP/32. Distinct Subsequences
+./14.DP/48. Matrix Chain Multiplication
+./14.DP/52. Evaluate Boolean Expression to True
+./14.DP/13.cherry pickup
+./14.DP/20. Minimum Coins
+./14.DP/5.non adjacent addition
+./14.DP/53. Palindrome Partitioning - II
+./14.DP/51. Burst Balloons
+./14.DP/44. Largest Divisible Subset
+./14.DP/17. Counts Subsets with Sum K
+./14.DP/10.min path sum grid
+./14.DP/43. Longest Increasing Subsequence
+./14.DP/30. Minimum InsertionsDeletions to Convert String A to String B
+./14.DP/16.Partition A Set Into Two Subsets With Minimum Absolute Sum Difference
+./14.DP/4.frog jump with k dist
+./14.DP/7.ninja training
+./14.DP/18. Count Partitions With Given Difference
+./14.DP/36. Buy and Sell Stock - II
+./14.DP/39. Buy and Sell Stocks With Cooldown
+./14.DP/29. Minimum Insertions to Make String Palindrome
+./14.DP/28. Longest Palindromic Subsequence
+./14.DP/37. Buy and Sell Stocks III
+./14.DP/14.subsequence equal to target
+./14.DP/56. Count Square Submatrices with All Ones
+./14.DP/2.climbing stairs
+./14.DP/23. Unbounded Knapsack
+./14.DP/24. Rod Cutting Problem
+./8.greedy method
+./8.greedy method/253.Maximum product subset of an array
+./8.greedy method/254.Maximize array sum after K negations
+./8.greedy method/259.Program for Shortest Job First (or SJF) CPU Scheduling
+./8.greedy method/code.txt
+./8.greedy method/0.basic.docx
+./8.greedy method/246.Minimum Platforms Problem
+./8.greedy method/240.Job SequencingProblem
+./8.greedy method/244.Greedy Algorithm to find Minimum number of Coins
+./8.greedy method/251.Check if it is possible to survive on Island
+./8.greedy method/239.Activity Selection Problem
+./8.greedy method/248.Find the minimum and maximum amount to buy all N candies
+./8.greedy method/261.Smallest subset with sum greater than all other elements
+./8.greedy method/245.mimimum coins
+./8.greedy method/250.min cost to cut board into sqaures
+./8.greedy method/243.Fractional Knapsack Problem
+./5.linked list
+./5.linked list/which cant do..txt
+./5.linked list/145.unsortedduplicate.exe
+./5.linked list/141.floyd cycle finding algo.cpp
+./5.linked list/160.find pair sum dll
+./5.linked list/142.delete
+./5.linked list/2.circularlinkedlist.cpp
+./5.linked list/156.palindrome-1.cpp
+./5.linked list/144.sortedduplicate.exe
+./5.linked list/152.mergesort
+./5.linked list/143.cpp
+./5.linked list/153.cpp
+./5.linked list/149.intersection.cpp
+./5.linked list/139.2reverserecursive.exe
+./5.linked list/170.merge k sorted linked list
+./5.linked list/166.flattena linked list.cpp
+./5.linked list/146last.cpp
+./5.linked list/156split
+./5.linked list/167.012 sort.cpp
+./5.linked list/153.quick sort
+./5.linked list/156-palindrome optimal.cpp
+./5.linked list/159.revere
+./5.linked list/161.triplet given sum
+./5.linked list/double pointer.cpp
+./5.linked list/139.2reverserecursive.cpp
+./5.linked list/147.add1 to list..cpp
+./5.linked list/144.sortedduplicate.cpp
+./5.linked list/145.unsortedduplicate.cpp
+./5.linked list/169.merge.cpp
+./5.linked list/139.PNG
+./5.linked list/168.sort0,1,2
+./5.linked list/141.1.detect loop.cpp
+./5.linked list/0.1basics.exe
+./5.linked list/141.basics
+./5.linked list/0.basics.exe
+./5.linked list/164.Rotate a Doubly Linked list in group of Given Size.[Very IMP]
+./5.linked list/143 find loop.cpp
+./5.linked list/3.doublylinkedlist.cpp
+./5.linked list/140.reverse in given list.cpp
+./5.linked list/175.nonrepeating character
+./5.linked list/139.1 reverse.exe
+./5.linked list/leetcode 1019.cpp
+./5.linked list/148.add2num.cpp
+./5.linked list/163.Reverse Nodes in k-Group
+./5.linked list/leetcode 1019.exe
+./5.linked list/Capture.JPG
+./5.linked list/162.sort-k-sorted-doubly-linked-list
+./5.linked list/168.clone.cpp
+./5.linked list/0.basics.cpp
+./5.linked list/172.right
+./5.linked list/143 find loop.exe
+./5.linked list/171.multiply
+./5.linked list/0.1basics.cpp
+./5.linked list/139.1 reverseiterative.cpp
+./5.linked list/1.singlelinkedlist.cpp
+./9.backtracking
+./9.backtracking/18.K-th Permutation Sequence
+./9.backtracking/14.n-queens
+./9.backtracking/16.M-Coloring Problem
+./9.backtracking/1.1 backtracking
+./9.backtracking/15.sudoko puzzle
+./9.backtracking/17.palindrome partitioning
+./9.backtracking/19.rat in a maze
+./9.backtracking/1.introduction to recursion
+./10.stack and queue
+./10.stack and queue/1381. Design a Stack With Increment Operation.rtf
+./10.stack and queue/10.sliding window
+./10.stack and queue/1.stack
+./10.stack and queue/329.First negative integer in every window of size “k”
+./10.stack and queue/299.Implement two Stacks in an Array
+./10.stack and queue/316.implement stack using queue
+./10.stack and queue/301.Implement N stacks in an Array
+./10.stack and queue/.DS_Store
+./10.stack and queue/7.Implement LRU Cache
+./10.stack and queue/5.Valid Parentheses
+./10.stack and queue/3.Stack Implementation using a Single Queue
+./10.stack and queue/328.Distance of nearest cell having 1 in a binary matrix
+./10.stack and queue/2.queue
+./10.stack and queue/309.Implement a method to insert an element at its bottom without using any other data structure
+./10.stack and queue/11.largest rectangle in histogram
+./10.stack and queue/308.postfix expression
+./10.stack and queue/306.the celebrity problem
+./10.stack and queue/code.txt
+./10.stack and queue/331.Sum of minimum and maximum elements of all subarrays of size “k”
+./10.stack and queue/14.Implement Min Stack
+./10.stack and queue/315.Expression contains redundant bracket or not
+./10.stack and queue/4.Queue Implementation using Stack
+./10.stack and queue/314.Length of the Longest Valid Substring
+./10.stack and queue/300.Find the Middle Element of a Stack in O(1) time
+./10.stack and queue/330.Check if all levels of two trees are anagrams or not
+./10.stack and queue/12.Rotten Oranges (BFS)  C++ & Java Code
+./10.stack and queue/946. Validate Stack Sequences
+./10.stack and queue/326.Find the first circular tour that visits all Petrol Pumps
+./10.stack and queue/307.arthimetic expression
+./10.stack and queue/13.deque
+./10.stack and queue/310.Reverse a stack using recursion
+./10.stack and queue/334.Next Smaller Element
+./10.stack and queue/319.Implement Queue using Stack
+./10.stack and queue/318.Stack Permutations (Check if an array is stack permutation of other)
+./10.stack and queue/323.Reverse a Queue using recursion
+./10.stack and queue/311.Sort a Stack using recursion
+./10.stack and queue/6.Next Greater Element
+./10.stack and queue/321.Implement a Circular queue
+./10.stack and queue/8.Imlement LFU Cache
+./10.stack and queue/303.reverse string
+./14.1.trie
+./14.1.trie/L1. Implement TRIE  INSERT  SEARCH  STARTSWITH
+./14.1.trie/L6. Maximum XOR of Two Numbers in an Array
+./14.1.trie/L2. Implement Trie-2  INSERT  countWordsEqualTo()
+./14.1.trie/L5. Bit PreRequisites for TRIE Problems
+./14.1.trie/L4. Number of Distinct Substrings in a String
+./14.1.trie/L3. Longest Word With All Prefixe
+./14.1.trie/L7. Maximum XOR With an Element From Array
+./16.System_Design
+./16.System_Design/LRU
+./16.System_Design/Consistent_Hashing
+./16.System_Design/Payment_System
+./16.System_Design/Distributed-Logging
+./16.System_Design/.DS_Store
+./16.System_Design/Notification_System
+./16.System_Design/Design_Pattern
+./16.System_Design/Rate-Limiter
+./16.System_Design/Key_Value_Store
+./16.System_Design/Unique_Id_Generator
+./16.System_Design/URL_Shortner
+./.git
+./.git/config
+./.git/objects
+./.git/HEAD
+./.git/info
+./.git/logs
+./.git/description
+./.git/hooks
+./.git/refs
+./.git/gk
+./.git/index
+./.git/COMMIT_EDITMSG
+./1.array
+./1.array/974. Subarray Sums Divisible by K
+./1.array/2149. Rearrange Array Elements by Sign
+./1.array/32.sy=ubset
+./1.array/23.1.subarray given sum
+./1.array/274
+./1.array/35.chocalate
+./1.array/14.Minimize the maximum difference between the heights
+./1.array/37.partiotioning
+./1.array/528. Random Pick with Weight
+./1.array/40.median of same
+./1.array/35.1.k subsequence find
+./1.array/10.negative
+./1.array/22.buy and sell stock
+./1.array/325.Maximum Sum of Distinct Subarrays With Length K
+./1.array/8.kth max min
+./1.array/1590. Make Sum Divisible by P
+./1.array/1658. Minimum Operations to Reduce X to Zero
+./1.array/21.count inversion
+./1.array/21.1.max product
+./1.array/36.Smallest subarray with sum greater than a given value
+./1.array/20.nextpermutation
+./1.array/1695. Maximum Erasure Value
+./1.array/38.min swaps
+./1.array/18.kadane
+./1.array/15.Minimum number of jumps to reach end
+./1.array/24.3sorted
+./1.array/23.pair sum
+./1.array/39.palindrome
+./1.array/380. Insert Delete GetRandom O(1)
+./1.array/17.1.sliding window protocol
+./1.array/30.nk
+./1.array/1.6reverse
+./1.array/27.large number factorial
+./1.array/41.median diff size
+./1.array/34.trapping water
+./1.array/16.duplicate
+./1.array/560. Subarray Sum Equals K
+./1.array/11.unionintersection
+./1.array/2.7minmax
+./1.array/1248. Count Number of Nice Subarrays
+./1.array/381. Insert Delete GetRandom O(1) - Duplicates allowed
+./1.array/19.mergeinterval
+./1.array/17.merge sorted array
+./1.array/25.alternate negative and positive
+./1.array/0.sort
+./1.array/4.9012sort
+./1.array/523. Continuous Subarray Sum

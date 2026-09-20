@@ -2,54 +2,48 @@ Ques:https://leetcode.com/problems/house-robber/description/
 
 Code:
 
-#include <bits/stdc++.h>
-using namespace std;
+def solve(index, nums):
+    if index == 0:
+        return nums[index]
+    elif index < 0:
+        return 0
 
-int solve(int index, vector<int> n)
-{
-    if (index == 0) return n[index];
-    else if (index < 0) return 0;
+    pick = nums[index] + solve(index - 2, nums)
+    not_pick = solve(index - 1, nums)
 
-    int pick = n[index] + solve(index - 2, n);
-    int notpick = 0 + solve(index - 1, n);
-
-    return max(pick, notpick);
-}
-
-int maximumNonAdjacentSum(vector<int> &nums){
-    int k = nums.size();
-    int m = solve(k - 1, nums);
-    return m;
-}
-
-int main()
-{
-    vector<int> v{1, 2, 3, 4};
-    int k = maximumNonAdjacentSum(v);
-    cout << k;
-    return 0;
-}
+    return max(pick, not_pick)
 
 
-🧪 Input
-cpp
-Copy
-Edit
-v = {1, 2, 3, 4}
-✅ Output
-Copy
-Edit
+def maximum_non_adjacent_sum(nums):
+    k = len(nums)
+    return solve(k - 1, nums)
+
+
+# -------------------------------
+# Driver code (same as C++)
+# -------------------------------
+v = [1, 2, 3, 4]
+result = maximum_non_adjacent_sum(v)
+print(result)
+
+🧪 Sample Input
+v = [1, 2, 3, 4]
+
+✅ Sample Output
 6
-⏱️ Time Complexity
-scss
-Copy
-Edit
-O(2^n)
-Every index branches into 2 recursive calls → exponential time.
 
-🗂️ Space Complexity
-scss
-Copy
-Edit
-O(n)
-Max recursion stack depth is n (in worst case: every index - 1 call).
+🧠 Explanation
+
+Possible non-adjacent selections:
+
+1 + 3 = 4
+
+2 + 4 = 6 ✅ (maximum)
+
+So the result is 6.
+
+⏱️ Time & Space Complexity
+Metric	Value
+Time Complexity	O(2ⁿ)
+Space Complexity	O(n)
+Reason	Exponential recursion + recursion stack

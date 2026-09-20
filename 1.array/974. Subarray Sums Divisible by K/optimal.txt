@@ -1,0 +1,81 @@
+Ques:https://leetcode.com/problems/subarray-sums-divisible-by-k/
+
+
+Not fully working. Your idea is correct: use prefix sum remainder frequency.
+
+But your implementation has 2 mistakes.
+
+Mistake 1
+arr = {0: 0}
+
+This should start with remainder 0 frequency as 1, because empty prefix already has remainder 0.
+
+Why?
+
+If prefix sum itself is divisible by k, we should count it directly using hashmap.
+
+Correct thinking:
+
+arr = {0: 1}
+Mistake 2
+else:
+    arr[ind] = 0
+
+When a new remainder comes, its frequency should become 1, not 0.
+
+Because you have seen this remainder once now.
+
+Correct:
+
+else:
+    arr[ind] = 1
+
+
+Sol1:
+
+class Solution:
+    def subarraysDivByK(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        count=0
+        arr={0:0}
+        sum=0
+        for i in range(n):
+            sum+=nums[i]
+            ind= sum%k
+            if ind==0 and ind in arr:
+                count+=1
+            elif ind in arr:
+                arr[ind]+=1
+                count+=arr[ind]
+            else:
+                arr[ind]=0
+        
+        return count
+
+But will not work on the 8,9,7,8,9
+
+
+optimal Sol:
+
+class Solution:
+    def subarraysDivByK(self, nums: List[int], k: int) -> int:
+        n = len(nums)
+        count=0
+        arr={0:0}
+        sum=0
+        for i in range(n):
+            sum+=nums[i]
+            ind= sum%k
+            if ind in arr:
+                arr[ind]+=1
+                count+=arr[ind]
+            else:
+                arr[ind]=0
+        
+        return count
+
+see ehre as the initla 0 ind 1 value and rest of them will make 
+
+
+TC:
+SC:

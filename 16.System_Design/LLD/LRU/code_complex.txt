@@ -1,0 +1,445 @@
+Question
+
+Implement an LRU cache with:
+
+Expiration (TTL)
+
+Priority-based eviction
+
+LRU behavior
+
+O(1) access using HashMap + Doubly Linked List
+
+Eviction Rules
+
+Remove expired items first
+
+If still full → remove lowest priority
+
+If multiple with same priority → remove least recently used
+
+Python Implementation
+import time
+
+
+class Node:
+    def __init__(self, key, value, expire_time=None, priority=0):
+        self.key = key
+        self.value = value
+        self.expire_time = expire_time
+        self.priority = priority
+        self.prev = None
+        self.next = None
+
+
+class LRUCache:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.cache = {}
+
+        # Dummy head and tail
+        self.head = Node(None, None, None, None)
+        self.tail = Node(None, None, None, None)
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    # ---------------- Helper Methods ----------------
+
+    def _remove(self, node):
+        prev_node = node.prev
+        next_node = node.next
+        prev_node.next = next_node
+        next_node.prev = prev_node
+
+    def _add_to_front(self, node):
+        node.next = self.head.next
+        node.prev = self.head
+        self.head.next.prev = node
+        self.head.next = node
+
+    def _is_expired(self, node):
+        return node.expire_time is not None and node.expire_time <= time.time()
+
+    def _evict(self):
+        # 1️⃣ Remove expired items first
+        current = self.tail.prev
+        while current != self.head:
+            prev_node = current.prev
+            if self._is_expired(current):
+                self._remove(current)
+                del self.cache[current.key]
+            current = prev_node
+
+        if len(self.cache) < self.capacity:
+            return
+
+        # 2️⃣ Evict lowest priority, LRU if tie
+        node = self.tail.prev
+        lowest_priority = float("inf")
+        candidates = []
+
+        while node != self.head:
+            if not self._is_expired(node):
+                if node.priority < lowest_priority:
+                    lowest_priority = node.priority
+                    candidates = [node]
+                elif node.priority == lowest_priority:
+                    candidates.append(node)
+            node = node.prev
+
+        # Remove LRU among lowest priority
+        if candidates:
+            lru_node = candidates[-1]  # least recently used
+            self._remove(lru_node)
+            del self.cache[lru_node.key]
+
+    # ---------------- Public APIs ----------------
+
+    def get(self, key):
+        if key not in self.cache:
+            return -1
+
+        node = self.cache[key]
+
+        if self._is_expired(node):
+            self._remove(node)
+            del self.cache[key]
+            return -1
+
+        # Move to front (most recently used)
+        self._remove(node)
+        self._add_to_front(node)
+        return node.value
+
+    def set(self, key, value, ttl=None, priority=0):
+        expire_time = time.time() + ttl if ttl is not None else None
+
+        if key in self.cache:
+            node = self.cache[key]
+            node.value = value
+            node.expire_time = expire_time
+            node.priority = priority
+            self._remove(node)
+            self._add_to_front(node)
+        else:
+            if len(self.cache) >= self.capacity:
+                self._evict()
+
+            node = Node(key, value, expire_time, priority)
+            self.cache[key] = node
+            self._add_to_front(node)
+
+🧪 Sample Input / Usage
+cache = LRUCache(2)
+
+# key, value, ttl(seconds), priority
+cache.set(1, "A", ttl=5, priority=1)
+cache.set(2, "B", ttl=5, priority=0)
+
+print(cache.get(1))   # Access key 1
+
+cache.set(3, "C", ttl=5, priority=2)  # Eviction happens here
+
+print(cache.get(2))   # Expected eviction
+print(cache.get(3))
+print(cache.get(1))
+
+📤 Sample Output
+A
+-1
+C
+A
+
+🧠 Step-by-Step Explanation
+Initial Inserts
+Cache: {1:A(p=1), 2:B(p=0)}
+Order (MRU → LRU): 1 → 2
+
+get(1)
+
+Key 1 becomes most recently used
+
+Order: 1 → 2
+
+set(3, "C", priority=2)
+
+Cache full → eviction
+
+No expired items
+
+Lowest priority = 0 → evict key 2
+
+Cache: {1:A, 3:C}
+Order: 3 → 1
+
+get(2)
+
+Already evicted → -1
+
+get(3)
+
+Returns "C"
+
+get(1)
+
+Returns "A"
+
+⏱️ Time Complexity
+Operation	Complexity
+get()	O(1) (DLL + hashmap)
+set()	O(1) average
+_evict()	O(n) worst-case (priority scan)
+
+In practice, eviction happens only when capacity is exceeded
+
+📦 Space Complexity
+O(capacity)
+
+
+⏱️ Time Complexity
+get(key)
+
+HashMap lookup: O(1)
+
+Expiry check: O(1)
+
+Doubly Linked List remove + add_front: O(1)
+
+✅ Total:
+O(1)
+
+set(key, value, ttl, priority)
+
+Best / Average case
+
+HashMap lookup: O(1)
+
+DLL operations: O(1)
+
+No eviction required
+
+✅ Average:
+O(1)
+
+evict()
+
+Eviction happens only when cache is full.
+
+Expired cleanup pass
+
+Worst case: scan all nodes → O(N)
+
+Priority + LRU selection pass
+
+Worst case: scan all nodes → O(N)
+
+✅ Worst case:
+O(N)
+
+⚠️ This cost is amortized across insertions and happens only when capacity is reached.
+
+🔁 Amortized Complexity
+Operation	Amortized Time
+get()	O(1)
+set()	O(1)
+
+(Occasional O(N) eviction does not dominate)
+
+
+HashMap → capacity
+
+Doubly Linked List → capacity
+
+
+
+
+Yes 👍 — exactly right.
+
+node.expire_time <= time.time()
+
+
+👉 This is comparing UNIX timestamps (in seconds).
+
+Let me explain clearly so there’s zero confusion.
+
+🔹 What is time.time()?
+import time
+time.time()
+
+
+Returns current UNIX timestamp
+
+Number of seconds since Jan 1, 1970 (UTC)
+
+Type: float
+
+Example:
+
+1718794123.534921
+
+
+That means:
+
+Jan 1, 1970 → now (in seconds)
+
+
+🔹 What does candidates[-1] mean?
+
+In Python:
+
+candidates[-1]
+
+
+👉 means the LAST element of the list.
+
+While:
+
+candidates[0]
+
+
+👉 means the FIRST element of the list.
+
+
+
+
+
+✅ Short Answer
+
+No, this will NOT cause any issue:
+
+expire_time = time.time() + ttl if ttl is not None else None
+priority = 0
+
+
+Both cases are intentional and safe by design.
+
+🔹 Case 1: expire_time = None (TTL not sent)
+What does it mean?
+ttl is None  →  expire_time = None
+
+
+This means:
+
+This cache entry never expires
+
+How do we safely handle this?
+
+Look at the expiration check:
+
+def _is_expired(self, node):
+    return node.expire_time is not None and node.expire_time <= time.time()
+
+
+If:
+
+node.expire_time is None
+
+
+Then:
+
+False and anything → False
+
+
+✅ So the node is treated as NOT expired
+
+✅ Result
+
+No crash
+
+No wrong eviction
+
+Entry lives forever (unless evicted by capacity/priority)
+
+This is standard cache behavior.
+
+🔹 Case 2: priority = 0 (priority not sent)
+What does priority mean?
+
+Priority is relative, not absolute
+
+Lower value = less important
+
+Higher value = more important
+
+So:
+
+priority = 0
+
+
+Means:
+
+“This entry has the lowest importance by default”
+
+Why this does NOT cause issues
+
+Eviction logic:
+
+lowest_priority = float('inf')
+
+if node.priority < lowest_priority:
+    lowest_priority = node.priority
+
+
+0 is a valid integer
+
+It participates normally in comparisons
+
+No special cases needed
+
+Example
+Key	Priority
+A	5
+B	2
+C	0
+
+Eviction order:
+
+C → B → A
+
+
+Which is exactly what we want.
+
+🔹 Case 3: TTL = None + priority = 0 (both not sent)
+
+This is actually the default / safest entry.
+
+Meaning:
+
+❌ No expiry
+
+❌ Not important
+
+✅ Evicted first when needed
+
+Perfect for:
+
+Cache warmups
+
+Optional data
+
+Best-effort values
+
+
+
+🔸 Phase 2: Priority + LRU eviction
+
+Now we’re selecting candidates for eviction:
+
+while node != self.head:
+    if not self._is_expired(node):
+        ...
+
+
+Here we are saying:
+
+“Among the nodes we are considering for eviction, ignore expired ones.”
+
+Why?
+
+Because expired entries:
+
+Are already invalid
+
+Should never influence priority decisions
+
+Might still exist due to lazy cleanup

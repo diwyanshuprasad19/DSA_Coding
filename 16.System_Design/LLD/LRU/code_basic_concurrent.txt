@@ -1,0 +1,235 @@
+🔥 Where Concurrency Issues Happen in LRU Cache
+
+Your LRU cache has shared mutable state:
+
+1. self.dict        (hashmap)
+2. doubly linked list pointers (prev / next)
+
+
+👉 Multiple threads accessing these at the same time = race conditions
+
+🔴 Critical Sections (Concurrency Risk Areas)
+1️⃣ get()
+node = self.dict[key]
+self.remove(node)
+self.add_front(node)
+
+
+❌ Problem:
+
+Thread A removes node
+
+Thread B removes same node
+
+Pointers break → corrupted list
+
+2️⃣ put() (existing key)
+node = self.dict[key]
+self.remove(node)
+node.value = value
+self.add_front(node)
+
+
+❌ Problem:
+
+Two threads updating same key
+
+Lost updates
+
+Incorrect ordering
+
+3️⃣ put() (eviction)
+lru = self.tail.prev
+self.remove(lru)
+del self.dict[lru.key]
+
+
+❌ Problem:
+
+Thread A evicts LRU
+
+Thread B still tries to access it
+
+KeyError, dangling pointer, crash
+
+4️⃣ Helper Methods (remove, add_front)
+
+These modify pointers:
+
+prev.next
+next.prev
+
+
+❌ If interleaved → list becomes inconsistent
+
+❗ Why This Is Dangerous
+
+Because operations are NOT atomic:
+
+get() = lookup + remove + add_front
+put() = check + evict + insert
+
+
+If threads interleave → partial updates
+
+✅ Correct Concurrency Strategy (Interview Answer)
+🔒 Use a single lock for the whole cache
+
+Because:
+
+LRU correctness depends on ordering
+
+Fine-grained locks are complex & risky
+
+Most production caches prefer coarse-grained locking
+
+✅ Where to Put the Lock
+🔐 Lock around public APIs
+get()
+put()
+
+NOT inside helper methods.
+
+✅ LRU Cache (Thread-Safe)
+import threading
+import time
+
+class Node:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+        self.next = None
+        self.prev = None
+
+
+class LRUCache:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.dict = {}
+        self.lock = threading.Lock()
+
+        self.head = Node(0, 0)
+        self.tail = Node(0, 0)
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def remove(self, node):
+        prev_node = node.prev
+        next_node = node.next
+        prev_node.next = next_node
+        next_node.prev = prev_node
+
+    def add_front(self, node):
+        next_node = self.head.next
+        self.head.next = node
+        node.prev = self.head
+        node.next = next_node
+        next_node.prev = node
+        self.dict[node.key] = node
+
+    def get(self, key):
+        with self.lock:
+            if key not in self.dict:
+                return -1
+
+            node = self.dict[key]
+            self.remove(node)
+            self.add_front(node)
+            return node.value
+
+    def put(self, key, value):
+        with self.lock:
+            if key in self.dict:
+                node = self.dict[key]
+                self.remove(node)
+                node.value = value
+                self.add_front(node)
+            else:
+                if len(self.dict) == self.capacity:
+                    lru = self.tail.prev
+                    self.remove(lru)
+                    del self.dict[lru.key]
+
+                node = Node(key, value)
+                self.add_front(node)
+
+🔥 Concurrency Test Code
+Multiple threads doing get() and put() at the same time
+def worker_put(cache, key, value):
+    print(f"PUT {key}")
+    cache.put(key, value)
+
+
+def worker_get(cache, key):
+    value = cache.get(key)
+    print(f"GET {key} -> {value}")
+
+
+cache = LRUCache(2)
+
+threads = []
+
+threads.append(threading.Thread(target=worker_put, args=(cache, 1, 10)))
+threads.append(threading.Thread(target=worker_put, args=(cache, 2, 20)))
+threads.append(threading.Thread(target=worker_get, args=(cache, 1)))
+threads.append(threading.Thread(target=worker_put, args=(cache, 3, 30)))
+threads.append(threading.Thread(target=worker_get, args=(cache, 2)))
+threads.append(threading.Thread(target=worker_get, args=(cache, 3)))
+threads.append(threading.Thread(target=worker_get, args=(cache, 1)))
+
+for t in threads:
+    t.start()
+
+for t in threads:
+    t.join()
+
+🧪 Sample Output (Order may vary due to threads)
+PUT 1
+PUT 2
+GET 1 -> 10
+PUT 3
+GET 2 -> -1
+GET 3 -> 30
+GET 1 -> 10
+
+
+👉 Important:
+Even though order may change, results are always correct
+(no crashes, no corruption, no wrong eviction).
+
+🧠 What Concurrency Problem Is Solved?
+❌ Without Lock
+
+Two threads remove same node
+
+DLL pointers break
+
+Cache becomes corrupted
+
+Random crashes / wrong values
+
+✅ With Lock
+
+get() and put() are atomic
+
+DLL + hashmap always consistent
+
+Correct LRU order preserved
+
+⏱️ Time Complexity (With Concurrency)
+Operation	Complexity
+get()	O(1)
+put()	O(1)
+Lock	O(1) overhead
+
+✔ Lock does not change algorithmic complexity
+
+📦 Space Complexity
+O(capacity)
+
+
+HashMap → capacity
+
+DLL nodes → capacity
+
+Lock → constant

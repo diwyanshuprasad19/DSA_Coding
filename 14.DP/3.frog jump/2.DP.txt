@@ -2,53 +2,56 @@ Ques:https://leetcode.com/problems/min-cost-climbing-stairs/description/
 
 Code:
 
-#include <bits/stdc++.h>
-using namespace std;
+✅ Updated Version: Top-Down DP (Memoized)
+def minCostClimbingStairs(cost):
+    n = len(cost)
+    dp = [-1] * n   # memo array
 
-// Top-down recursive function with memoization
-int frogJumpHelper(int n, vector<int> &heights, vector<int> &dp) {
-    if (n == 0) return 0;  // base case
+    def solve(i):
+        if i < 0:
+            return 0
+        if i == 0 or i == 1:
+            return cost[i]
 
-    if (dp[n] != -1) return dp[n];  // return cached result
+        if dp[i] != -1:      # already computed
+            return dp[i]
 
-    int left = frogJumpHelper(n - 1, heights, dp) + abs(heights[n] - heights[n - 1]);
-    int right = INT_MAX;
-    if (n > 1)
-        right = frogJumpHelper(n - 2, heights, dp) + abs(heights[n] - heights[n - 2]);
+        dp[i] = cost[i] + min(
+            solve(i - 1),
+            solve(i - 2)
+        )
+        return dp[i]
 
-    return dp[n] = min(left, right);  // store and return result
-}
+    return min(solve(n - 1), solve(n - 2))
 
-int frogJump(int n, vector<int> &heights) {
-    vector<int> dp(n, -1);
-    return frogJumpHelper(n - 1, heights, dp);
-}
+🧪 Sample Input 1
+cost = [10, 15, 20]
+print(minCostClimbingStairs(cost))
 
-int main() {
-    vector<int> heights = {10, 20, 30, 10};
-    int n = heights.size();
+✅ Output
+15
 
-    int result = frogJump(n, heights);
-    cout << "Minimum energy required: " << result << endl;
+Explanation
 
-    return 0;
-}
+Start at index 1
 
-Input / Output
-Input:
+Pay 15
 
-cpp
-Copy
-Edit
-heights = {10, 20, 30, 10}
-Output:
+Jump two steps → reach top
 
-swift
-Copy
-Edit
-Minimum energy required: 20
+🧪 Sample Input 2
+cost = [1,100,1,1,1,100,1,1,100,1]
+print(minCostClimbingStairs(cost))
 
-Time and Space Complexity
+✅ Output
+6
+
+Explanation (path)
+0 → 2 → 4 → 6 → 7 → 9 → top
+Costs paid: 1 + 1 + 1 + 1 + 1 + 1 = 6
+
+⏱️ Time & Space Complexity
 Metric	Value
 Time Complexity	O(n)
-Space Complexity	O(n) (DP + recursion stack)
+Space Complexity	O(n)
+Reason	Each index computed once + recursion stack

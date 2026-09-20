@@ -1,0 +1,86 @@
+Functional requirements
+The game should support multiple players.
+The board should have N cells, default can be 100.
+Each player starts at position 0.
+Players should play in round-robin order.
+On each turn, the current player rolls a dice.
+The dice should return a number, normally 1–6.
+The player's tentative position is:
+current_position + dice_value
+If the player lands at the start of a ladder, they move to the ladder's end.
+4 → 25
+If the player lands at the head of a snake, they move to the snake's tail.
+97 → 32
+Snakes and ladders should be configurable.
+A player wins when they reach the last cell exactly.
+
+Example:
+
+Current = 97
+Roll = 3
+
+97 + 3 = 100
+Winner
+If a player overshoots the board, they should remain at their current position.
+Current = 98
+Roll = 5
+
+98 + 5 > 100
+
+Stay at 98
+Once a player wins, the game should end.
+We should be able to know the current state of the game:
+NOT_STARTED
+IN_PROGRESS
+FINISHED
+The system should be able to tell:
+current player
+dice value
+old position
+new position
+whether snake/ladder was encountered
+winner
+Good assumptions to explicitly tell the interviewer
+Board size = configurable, default 100
+Players >= 2
+Dice = one 6-sided dice initially
+Exact roll required to win
+One winner ends the game
+Players take turns round-robin
+Snake always moves downward
+Ladder always moves upward
+Edge cases we should eventually handle
+Snake start < end        ❌ invalid
+Ladder start > end       ❌ invalid
+
+Snake/Ladder outside board
+                         ❌ invalid
+
+Snake and ladder starting
+on same cell             ❌ invalid
+
+Player rolls beyond 100
+                         → don't move
+
+Game already finished
+                         → no more moves
+
+Less than 2 players
+                         ❌ invalid
+Non-functional/design requirements
+
+For an SDE-2/SSE LLD, also mention:
+
+Extensible
+- easy to support different dice
+- easy to change board size
+- easy to introduce new game rules
+
+Maintainable
+- Game should not contain every responsibility
+
+Testable
+- dice should be replaceable with deterministic dice
+
+Clean OOP
+- clear separation between Player, Board, Dice and Game

@@ -1,0 +1,17 @@
+.git
+.venv
+venv
+.env
+.env.*
+.platform-ops
+node_modules
+vendor
+**/__pycache__
+.pytest_cache
+.kafka-data
+.bench-logs
+.e2e-logs
+data/usage
+data/alerts
+*.md
+.DS_Store

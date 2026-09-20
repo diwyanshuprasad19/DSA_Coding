@@ -1,0 +1,270 @@
+1. Functional Requirements
+The game should support 2 players.
+Each player should have:
+a unique name/id
+a unique symbol, for example X and O
+The game should use an N × N board.
+Default size: 3 × 3
+It should be possible to support 4 × 4, 5 × 5, etc.
+Players should take turns alternately.
+A player should be able to place their symbol only:
+inside the board
+on an empty cell
+A player wins when all cells in any one of these contain their symbol:
+complete row
+complete column
+main diagonal
+anti-diagonal
+If the board becomes full and no player has won, the game should end in a DRAW.
+The game should expose the current status:
+IN_PROGRESS
+WON
+DRAW
+If the game is won:
+winner should be stored
+no further normal moves should be allowed
+If the game is drawn:
+no further normal moves should be allowed
+2. Player Types
+
+The system should support:
+
+Human vs Human
+Human vs Bot
+
+For bots, move-selection behavior should be replaceable.
+
+Initially:
+
+RandomMoveStrategy
+
+Later:
+
+MinimaxMoveStrategy
+
+Changing bot logic should not require changing the Game class.
+
+3. Move History
+
+The system should maintain history of all successful moves.
+
+For every move, we should know:
+
+player
+symbol
+row
+column
+
+Example:
+
+Move(
+    player = Player1,
+    row = 0,
+    column = 2
+)
+4. Undo Requirement
+
+The game should support:
+
+undo_last_move()
+
+Undo should:
+
+Remove the last symbol from board
+Restore previous player's turn
+Update move history
+Restore game status
+Restore winner information
+
+For example:
+
+WON
+ ↓ undo
+IN_PROGRESS
+
+Similarly:
+
+DRAW
+ ↓ undo
+IN_PROGRESS
+
+If there are no previous moves:
+
+undo()
+→ reject operation
+5. Validation / Edge Cases
+
+The system must reject invalid coordinates:
+
+row < 0
+column < 0
+
+row >= board_size
+column >= board_size
+
+It should also reject:
+
+Move on occupied cell
+
+Move after WON
+
+Move after DRAW
+
+Same symbol assigned to both players
+
+Invalid board size
+
+Undo when move history is empty
+
+For example:
+
+Board size = 3
+
+Valid:
+(0,0)
+(0,2)
+(2,2)
+
+Invalid:
+(-1,0)
+(0,-1)
+(3,0)
+(0,3)
+6. Extensibility Requirements
+
+This is important for the SDE-2/SSE level.
+
+The design should make it easy to extend:
+
+3 × 3
+   ↓
+N × N
+
+
+Human vs Human
+   ↓
+Human vs Bot
+
+
+Random Bot
+   ↓
+Minimax Bot
+
+
+Current winning rules
+   ↓
+Different winning rules
+
+
+X / O
+   ↓
+Different symbols
+
+
+Undo
+   ↓
+Undo + Redo
+
+We don't necessarily need to implement all of them now, but the design should support them without major modification.
+
+7. Non-Functional / Design Requirements
+
+Classes should have clear responsibilities.
+
+Avoid:
+
+Game class doing everything
+
+Instead separate:
+
+Game
+Board
+Cell
+Player
+Move
+WinningStrategy
+MoveStrategy
+
+
+
+The design should follow SOLID principles.
+
+Specifically:
+
+Changing bot logic
+→ should not change Game
+
+Changing winning logic
+→ should not change Game
+
+Adding another symbol
+→ should not require major changes
+
+Adding another board size
+→ should not require redesigning classes
+
+Object creation can also be separated from gameplay logic where useful.
+
+8. Design Patterns Suitable for These Requirements
+
+At the requirement stage, I would only mention that the design should support these patterns:
+
+Strategy Pattern
+→ Bot move behavior
+→ Winning rules
+
+Command Pattern
+→ Move
+→ Undo / Redo
+
+Factory Pattern
+→ Creating game/player configurations
+
+Game Status Enum initially
+→ IN_PROGRESS
+→ WON
+→ DRAW
+
+I would not force State Pattern yet. An enum is sufficient unless WON, DRAW, and IN_PROGRESS later develop significantly different behaviors.
+
+So your final interview requirement scope is:
+
+Tic Tac Toe
+
+Functional Requirements
+    ↓
+2 players
+NxN board
+Alternating turns
+Valid moves
+Winner detection
+Draw detection
+Game status
+Human vs Human
+Human vs Bot
+Move history
+Undo
+
+Validation
+    ↓
+Bounds
+Occupied cells
+Duplicate symbols
+Finished game
+Invalid undo
+
+Extensibility
+    ↓
+NxN
+Bot strategies
+Winning strategies
+Different symbols
+Game variants
+Undo/Redo
+
+Design Quality
+    ↓
+SOLID
+Low coupling
+Clear responsibilities
+Extensible classes

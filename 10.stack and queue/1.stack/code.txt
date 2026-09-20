@@ -1,99 +1,73 @@
-Ques:
+✅ Python Stack Implementation
+class Stack:
+    def __init__(self, size=1000):
+        self.size = size
+        self.arr = [0] * size
+        self.top = -1
 
-Code:
+    def push(self, x):
+        if self.top >= self.size - 1:
+            print("Stack Overflow")
+            return
+        self.top += 1
+        self.arr[self.top] = x
 
-#include <bits/stdc++.h>
-using namespace std;
+    def pop(self):
+        if self.top == -1:
+            print("Stack Underflow")
+            return -1
+        value = self.arr[self.top]
+        self.top -= 1
+        return value
 
-class Stack {
-    int top;
-    int *arr;
-    int size;
+    def Top(self):
+        if self.top == -1:
+            print("Stack is empty")
+            return -1
+        return self.arr[self.top]
 
-public:
-    Stack() {
-        top = -1;
-        size = 1000; // Default size
-        arr = new int[size];
-    }
-
-    void push(int x) {
-        if (top >= size - 1) {
-            cout << "Stack Overflow" << endl;
-            return;
-        }
-        top++;
-        arr[top] = x;
-    }
-
-    int pop() {
-        if (top == -1) {
-            cout << "Stack Underflow" << endl;
-            return -1;
-        }
-        int x = arr[top];
-        top--;
-        return x;
-    }
-
-    int Top() {
-        if (top == -1) {
-            cout << "Stack is empty" << endl;
-            return -1;
-        }
-        return arr[top];
-    }
-
-    int Size() {
-        return top + 1;
-    }
-};
-
-int main() {
-    Stack s;
-    s.push(6);
-    s.push(7);
-    s.push(8);
-
-    cout << "Popped: " << s.pop() << endl;   // Expected output: 8
-    cout << "Top: " << s.Top() << endl;     // Expected output: 7
-    cout << "Size: " << s.Size() << endl;   // Expected output: 2
-
-    return 0;
-}
+    def Size(self):
+        return self.top + 1
 
 
-Time and space complexity:
+# Function Calls
+s = Stack()
+s.push(6)
+s.push(7)
+s.push(8)
 
-Time Complexity Analysis
-Push Operation (push(x)): 
-𝑂
-(
-1
-)
-O(1) → Directly inserts the element at the top.
-Pop Operation (pop()): 
-𝑂
-(
-1
-)
-O(1) → Removes the top element.
-Top Operation (Top()): 
-𝑂
-(
-1
-)
-O(1) → Returns the top element without modifying the stack.
-Size Operation (Size()): 
-𝑂
-(
-1
-)
-O(1) → Returns the count of elements.
-Space Complexity Analysis
-Space Complexity: 
-𝑂
-(
-𝑁
-)
-O(N) → The stack stores up to N elements.
+print("Popped:", s.pop())
+print("Top:", s.Top())
+print("Size:", s.Size())
+📥 Sample Input (Operations Performed)
+push(6)
+push(7)
+push(8)
+pop()
+Top()
+Size()
+📤 Sample Output
+Popped: 8
+Top: 7
+Size: 2
+⏱ Time Complexity
+Operation	Complexity
+push()	O(1)
+pop()	O(1)
+Top()	O(1)
+Size()	O(1)
+
+👉 All operations are constant time because:
+
+We directly access index using top
+
+No loops involved
+
+📦 Space Complexity
+O(N)
+
+Where:
+
+N = maximum size of stack
+
+We allocate an array of size N

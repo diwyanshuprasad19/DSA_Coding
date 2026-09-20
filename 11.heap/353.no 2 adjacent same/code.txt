@@ -1,5 +1,0 @@
-Ques:
-
-Code:
-
-Time and space complexity:
