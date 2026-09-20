@@ -18,17 +18,12 @@ Use this file so code written here (Cursor or Claude Code) stays consistent and 
 - Run `ruff format` / `ruff check --fix` before finishing.
 - Tools: **aislop**, **sloplint**, **agent-slop-lint**, **ruff**, optional **Strix**.
 
+## Stack awareness (this repo = DSA practice)
+- Soft gate: compileall / hooks; aislop is advisory for tutorial notes.
+- Direct push to `DSA_Coding` is OK for practice notes after hooks.
+- Observability for product repos is documented in `platform-ops/OBSERVABILITY.md` — not required here.
+
 ## Before finishing a task
-1. `make anti-slop REPO=<kafka|redis|coding>`
-2. `make security REPO=…`
-3. Summarize risk (auth, data, deploy) in the PR.
-4. If deploy-related: note traffic shift + rollback.
-
-## Stack awareness (kafka)
-- Kafka consumers: commit offsets **after** DB success; rely on idempotency.
-- Prod uses SA impersonation / WIF — never bake JSON keys into the repo.
-- Observability: JSON logs + Prometheus metrics; correlation ids on requests.
-
-## Data locally
-- Shared Postgres/Redis: `make data-up` in platform-ops (5433 / 6380).
-- Migrations: `make alembic REPO=kafka` or `REPO=redis`.
+1. For **kafka/redis**: `make local-gate` then `make anti-slop` (aislop ≥ 80) then `make auto`.
+2. For **coding**: hooks + optional compile check; `ALLOW_SLOP=1 make auto REPO=coding` if shipping docs.
+3. Never commit secrets (`.env`, keys, tokens).
