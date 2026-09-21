@@ -31,3 +31,9 @@ node_modules/
 *.jpeg
 *.rtf
 .github/workflows/
+
+.env
+.env.*
+!.env.example
+*.pem
+*.key
